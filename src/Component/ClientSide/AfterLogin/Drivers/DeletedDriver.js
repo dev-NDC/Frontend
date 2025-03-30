@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useState , useEffect, useContext} from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Menu, MenuItem, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, useMediaQuery } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import HomeContext from "../../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 
-const dummyDeletedDrivers = [
-    { name: "Ved Prakash", email: "vedprakash182001@gmail.com", license: "12345", dob: "Jan 8, 2001", phone: "(099) 849-4731", creationDate: "Mar 27, 2025", createdBy: "Admin", deletionDate: "Mar 28, 2025" }
-];
 
 function DeletedDriver() {
+    const { userData } = useContext(HomeContext);
+    const [drivers, setDrivers] = useState([]);
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedDriver, setSelectedDriver] = useState(null);
     const [viewOpen, setViewOpen] = useState(false);
     const isTablet = useMediaQuery("(max-width:1200px)");
     const isMobile = useMediaQuery("(max-width:500px)");
+
+    useEffect(() => {
+        if (userData?.drivers) {
+            const activeDrivers = userData.drivers.filter(driver => driver.isDeleted);
+            setDrivers(activeDrivers);
+        }
+    }, [userData]);
 
     const handleMenuOpen = (event, driver) => {
         setMenuAnchor(event.currentTarget);
@@ -43,12 +50,12 @@ function DeletedDriver() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {dummyDeletedDrivers.map((driver, index) => (
+                    {drivers.map((driver, index) => (
                         <TableRow key={index} hover>
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>{driver.name}</TableCell>
                             {!isMobile && <TableCell>{driver.email}</TableCell>}
-                            {!isTablet && <TableCell>{driver.license}</TableCell>}
+                            {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
                             {!isTablet && <TableCell>{driver.dob}</TableCell>}
                             {!isTablet && <TableCell>{driver.phone}</TableCell>}
                             {!isMobile && <TableCell>{driver.deletionDate}</TableCell>}
@@ -72,7 +79,7 @@ function DeletedDriver() {
                     <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9" }}>
                         <Typography variant="h6" gutterBottom>{selectedDriver?.name}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
-                        <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.license}</Typography>
+                        <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.licenseNumber}</Typography>
                         <Typography variant="body1"><strong>DOB:</strong> {selectedDriver?.dob}</Typography>
                         <Typography variant="body1"><strong>Phone No:</strong> {selectedDriver?.phone}</Typography>
                         <Typography variant="body1"><strong>Creation Date:</strong> {selectedDriver?.creationDate}</Typography>

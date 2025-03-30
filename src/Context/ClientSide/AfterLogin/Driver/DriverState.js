@@ -6,11 +6,34 @@ const API_URL = "http://localhost:8000/api";
 
 
 const DriverState = (props) => {
+
+
     const AddDriver = async(driver) => {
         await axios.post(`${API_URL}/user/addDriver`, driver)
             .then(response => {
                 const data = response.data;
-                console.log(data)
+                toast.success(data.message);
+            })
+            .catch(error => {
+                toast.error("server error, Please try again later")
+            });
+    }
+
+    const updateDriver = async(driver)=>{
+        await axios.post(`${API_URL}/user/updateDriver`, driver)
+            .then(response => {
+                const data = response.data;
+                toast.success(data.message);
+            })
+            .catch(error => {
+                toast.error("server error, Please try again later")
+            });
+    }
+
+    const deleteDriver = async(driver)=>{
+        await axios.post(`${API_URL}/user/deleteDriver`, driver)
+            .then(response => {
+                const data = response.data;
                 toast.success(data.message);
             })
             .catch(error => {
@@ -19,7 +42,7 @@ const DriverState = (props) => {
     }
 
     return (
-        <DriverContext.Provider value={{ AddDriver }}>
+        <DriverContext.Provider value={{ AddDriver,deleteDriver,updateDriver }}>
             {props.children}
         </DriverContext.Provider>
     )

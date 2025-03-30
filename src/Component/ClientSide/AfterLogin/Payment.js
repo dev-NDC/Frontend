@@ -1,31 +1,30 @@
-import React, { useState } from "react";
-import { 
-  Box, Card, CardContent, Typography, IconButton, 
-  Modal, TextField, Button, Grid, Divider, useMediaQuery 
+import React, { useState, useContext,useEffect } from "react";
+import {
+  Box, Card, CardContent, Typography, IconButton,
+  Modal, TextField, Button, Grid, Divider, useMediaQuery
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
+import HomeContext from "../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 
 const PaymentInformation = () => {
+  const { userData, updatePayment,updateUserData} = useContext(HomeContext);
   const [open, setOpen] = useState(false);
-  const [paymentInfo, setPaymentInfo] = useState({
-    creditCardNumber: "**** **** **** 1234",
-    cvv: "123",
-    expiryMonth: "03",
-    expiryYear: "2025",
-    billingZip: "98001",
-    accountNumber: "000000000",
-    routingNumber: "000000000",
-    accountName: "John Doe",
-  });
-
+  const [paymentInfo, setPaymentInfo] = useState(userData.paymentData);
   const [tempPaymentInfo, setTempPaymentInfo] = useState({ ...paymentInfo });
+
+  useEffect(() => {
+    setPaymentInfo(userData.paymentData);
+    setTempPaymentInfo(userData.paymentData);
+    console.log(userData.paymentData)
+  }, [userData]);
+
 
   const handleOpen = () => {
     setTempPaymentInfo({ ...paymentInfo });
     setOpen(true);
   };
-  
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -34,8 +33,9 @@ const PaymentInformation = () => {
     setTempPaymentInfo({ ...tempPaymentInfo, [e.target.name]: e.target.value });
   };
 
-  const handleUpdate = () => {
-    setPaymentInfo({ ...tempPaymentInfo });
+  const handleUpdate = async() => {
+    await updatePayment(tempPaymentInfo);
+    updateUserData();
     setOpen(false);
   };
 
@@ -43,7 +43,7 @@ const PaymentInformation = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop:'100px', px: 2 }}>
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: '100px', px: 2 }}>
       <Card sx={{ width: isMobile ? "100%" : 600, p: 3, position: "relative", borderRadius: 3, boxShadow: 3 }}>
         <IconButton onClick={handleOpen} sx={{ position: "absolute", top: 15, right: 15, color: "primary.main" }}>
           <EditIcon />
@@ -63,11 +63,11 @@ const PaymentInformation = () => {
             </Grid>
             <Grid item xs={6}>
               <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Expiry Date Month:</Typography>
-              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>{paymentInfo.expiryMonth}</Typography>
+              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>{paymentInfo.expMonth}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Expiry Date Year:</Typography>
-              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>{paymentInfo.expiryYear}</Typography>
+              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>{paymentInfo.expYear}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Billing Zip Code:</Typography>
@@ -91,7 +91,7 @@ const PaymentInformation = () => {
           </Grid>
         </CardContent>
       </Card>
-      
+
       {/* Edit Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box sx={{ width: isMobile ? "90%" : 500, bgcolor: "background.paper", p: 4, m: "auto", mt: 10, borderRadius: 3, boxShadow: 5 }}>

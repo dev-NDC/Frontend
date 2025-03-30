@@ -1,16 +1,18 @@
-import React, { useState,useContext } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Menu, MenuItem, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, TextField, useMediaQuery } from "@mui/material";
+import React, { useState, useContext, useEffect } from "react";
+import {
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+    IconButton, Menu, MenuItem, Paper, Dialog, DialogTitle, DialogContent,
+    DialogActions, Button, Typography, Box, TextField, useMediaQuery
+} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import HomeContext from "../../../../Context/ClientSide/AfterLogin/Home/HomeContext";
-
-const dummyDrivers = [
-    { name: "Ved Prakash", email: "vedprakash182001@gmail.com", license: "12345", dob: "Jan 8, 2001", phone: "(099) 849-4731", creationDate: "Mar 27, 2025", createdBy: "Admin" }
-];
+import DriverContext from "../../../../Context/ClientSide/AfterLogin/Driver/DriverContext";
 
 function ActiveDriver() {
-    const {userData} = useContext(HomeContext);
-    const [drivers, setDrivers] = useState(userData.drivers)
+    const { userData, updateUserData } = useContext(HomeContext);
+    const { updateDriver, deleteDriver } = useContext(DriverContext);
+    const [drivers, setDrivers] = useState([]);
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedDriver, setSelectedDriver] = useState(null);
     const [editOpen, setEditOpen] = useState(false);
@@ -19,6 +21,14 @@ function ActiveDriver() {
     const [editedDriver, setEditedDriver] = useState(null);
     const isTablet = useMediaQuery("(max-width:1200px)");
     const isMobile = useMediaQuery("(max-width:500px)");
+
+    useEffect(() => {
+        if (userData?.drivers) {
+            const activeDrivers = userData.drivers.filter(driver => !driver.isDeleted);
+            setDrivers(activeDrivers);
+        }
+    }, [userData]);
+
     const handleMenuOpen = (event, driver) => {
         setMenuAnchor(event.currentTarget);
         setSelectedDriver(driver);
@@ -48,9 +58,16 @@ function ActiveDriver() {
         setEditedDriver({ ...editedDriver, [e.target.name]: e.target.value });
     };
 
-    const handleSaveEdit = () => {
-        console.log("Updated Driver Data:", editedDriver);
+    const handleSaveEdit = async () => {
+        await updateDriver(editedDriver);
+        updateUserData();
         setEditOpen(false);
+    };
+
+    const handleDeleteDriver = async () => {
+        await deleteDriver(selectedDriver);
+        updateUserData();
+        setDeleteOpen(false);
     };
 
     return (
@@ -97,7 +114,7 @@ function ActiveDriver() {
                 <DialogContent>
                     <TextField fullWidth margin="dense" label="Name" name="name" value={editedDriver?.name || ""} onChange={handleEditChange} />
                     <TextField fullWidth margin="dense" label="Email" name="email" value={editedDriver?.email || ""} onChange={handleEditChange} />
-                    <TextField fullWidth margin="dense" label="License #" name="license" value={editedDriver?.licenseNumber || ""} onChange={handleEditChange} />
+                    <TextField fullWidth margin="dense" label="License #" name="licenseNumber" value={editedDriver?.licenseNumber || ""} onChange={handleEditChange} />
                     <TextField fullWidth margin="dense" label="DOB" name="dob" value={editedDriver?.dob || ""} onChange={handleEditChange} />
                     <TextField fullWidth margin="dense" label="Phone No" name="phone" value={editedDriver?.phone || ""} onChange={handleEditChange} />
                 </DialogContent>
@@ -115,7 +132,7 @@ function ActiveDriver() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setDeleteOpen(false)} color="secondary">Cancel</Button>
-                    <Button color="primary" variant="contained">Delete</Button>
+                    <Button onClick={handleDeleteDriver} color="primary" variant="contained">Delete</Button>
                 </DialogActions>
             </Dialog>
 
