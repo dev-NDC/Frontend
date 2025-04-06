@@ -8,6 +8,7 @@ import PortalHome from './Component/ClientSide/AfterLogin/PortalHome';
 import AdminHome from './Component/Admin/AdminHome';
 
 import HomeState from './Context/ClientSide/AfterLogin/Home/HomeState';
+import AdminState from './Context/Admin/AdminState';
 
 function App() {
 
@@ -18,7 +19,7 @@ function App() {
         <Routes>
           <Route path="/*" element={<Home />} />
           <Route path="/portal" element={<HomeState><PortalHome/></HomeState>}/>
-          <Route path="/admin" element={ <AdminHome/> }/>
+          <Route path="/admin" element={<AdminState><AdminHome/> </AdminState>}/>
         </Routes>
       </Router>
     </>
