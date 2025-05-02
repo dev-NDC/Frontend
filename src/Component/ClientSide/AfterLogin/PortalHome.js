@@ -18,6 +18,7 @@ import Membership from "./Membership";
 
 import HomeContext from "../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 import DriverState from "../../../Context/ClientSide/AfterLogin/Driver/DriverState";
+import CreateNewOrderState from "../../../Context/ClientSide/AfterLogin/CreateNewOrder/CreateNewOrderState";
 
 const drawerWidth = 240;
 
@@ -59,7 +60,7 @@ function PortalHome() {
       case 3:
         return <DriverState><Driver/></DriverState>;
       case 4:
-        return <SecheduleTest />
+        return <CreateNewOrderState><SecheduleTest /></CreateNewOrderState>
       case 5:
         return <Result />
       case 6:

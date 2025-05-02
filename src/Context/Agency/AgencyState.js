@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from "react";
-import AdminContext from "./AdminContext";
+import AdminContext from "./AgencyContext";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
@@ -13,7 +13,7 @@ const AdminState = (props) => {
         const token = Cookies.get("token");
         if (token) {
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            axios.get(`${API_URL}/admin/getAllUserData`)
+            axios.get(`${API_URL}/agency/getAllUserData`)
                 .then(response => {
                     setAllUserData(response.data.data);
                 })

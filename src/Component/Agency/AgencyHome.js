@@ -10,17 +10,14 @@ import Navbar from "./Navbar";
 import Welcome from "./Welcome";
 import ViewCustomer from "./Customer/ViewCustomer";
 import ViewCustomerDetails from "./Customer/ViewUserDetails";
-import ViewAgency  from "./Agency/ViewAgency";
-import ViewAgencyDetails from "./Agency/ViewAgencyDetails";
 
-import AdminContext from "../../Context/Admin/AdminContext";
-import CustomerState from "../../Context/Admin/Customer/CustomerState"
-import AgencyState from "../../Context/Admin/Agency/AgencyState";
+import AdminContext from "../../Context/Agency/AgencyContext";
+import CustomerState from "../../Context/Agency/Customer/CustomerState"
 
 const API_URL = "http://localhost:8000/api";
 const drawerWidth = 240;
 
-function AdminHome() {
+function AgencyHome() {
     const { currentActiveButton } = useContext(AdminContext);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const theme = useTheme();
@@ -31,7 +28,7 @@ function AdminHome() {
         const token = Cookies.get("token");
         if (token) {
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            axios.get(`${API_URL}/admin/verify`)
+            axios.get(`${API_URL}/agency/verify`)
                 .then(response => {
 
                 })
@@ -58,12 +55,8 @@ function AdminHome() {
                 return <Welcome />;
             case 2:
                 return <CustomerState><ViewCustomer /></CustomerState>
-            case 3:  
-                return <AgencyState><ViewAgency /></AgencyState>
             case 5:
                 return  <CustomerState><ViewCustomerDetails /></CustomerState> 
-            case 6:
-                return <AgencyState><ViewAgencyDetails /></AgencyState>
             default:
                 return <Welcome />; // Default component
         }
@@ -83,4 +76,4 @@ function AdminHome() {
     );
 }
 
-export default AdminHome;
+export default AgencyHome;

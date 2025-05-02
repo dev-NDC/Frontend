@@ -7,22 +7,18 @@ import {
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { Edit, Delete, Visibility, Download } from "@mui/icons-material";
-import CustomerContext from "../../../../Context/Admin/Customer/CustomerContext";
-import CertificateContext from "../../../../Context/Admin/Customer/Certificate/CertificateContext";
+import CustomerContext from "../../../../Context/Agency/Customer/CustomerContext";
+import CertificateContext from "../../../../Context/Agency/Customer/Certificate/CertificateContext";
 
 function DisplayCertificate() {
-    const { currentId, userDetails, getSingleUserData } = useContext(CustomerContext);
+    const { currentId, userDetails,getSingleUserData } = useContext(CustomerContext);
     const { updateCertificate, deleteCertificate } = useContext(CertificateContext);
 
     const [loading, setLoading] = useState(true);
     const [certificates, setCertificates] = useState([]);
     const [openModal, setOpenModal] = useState(null);
     const [selectedCert, setSelectedCert] = useState(null);
-    const [editData, setEditData] = useState({
-        description: "",
-        issueDate: "",
-        expirationDate: ""
-    });
+    const [editData, setEditData] = useState({});
 
     useEffect(() => {
         if (userDetails?.certificates) {
@@ -33,21 +29,18 @@ function DisplayCertificate() {
 
     const handleOpen = (type, cert) => {
         setSelectedCert(cert);
-        setEditData({
-            description: cert.description || "",
-            issueDate: cert.issueDate ? cert.issueDate.slice(0, 10) : "",
-            expirationDate: cert.expirationDate ? cert.expirationDate.slice(0, 10) : ""
-        });
+        setEditData(cert);
         setOpenModal(type);
     };
 
     const handleClose = () => {
         setOpenModal(null);
         setSelectedCert(null);
-        setEditData({ description: "", issueDate: "", expirationDate: "" });
+        setEditData({});
     };
 
     const handleDownload = async (cert) => {
+        // Create container to render HTML temporarily
         const container = document.createElement("div");
         container.style.position = "fixed";
         container.style.top = "-9999px";
@@ -62,12 +55,14 @@ function DisplayCertificate() {
             <img id="certImage" src="" style="width:100%; margin-top:10px; border-radius:10px;" />
         `;
 
+        // Create blob for image
         const blob = new Blob([new Uint8Array(cert.certificateFile.data)], { type: cert.mimeType });
         const imageUrl = URL.createObjectURL(blob);
         container.querySelector("#certImage").src = imageUrl;
 
         document.body.appendChild(container);
 
+        // Convert to canvas
         const canvas = await html2canvas(container, { scale: 2 });
         const imgData = canvas.toDataURL("image/png");
 
@@ -78,8 +73,8 @@ function DisplayCertificate() {
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
         pdf.save(`${cert.description || "certificate"}.pdf`);
 
-        document.body.removeChild(container);
-        URL.revokeObjectURL(imageUrl);
+        document.body.removeChild(container); // cleanup
+        URL.revokeObjectURL(imageUrl); // cleanup
     };
 
     const handleUpdate = async () => {
@@ -110,7 +105,7 @@ function DisplayCertificate() {
                 </TableHead>
                 <TableBody>
                     {certificates.map((cert, index) => (
-                        <TableRow key={cert._id || index}>
+                        <TableRow key={index}>
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>{cert.description}</TableCell>
                             <TableCell>{new Date(cert.issueDate).toLocaleDateString()}</TableCell>
@@ -126,6 +121,7 @@ function DisplayCertificate() {
                 </TableBody>
             </Table>
 
+            {/* View Modal */}
             {/* View Modal */}
             <Dialog open={openModal === "view"} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Certificate Details</DialogTitle>
@@ -152,6 +148,7 @@ function DisplayCertificate() {
                 </DialogActions>
             </Dialog>
 
+
             {/* Edit Modal */}
             <Dialog open={openModal === "edit"} onClose={handleClose}>
                 <DialogTitle>Edit Certificate</DialogTitle>
@@ -168,7 +165,7 @@ function DisplayCertificate() {
                         label="Issue Date"
                         type="date"
                         fullWidth
-                        value={editData.issueDate || ""}
+                        value={editData.issueDate?.slice(0, 10)}
                         onChange={(e) => setEditData({ ...editData, issueDate: e.target.value })}
                         InputLabelProps={{ shrink: true }}
                     />
@@ -177,26 +174,26 @@ function DisplayCertificate() {
                         label="Expiration Date"
                         type="date"
                         fullWidth
-                        value={editData.expirationDate || ""}
+                        value={editData.expirationDate?.slice(0, 10)}
                         onChange={(e) => setEditData({ ...editData, expirationDate: e.target.value })}
                         InputLabelProps={{ shrink: true }}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleUpdate} variant="contained" color="primary">Update</Button>
+                    <Button onClick={handleClose} color="secondary">Cancel</Button>
+                    <Button onClick={handleUpdate} color="primary" variant="contained">Update</Button>
                 </DialogActions>
             </Dialog>
 
             {/* Delete Modal */}
             <Dialog open={openModal === "delete"} onClose={handleClose}>
-                <DialogTitle>Confirm Deletion</DialogTitle>
+                <DialogTitle>Confirm Delete</DialogTitle>
                 <DialogContent>
                     <Typography>Are you sure you want to delete this certificate?</Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleDelete} color="error">Delete</Button>
+                    <Button onClick={handleClose} color="primary">Cancel</Button>
+                    <Button onClick={handleDelete} color="secondary" variant="contained">Delete</Button>
                 </DialogActions>
             </Dialog>
         </TableContainer>
