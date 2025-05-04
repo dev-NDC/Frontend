@@ -76,7 +76,7 @@ const CustomerState = (props) => {
             });
     }
     return (
-        <CustomerContext.Provider value={{ AllAgencyData, agencyDetails, loading, currentId, updateAgencyInformation, setLoading, getSingleAgencyData, setAgencyDetails }}>
+        <CustomerContext.Provider value={{ AllAgencyData, agencyDetails, loading, currentId, updateAgencyInformation, setLoading, getSingleAgencyData, setAgencyDetails,getAllAgencyData }}>
             {props.children}
         </CustomerContext.Provider>
     )

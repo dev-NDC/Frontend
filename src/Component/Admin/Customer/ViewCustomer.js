@@ -1,13 +1,16 @@
 import React, { useContext } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Typography } from "@mui/material";
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Typography } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AdminContext from "../../../Context/Admin/AdminContext";
 import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
 
+import ExportDriver from "./ExportDriver";
+import ExportCompany from "./ExportCompany";
+
 
 function ViewCustomer() {
-    const { AllUserData, setCurrentActiveButton} = useContext(AdminContext);
-    const {getSingleUserData,setLoading,setUserDetails} = useContext(CustomerContext )
+    const { AllUserData, setCurrentActiveButton } = useContext(AdminContext);
+    const { getSingleUserData, setLoading, setUserDetails } = useContext(CustomerContext)
     const handleViewDetails = (user) => {
         setUserDetails(null)
         setLoading(true);
@@ -17,7 +20,23 @@ function ViewCustomer() {
 
     return (
         <TableContainer component={Paper} sx={{ mt: 3, p: 2, borderRadius: 2, boxShadow: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>Customer List</Typography>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 2,
+                }}
+            >
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                    Customer List
+                </Typography>
+
+                <Box sx={{ display: "flex", gap: 2 }}>
+                    <ExportDriver />
+                    <ExportCompany />
+                </Box>
+            </Box>
             <Table>
                 <TableHead>
                     <TableRow sx={{ backgroundColor: "#003366" }}>
