@@ -58,8 +58,11 @@ const SignupState = (props) => {
     const submitFormFunction = async () => {
         try {
             const API_URL = "http://localhost:8000/api";
+            const Membership = {
+                selectedPlan : selectedPlan,
+            }
             const fullData = {
-                selectedPlan,
+                Membership,
                 contactInfoData,
                 companyInfoData,
                 paymentData,

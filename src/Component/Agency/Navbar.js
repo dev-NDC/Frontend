@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Divider, Typography, Box, AppBar, Toolbar, useMediaQuery } from "@mui/material";
 import { Home, Business,  ExitToApp, Menu } from "@mui/icons-material";
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+
 import { useTheme } from "@mui/material/styles";
 import AdminContext from "../../Context/Agency/AgencyContext";
 import Cookies from "js-cookie";
@@ -19,7 +21,7 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
   };
 
   const handleItemClick = (index) => {
-    if (index === 9) {
+    if (index === 4) {
       Cookies.remove("token");
       navigate("/");
     } else {
@@ -33,6 +35,7 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
   const menuItems = [
     { text: "Home", icon: <Home />, index: 1,index2:1 },
     { text: "Customer", icon: <Business />, index: 2,index2 : 5 },
+    { text: "Create New Order", icon: <NoteAddIcon />, index: 8,index2 : 9 },
     { text: "Logout", icon: <ExitToApp />, index: 4, index2 : 4 }
   ];
 

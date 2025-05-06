@@ -8,29 +8,32 @@ import {
     DialogActions,
     TextField,
     Typography,
+    Grid,
 } from "@mui/material";
 import axios from "axios";
 
-import AgencyContext from "../../../Context/Admin/Agency/AgencyContext";
+import AdminContext from "../../../Context/Admin/Admin/AdminContext"; // Adjust if necessary
 import { toast } from "react-toastify";
 const API_URL = "http://localhost:8000/api";
 
-function CreateNewAgency() {
-    const { getAllAgencyData } = useContext(AgencyContext);
+function CreateNewAdmin() {
+    const { getAllAdminData } = useContext(AdminContext); // Adjust this context if necessary
     const [open, setOpen] = useState(false);
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [confirmEmail, setConfirmEmail] = useState("");
     const [contactNumber, setContactNumber] = useState("");
-    const [agencyName, setAgencyName] = useState("");
     const [error, setError] = useState("");
     const [successMsg, setSuccessMsg] = useState("");
 
     const handleOpen = () => {
         setOpen(true);
+        setFirstName("");
+        setLastName("");
         setEmail("");
         setConfirmEmail("");
         setContactNumber("");
-        setAgencyName("");
         setError("");
         setSuccessMsg("");
     };
@@ -40,11 +43,13 @@ function CreateNewAgency() {
     };
 
     const validateEmail = (email) => {
+        // Simple email regex
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     };
 
     const validateContactNumber = (contactNumber) => {
-        return /^[0-9]{10}$/.test(contactNumber); // Simple 10-digit validation
+        // Simple contact number validation
+        return /^[0-9]{10}$/.test(contactNumber);
     };
 
     const handleSubmit = async () => {
@@ -67,20 +72,23 @@ function CreateNewAgency() {
         }
 
         try {
+            // Sending the data to the backend
             // eslint-disable-next-line
-            const res = await axios.post(`${API_URL}/admin/createNewAgency`, {
+            const res = await axios.post(`${API_URL}/admin/createNewAdmin`, {
+                firstName,
+                lastName,
                 email,
-                contactNumber,
-                agencyName,
+                contactNumber
             });
 
+            setFirstName("");
+            setLastName("");
             setEmail("");
             setConfirmEmail("");
             setContactNumber("");
-            setAgencyName("");
-            toast.success("Agency created and mail sent to user successfully");
+            toast.success("Admin created successfully and email sent to user.");
             handleClose();
-            getAllAgencyData();
+            getAllAdminData(); // Refresh the admin table
         } catch (err) {
             console.log(err);
             toast.error(err.response?.data?.message || "Something went wrong.");
@@ -91,21 +99,35 @@ function CreateNewAgency() {
         <div>
             <Box display="flex" justifyContent="center">
                 <Button variant="contained" color="primary" onClick={handleOpen}>
-                    Create New Agency
+                    Create New Admin
                 </Button>
             </Box>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Create New Agency</DialogTitle>
+                <DialogTitle>Create New Admin</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        fullWidth
-                        margin="dense"
-                        label="Agency Name"
-                        value={agencyName}
-                        onChange={(e) => setAgencyName(e.target.value)}
-                        required
-                    />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                margin="dense"
+                                label="First Name"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                required
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                margin="dense"
+                                label="Last Name"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                required
+                            />
+                        </Grid>
+                    </Grid>
                     <TextField
                         fullWidth
                         margin="dense"
@@ -148,4 +170,4 @@ function CreateNewAgency() {
     );
 }
 
-export default CreateNewAgency;
+export default CreateNewAdmin;

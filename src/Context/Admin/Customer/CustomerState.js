@@ -15,8 +15,8 @@ const CustomerState = (props) => {
         const token = Cookies.get("token");
         if (token) {
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            await axios.post(`${API_URL}/admin/getSingleUserDetails`, {id : id})
-                .then (response => {
+            await axios.post(`${API_URL}/admin/getSingleUserDetails`, { id: id })
+                .then(response => {
                     setUserDetails(response.data.data);
                     setLoading(false);
                 })
@@ -30,11 +30,11 @@ const CustomerState = (props) => {
 
     //function to update company information in backend
     const updateCompanyInformation = async (data) => {
-        await axios.post(`${API_URL}/admin/updateCompanyInformation`, {data,currentId})
+        await axios.post(`${API_URL}/admin/updateCompanyInformation`, { data, currentId })
             .then(response => {
                 const data = response.data;
                 toast.success(data.message);
-                setUserDetails(data);
+                getSingleUserData(currentId);
             })
             .catch(error => {
                 toast.error("server error, Please try again later")
@@ -43,18 +43,30 @@ const CustomerState = (props) => {
 
     //function to update payment information in backend
     const updatePaymentInformation = async (data) => {
-        await axios.post(`${API_URL}/admin/updatePaymentInformation`, {data,currentId})
+        await axios.post(`${API_URL}/admin/updatePaymentInformation`, { data, currentId })
             .then(response => {
                 const data = response.data;
                 toast.success(data.message);
-                setUserDetails(data);
+                getSingleUserData(currentId);
+            })
+            .catch(error => {
+                toast.error("server error, Please try again later")
+            });
+    }
+
+    const updateMembershipInformation = async (data) => {
+        await axios.post(`${API_URL}/admin/updateMembershipInformation`, { data, currentId })
+            .then(response => {
+                const data = response.data;
+                toast.success(data.message);
+                getSingleUserData(currentId);
             })
             .catch(error => {
                 toast.error("server error, Please try again later")
             });
     }
     return (
-        <CustomerContext.Provider value={{ userDetails, loading, currentId,updatePaymentInformation,updateCompanyInformation, setLoading, getSingleUserData, setUserDetails }}>
+        <CustomerContext.Provider value={{ userDetails, loading, currentId,updateMembershipInformation, updatePaymentInformation, updateCompanyInformation, setLoading, getSingleUserData, setUserDetails }}>
             {props.children}
         </CustomerContext.Provider>
     )

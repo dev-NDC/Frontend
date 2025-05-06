@@ -1,6 +1,10 @@
 import React, { useContext } from "react";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Divider, Typography, Box, AppBar, Toolbar, useMediaQuery } from "@mui/material";
-import { Home, Business, DirectionsCar,  ExitToApp, Menu } from "@mui/icons-material";
+import { Home, ExitToApp, Menu } from "@mui/icons-material";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import PersonIcon from '@mui/icons-material/Person';
+import BusinessIcon from '@mui/icons-material/Business';
+
 import { useTheme } from "@mui/material/styles";
 import AdminContext from "../../Context/Admin/AdminContext";
 import Cookies from "js-cookie";
@@ -19,7 +23,7 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
   };
 
   const handleItemClick = (index) => {
-    if (index === 9) {
+    if (index === 7) {
       Cookies.remove("token");
       navigate("/");
     } else {
@@ -32,9 +36,10 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
 
   const menuItems = [
     { text: "Home", icon: <Home />, index: 1,index2:1 },
-    { text: "Customer", icon: <Business />, index: 2,index2 : 5 },
-    { text: "Agency", icon: <DirectionsCar />, index: 3,index2:3 },
-    { text: "Logout", icon: <ExitToApp />, index: 4, index2 : 4 }
+    { text: "Customer", icon: <PersonIcon />, index: 2,index2 : 5 },
+    { text: "Agency", icon: <BusinessIcon />, index: 3,index2:6 },
+    { text: "Admin", icon: <AdminPanelSettingsIcon />, index: 4,index2:4 },
+    { text: "Logout", icon: <ExitToApp />, index: 7, index2 : 7 }
   ];
 
   const drawerContent = (

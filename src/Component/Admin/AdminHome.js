@@ -12,10 +12,12 @@ import ViewCustomer from "./Customer/ViewCustomer";
 import ViewCustomerDetails from "./Customer/ViewUserDetails";
 import ViewAgency  from "./Agency/ViewAgency";
 import ViewAgencyDetails from "./Agency/ViewAgencyDetails";
+import ViewAdmin from "./Admin/ViewAdmin";
 
 import AdminContext from "../../Context/Admin/AdminContext";
 import CustomerState from "../../Context/Admin/Customer/CustomerState"
 import AgencyState from "../../Context/Admin/Agency/AgencyState";
+import AdminState from "../../Context/Admin/Admin/AdminState";
 
 const API_URL = "http://localhost:8000/api";
 const drawerWidth = 240;
@@ -60,6 +62,8 @@ function AdminHome() {
                 return <CustomerState><ViewCustomer /></CustomerState>
             case 3:  
                 return <AgencyState><ViewAgency /></AgencyState>
+            case 4:
+                return <AdminState><ViewAdmin /></AdminState>
             case 5:
                 return  <CustomerState><ViewCustomerDetails /></CustomerState> 
             case 6:

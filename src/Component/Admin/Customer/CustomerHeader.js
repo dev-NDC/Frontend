@@ -15,15 +15,15 @@ import Driver from "./Drivers/Driver"
 import Certificate from "./Certificate/Certificate";
 import Result from "./Result/Result";
 import Invoice from "./Invoice/Invoice";
+import Document from "./Document/Document";
+import Membership from "./Membership"
 
 import DriverState from "../../../Context/Admin/Customer/Driver/DriverState";
 import CertificateState from "../../../Context/Admin/Customer/Certificate/CertificateState";
 import InvoiceState from "../../../Context/Admin/Customer/Invoice/InvoiceState";
 import ResultState from "../../../Context/Admin/Customer/Result/ResultState";
+import DocumentState from "../../../Context/Admin/Customer/Document/DocumentState";
 
-// Dummy Components for now
-const Membership = () => <div>Membership</div>;
-const UploadDocument = () => <div>Upload Document</div>;
 
 const tabData = [
   { label: "Company Info", icon: <BusinessIcon />, component: <CompanyDetails /> },
@@ -33,7 +33,7 @@ const tabData = [
   { label: "Invoice", icon: <ReceiptIcon />, component:<InvoiceState> <Invoice /> </InvoiceState>},
   { label: "Result", icon: <AssessmentIcon />, component:<ResultState> <Result /> </ResultState>},
   { label: "Payment Info", icon: <PaymentIcon />, component: <PaymentInformation /> },
-  { label: "Upload Doc", icon: <UploadFileIcon />, component: <UploadDocument /> },
+  { label: "Upload Doc", icon: <UploadFileIcon />, component: <DocumentState> <Document /> </DocumentState> },
 ];
 
 function CustomerHeader() {

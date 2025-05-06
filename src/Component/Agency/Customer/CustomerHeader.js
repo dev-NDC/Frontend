@@ -7,7 +7,6 @@ import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import PaymentIcon from "@mui/icons-material/Payment";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
 
 import CompanyDetails from "./CompanyInfo";
 import PaymentInformation from "./Payment";
@@ -15,15 +14,13 @@ import Driver from "./Drivers/Driver"
 import Certificate from "./Certificate/Certificate";
 import Result from "./Result/Result";
 import Invoice from "./Invoice/Invoice";
+import Membership from "./Membership"
 
 import DriverState from "../../../Context/Agency/Customer/Driver/DriverState";
 import CertificateState from "../../../Context/Agency/Customer/Certificate/CertificateState";
 import InvoiceState from "../../../Context/Agency/Customer/Invoice/InvoiceState";
 import ResultState from "../../../Context/Agency/Customer/Result/ResultState";
 
-// Dummy Components for now
-const Membership = () => <div>Membership</div>;
-const UploadDocument = () => <div>Upload Document</div>;
 
 const tabData = [
   { label: "Company Info", icon: <BusinessIcon />, component: <CompanyDetails /> },
@@ -33,7 +30,6 @@ const tabData = [
   { label: "Invoice", icon: <ReceiptIcon />, component:<InvoiceState> <Invoice /> </InvoiceState>},
   { label: "Result", icon: <AssessmentIcon />, component:<ResultState> <Result /> </ResultState>},
   { label: "Payment Info", icon: <PaymentIcon />, component: <PaymentInformation /> },
-  { label: "Upload Doc", icon: <UploadFileIcon />, component: <UploadDocument /> },
 ];
 
 function CustomerHeader() {

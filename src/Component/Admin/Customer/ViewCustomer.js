@@ -1,5 +1,18 @@
-import React, { useContext } from "react";
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Typography } from "@mui/material";
+import React, { useContext, useState, useMemo } from "react";
+import {
+    Box,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    IconButton,
+    Typography,
+    TextField,
+    TableSortLabel
+} from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AdminContext from "../../../Context/Admin/AdminContext";
 import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
@@ -7,16 +20,39 @@ import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
 import ExportDriver from "./ExportDriver";
 import ExportCompany from "./ExportCompany";
 
-
 function ViewCustomer() {
     const { AllUserData, setCurrentActiveButton } = useContext(AdminContext);
-    const { getSingleUserData, setLoading, setUserDetails } = useContext(CustomerContext)
+    const { getSingleUserData, setLoading, setUserDetails } = useContext(CustomerContext);
+
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortOrder, setSortOrder] = useState("asc");
+
     const handleViewDetails = (user) => {
-        setUserDetails(null)
+        setUserDetails(null);
         setLoading(true);
-        getSingleUserData(user.id)
-        setCurrentActiveButton(5)
+        getSingleUserData(user.id);
+        setCurrentActiveButton(5);
     };
+
+    const handleSort = () => {
+        setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    };
+
+    const filteredAndSortedUsers = useMemo(() => {
+        let filtered = AllUserData.filter((user) =>
+            user.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        filtered.sort((a, b) => {
+            const nameA = a.companyName.toLowerCase();
+            const nameB = b.companyName.toLowerCase();
+            if (nameA < nameB) return sortOrder === "asc" ? -1 : 1;
+            if (nameA > nameB) return sortOrder === "asc" ? 1 : -1;
+            return 0;
+        });
+
+        return filtered;
+    }, [AllUserData, searchTerm, sortOrder]);
 
     return (
         <TableContainer component={Paper} sx={{ mt: 3, p: 2, borderRadius: 2, boxShadow: 3 }}>
@@ -32,15 +68,40 @@ function ViewCustomer() {
                     Customer List
                 </Typography>
 
-                <Box sx={{ display: "flex", gap: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <TextField
+                        size="small"
+                        placeholder="Filter by Company Name"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                     <ExportDriver />
                     <ExportCompany />
                 </Box>
             </Box>
+
             <Table>
                 <TableHead>
                     <TableRow sx={{ backgroundColor: "#003366" }}>
-                        <TableCell sx={{ color: "white", fontWeight: "bold" }}>Company Name</TableCell>
+                        <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                            <TableSortLabel
+                                active={true}
+                                direction={sortOrder}
+                                onClick={handleSort}
+                                sx={{
+                                    color: "white",
+                                    '&.Mui-active': {
+                                        color: "white",
+                                    },
+                                    '& .MuiTableSortLabel-icon': {
+                                        color: "white !important",
+                                    },
+                                }}
+                            >
+                                Company Name
+                            </TableSortLabel>
+
+                        </TableCell>
                         <TableCell sx={{ color: "white", fontWeight: "bold" }}>Contact No</TableCell>
                         <TableCell sx={{ color: "white", fontWeight: "bold" }}>Email</TableCell>
                         <TableCell sx={{ color: "white", fontWeight: "bold" }}>Active Drivers</TableCell>
@@ -49,7 +110,7 @@ function ViewCustomer() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {AllUserData.map((user, index) => (
+                    {filteredAndSortedUsers.map((user, index) => (
                         <TableRow key={index} hover>
                             <TableCell>{user.companyName}</TableCell>
                             <TableCell>{user.companyContactNumber}</TableCell>

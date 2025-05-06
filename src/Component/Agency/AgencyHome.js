@@ -10,9 +10,11 @@ import Navbar from "./Navbar";
 import Welcome from "./Welcome";
 import ViewCustomer from "./Customer/ViewCustomer";
 import ViewCustomerDetails from "./Customer/ViewUserDetails";
+import CreateNewOrder from "./CreateNewOrder/CreateNewOrder";
 
 import AdminContext from "../../Context/Agency/AgencyContext";
 import CustomerState from "../../Context/Agency/Customer/CustomerState"
+import CreateNewOrderState from "../../Context/Agency/CreateNewOrder/CreateNewOrderState";
 
 const API_URL = "http://localhost:8000/api";
 const drawerWidth = 240;
@@ -57,6 +59,8 @@ function AgencyHome() {
                 return <CustomerState><ViewCustomer /></CustomerState>
             case 5:
                 return  <CustomerState><ViewCustomerDetails /></CustomerState> 
+            case 8: 
+                return <CreateNewOrderState><CreateNewOrder/></CreateNewOrderState>
             default:
                 return <Welcome />; // Default component
         }

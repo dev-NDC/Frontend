@@ -9,22 +9,19 @@ import {
   ListItemText,
   Box,
   TextField,
-  IconButton,
   MenuItem,
   Select,
   InputLabel,
   FormControl,
   Chip,
   OutlinedInput,
+  Button, // Added Button component
 } from "@mui/material";
 import {
   Business as BusinessIcon,
   Email as EmailIcon,
   Phone as PhoneIcon,
   Apartment as ApartmentIcon,
-  Edit as EditIcon,
-  Save as SaveIcon,
-  Cancel as CancelIcon,
 } from "@mui/icons-material";
 
 import AgencyContext from "../../../Context/Admin/Agency/AgencyContext";
@@ -120,23 +117,23 @@ const CompanyDetails = () => {
             Agency Overview
           </Typography>
           {!editMode ? (
-            <IconButton onClick={handleEditToggle} color="primary">
-              <EditIcon />
-            </IconButton>
+            <Button variant="contained" color="primary" onClick={handleEditToggle}>
+              Edit
+            </Button>
           ) : (
             <>
-              <IconButton onClick={handleSave} color="success">
-                <SaveIcon />
-              </IconButton>
-              <IconButton onClick={handleCancel} color="error">
-                <CancelIcon />
-              </IconButton>
+              <Button variant="contained" color="success" onClick={handleSave} sx={{ marginRight: 2 }}>
+                Save
+              </Button>
+              <Button variant="outlined" color="error" onClick={handleCancel}>
+                Cancel
+              </Button>
             </>
           )}
         </Box>
-        <Divider sx={{ marginBottom: 2 }} />
+        <Divider sx={{ marginBottom: 2, marginTop:2 }} />
 
-        <Box sx={{ marginBottom: 3 }}>
+        <Box sx={{ marginBottom:2 }}>
           {editMode ? (
             <>
               <TextField
