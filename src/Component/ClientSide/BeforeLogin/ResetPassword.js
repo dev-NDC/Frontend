@@ -14,7 +14,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 
-const API_URL = "http://localhost:8000/api";
+const API_URL = process.env.REACT_APP_API_URL;
 
 function ResetPassword() {
     const navigate = useNavigate();

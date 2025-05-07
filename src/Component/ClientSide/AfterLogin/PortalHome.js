@@ -22,7 +22,7 @@ import CreateNewOrderState from "../../../Context/ClientSide/AfterLogin/CreateNe
 
 const drawerWidth = 240;
 
-const API_URL = "http://localhost:8000/api";
+const API_URL = process.env.REACT_APP_API_URL;
 
 function PortalHome() {
   const { currentActiveButton } = useContext(HomeContext);

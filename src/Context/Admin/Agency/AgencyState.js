@@ -3,7 +3,7 @@ import CustomerContext from "./AgencyContext";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
-const API_URL = "http://localhost:8000/api";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const CustomerState = (props) => {
     const [agencyDetails, setAgencyDetails] = useState(null);

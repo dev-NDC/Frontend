@@ -16,7 +16,7 @@ import AdminContext from "../../Context/Agency/AgencyContext";
 import CustomerState from "../../Context/Agency/Customer/CustomerState"
 import CreateNewOrderState from "../../Context/Agency/CreateNewOrder/CreateNewOrderState";
 
-const API_URL = "http://localhost:8000/api";
+const API_URL = process.env.REACT_APP_API_URL;
 const drawerWidth = 240;
 
 function AgencyHome() {

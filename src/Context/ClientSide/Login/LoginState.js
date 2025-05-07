@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 
 import LoginContext from "./LoginContext";
-const API_URL = "http://localhost:8000/api";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const LoginState = (props) => {
     let navigate = useNavigate();
