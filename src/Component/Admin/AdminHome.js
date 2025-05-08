@@ -13,11 +13,13 @@ import ViewCustomerDetails from "./Customer/ViewUserDetails";
 import ViewAgency  from "./Agency/ViewAgency";
 import ViewAgencyDetails from "./Agency/ViewAgencyDetails";
 import ViewAdmin from "./Admin/ViewAdmin";
+import Random from "./Random/Random"
 
 import AdminContext from "../../Context/Admin/AdminContext";
 import CustomerState from "../../Context/Admin/Customer/CustomerState"
 import AgencyState from "../../Context/Admin/Agency/AgencyState";
 import AdminState from "../../Context/Admin/Admin/AdminState";
+import RandomState from "../../Context/Admin/Random/RandomState";
 
 const API_URL = "http://localhost:8000/api";
 const drawerWidth = 240;
@@ -68,6 +70,8 @@ function AdminHome() {
                 return  <CustomerState><ViewCustomerDetails /></CustomerState> 
             case 6:
                 return <AgencyState><ViewAgencyDetails /></AgencyState>
+            case 7:
+                return <RandomState><Random /></RandomState>
             default:
                 return <Welcome />; // Default component
         }

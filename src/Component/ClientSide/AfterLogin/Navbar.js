@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Divider, Typography, Box, AppBar, Toolbar, useMediaQuery } from "@mui/material";
-import { Home, Business, DirectionsCar, CalendarToday, CheckCircle, CreditCard, Receipt, ExitToApp, Menu } from "@mui/icons-material";
+import { Home, Business, DirectionsCar, CalendarToday, CheckCircle, CreditCard, Receipt, ExitToApp, Menu, Shuffle } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import HomeContext from "../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 import Cookies from "js-cookie";
@@ -19,7 +19,7 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
   };
 
   const handleItemClick = (index) => {
-    if (index === 9) {
+    if (index === 10) {
       Cookies.remove("token");
       navigate("/");
     } else {
@@ -37,9 +37,10 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
     { text: "Schedule a test", icon: <CalendarToday />, index: 4 },
     { text: "Results", icon: <CheckCircle />, index: 5 },
     { text: "Membership", icon: <CreditCard />, index: 6 },
-    { text: "Payments", icon: <Receipt />, index: 7 },
-    { text: "Invoices", icon: <Receipt />, index: 8 },
-    { text: "Logout", icon: <ExitToApp />, index: 9 }
+    { text: "Random Test", icon: <Shuffle />, index: 7 },
+    { text: "Payments", icon: <Receipt />, index: 8 },
+    { text: "Invoices", icon: <Receipt />, index: 9 },
+    { text: "Logout", icon: <ExitToApp />, index: 10 }
   ];
 
   const drawerContent = (

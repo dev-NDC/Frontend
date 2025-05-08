@@ -4,6 +4,8 @@ import { Home, ExitToApp, Menu } from "@mui/icons-material";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import PersonIcon from '@mui/icons-material/Person';
 import BusinessIcon from '@mui/icons-material/Business';
+import ShuffleIcon from '@mui/icons-material/Shuffle';
+
 
 import { useTheme } from "@mui/material/styles";
 import AdminContext from "../../Context/Admin/AdminContext";
@@ -23,7 +25,7 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
   };
 
   const handleItemClick = (index) => {
-    if (index === 7) {
+    if (index === 8) {
       Cookies.remove("token");
       navigate("/");
     } else {
@@ -39,7 +41,8 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
     { text: "Customer", icon: <PersonIcon />, index: 2,index2 : 5 },
     { text: "Agency", icon: <BusinessIcon />, index: 3,index2:6 },
     { text: "Admin", icon: <AdminPanelSettingsIcon />, index: 4,index2:4 },
-    { text: "Logout", icon: <ExitToApp />, index: 7, index2 : 7 }
+    { text: "Random", icon: <ShuffleIcon />, index: 7,index2:7 },
+    { text: "Logout", icon: <ExitToApp />, index: 8, index2 : 8 }
   ];
 
   const drawerContent = (

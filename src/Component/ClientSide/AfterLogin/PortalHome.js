@@ -15,6 +15,7 @@ import Result from "./Result";
 import Payment from "./Payment";
 import Invoice from "./Invoice";
 import Membership from "./Membership";
+import RandomDriver from "./RandomDriver";
 
 import HomeContext from "../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 import DriverState from "../../../Context/ClientSide/AfterLogin/Driver/DriverState";
@@ -66,8 +67,10 @@ function PortalHome() {
       case 6:
         return <Membership />
       case 7:
-        return <Payment />
+        return <RandomDriver/>
       case 8:
+        return <Payment />
+      case 9:
         return <Invoice />
       default:
         return <Welcome />; // Default component
