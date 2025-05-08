@@ -1,12 +1,34 @@
-import React, { useContext, useState } from "react";
-import { TextField, Button, Checkbox, FormControlLabel, Container, Typography, Box } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import {
+    TextField,
+    Button,
+    Checkbox,
+    FormControlLabel,
+    Container,
+    Typography,
+    Box,
+    IconButton,
+    InputAdornment
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-
 import LoginContext from "../../../Context/ClientSide/Login/LoginContext";
 
 function Login() {
-    const { email, password, loginSubmit, setPassword, setEmail } = useContext(LoginContext);
+    const { email, password, loginSubmit,rememberMe, setRememberMe, setPassword, setEmail } = useContext(LoginContext);
     const [emailError, setEmailError] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    useEffect(() => {
+        const savedEmail = localStorage.getItem("rememberedEmail");
+        const savedPassword = localStorage.getItem("rememberedPassword");
+        if (savedEmail && savedPassword) {
+            setEmail(savedEmail);
+            setPassword(savedPassword);
+            setRememberMe(true);
+        }
+        // eslint-disable-next-line
+    }, [setEmail, setPassword]);
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -17,14 +39,17 @@ function Login() {
         setPassword(event.target.value);
     };
 
-    const isFormValid = email && !emailError && password;
+    const togglePasswordVisibility = () => {
+        setShowPassword((prev) => !prev);
+    };
 
     const handleLoginSubmit = () => {
         loginSubmit();
-    }
+    };
+
+    const isFormValid = email && !emailError && password;
 
     return (
-        
         <Box sx={{ marginTop: '90px' }}>
             <Container maxWidth="xs" sx={{ minHeight: `calc(100vh - 220px)`, alignContent: 'center' }}>
                 <Box
@@ -55,18 +80,40 @@ function Login() {
                     <TextField
                         fullWidth
                         label="Password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         variant="outlined"
                         margin="normal"
                         value={password}
                         onChange={handlePasswordChange}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={togglePasswordVisibility} edge="end">
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
                     />
                     <FormControlLabel
-                        control={<Checkbox />}
+                        control={
+                            <Checkbox
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                            />
+                        }
                         label="Remember me"
                         sx={{ alignSelf: "flex-start", mt: 1 }}
                     />
-                    <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2 }} disabled={!isFormValid} onClick={handleLoginSubmit}>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        sx={{ mt: 2 }}
+                        disabled={!isFormValid}
+                        onClick={handleLoginSubmit}
+                    >
                         Log in
                     </Button>
                     <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%", mt: 1 }}>

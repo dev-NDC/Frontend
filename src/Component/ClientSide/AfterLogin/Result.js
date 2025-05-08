@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Menu, MenuItem, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, useMediaQuery } from "@mui/material";
+import React, { useState, useEffect, useContext } from "react";
+import {
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+    IconButton, Menu, MenuItem, Paper, Dialog, DialogTitle,
+    DialogContent, DialogActions, Button, Typography, Box, useMediaQuery
+} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-
-const dummyResults = [
-    { name: "Ved Prakash", license: "12345", date: "Mar 27, 2025", testType: "Driving Test", status: "Passed" }
-];
+import HomeContext from "../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 
 function Result() {
     const [menuAnchor, setMenuAnchor] = useState(null);
@@ -12,6 +13,14 @@ function Result() {
     const [viewOpen, setViewOpen] = useState(false);
     const isTablet = useMediaQuery("(max-width:1200px)");
     const isMobile = useMediaQuery("(max-width:500px)");
+    const { userData } = useContext(HomeContext);
+    const [results, setResults] = useState([]);
+
+    useEffect(() => {
+        if (userData) {
+            setResults(userData.results);
+        }
+    }, [userData]);
 
     const handleMenuOpen = (event, result) => {
         setMenuAnchor(event.currentTarget);
@@ -27,8 +36,32 @@ function Result() {
         handleMenuClose();
     };
 
+    const handleViewClose = () => {
+        setViewOpen(false);
+        setSelectedResult(null);
+    };
+
+    const renderResultImage = () => {
+        if (!selectedResult?.file?.data) return null;
+
+        const blob = new Blob([new Uint8Array(selectedResult.file.data)], {
+            type: selectedResult.mimeType || "image/png"
+        });
+
+        const imageUrl = URL.createObjectURL(blob);
+
+        return (
+            <img
+                src={imageUrl}
+                alt="Result"
+                style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
+                onLoad={() => URL.revokeObjectURL(imageUrl)} // Clean up URL after load
+            />
+        );
+    };
+
     return (
-        <div className="container" style={{marginTop:'100px'}}>
+        <div className="container" style={{ marginTop: '100px' }}>
             <Typography variant="h3" align="center" gutterBottom>Test Results</Typography>
             <TableContainer component={Paper} sx={{ mt: 3, p: 2, borderRadius: 2, boxShadow: 3, overflowX: "auto" }}>
                 <Table>
@@ -44,12 +77,12 @@ function Result() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {dummyResults.map((result, index) => (
+                        {results.map((result, index) => (
                             <TableRow key={index} hover>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{result.name}</TableCell>
-                                {!isMobile && !isTablet && <TableCell>{result.license}</TableCell>}
-                                {!isMobile && !isTablet && <TableCell>{result.date}</TableCell>}
+                                {!isMobile && !isTablet && <TableCell>{result.licenseNumber}</TableCell>}
+                                {!isMobile && !isTablet && <TableCell>{new Date(result.date).toLocaleDateString()}</TableCell>}
                                 {!isMobile && <TableCell>{result.testType}</TableCell>}
                                 {!isMobile && <TableCell>{result.status}</TableCell>}
                                 <TableCell>
@@ -65,20 +98,19 @@ function Result() {
                     </TableBody>
                 </Table>
 
-                {/* View More Details Modal */}
-                <Dialog open={viewOpen} onClose={() => setViewOpen(false)}>
-                    <DialogTitle>Test Result Details</DialogTitle>
+                {/* View Modal */}
+                <Dialog open={viewOpen} onClose={handleViewClose} maxWidth="sm" fullWidth>
+                    <DialogTitle>Result Details</DialogTitle>
                     <DialogContent>
-                        <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9" }}>
-                            <Typography variant="h6" gutterBottom>{selectedResult?.name}</Typography>
-                            <Typography variant="body1"><strong>License #:</strong> {selectedResult?.license}</Typography>
-                            <Typography variant="body1"><strong>Date:</strong> {selectedResult?.date}</Typography>
-                            <Typography variant="body1"><strong>Test Type:</strong> {selectedResult?.testType}</Typography>
-                            <Typography variant="body1"><strong>Status:</strong> {selectedResult?.status}</Typography>
-                        </Box>
+                        <Typography gutterBottom><strong>Name:</strong> {selectedResult?.name}</Typography>
+                        <Typography gutterBottom><strong>License Number:</strong> {selectedResult?.licenseNumber}</Typography>
+                        <Typography gutterBottom><strong>Date:</strong> {new Date(selectedResult?.date).toLocaleDateString()}</Typography>
+                        <Typography gutterBottom><strong>Test Type:</strong> {selectedResult?.testType}</Typography>
+                        <Typography gutterBottom><strong>Status:</strong> {selectedResult?.status}</Typography>
+                        {renderResultImage()}
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => setViewOpen(false)} color="secondary">Close</Button>
+                        <Button onClick={handleViewClose} color="primary">Close</Button>
                     </DialogActions>
                 </Dialog>
             </TableContainer>

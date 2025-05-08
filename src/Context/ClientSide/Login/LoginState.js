@@ -11,6 +11,7 @@ const LoginState = (props) => {
     let navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
 
     const loginSubmit = async () => {
         try {
@@ -19,14 +20,21 @@ const LoginState = (props) => {
             };
             const response = await axios.post(`${API_URL}/loginAndSignUp/login`, data, {
                 headers: {
-                    "Content-Type": "application/json", 
+                    "Content-Type": "application/json",
                 },
             });
             let token = response.data.token;
             let role = response.data.role;
             Cookies.set('token', token, { expires: 30 });
-            
+
             // Handle navigation based on roles
+            if (rememberMe) {
+                localStorage.setItem("rememberedEmail", email);
+                localStorage.setItem("rememberedPassword", password);
+            } else {
+                localStorage.removeItem("rememberedEmail");
+                localStorage.removeItem("rememberedPassword");
+            }
             if (role.length === 1) {
                 if (role.includes("admin") || role.includes("superAdmin")) {
                     navigate("/admin");
@@ -61,7 +69,7 @@ const LoginState = (props) => {
     }
 
     return (
-        <LoginContext.Provider value={{ email, password, loginSubmit, setPassword, setEmail }}>
+        <LoginContext.Provider value={{ email, password,rememberMe, setRememberMe, loginSubmit, setPassword, setEmail }}>
             {props.children}
         </LoginContext.Provider>
     )
