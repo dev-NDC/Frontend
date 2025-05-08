@@ -21,7 +21,7 @@ import AgencyState from "../../Context/Admin/Agency/AgencyState";
 import AdminState from "../../Context/Admin/Admin/AdminState";
 import RandomState from "../../Context/Admin/Random/RandomState";
 
-const API_URL = "http://localhost:8000/api";
+const API_URL = process.env.REACT_APP_API_URL
 const drawerWidth = 240;
 
 function AdminHome() {
