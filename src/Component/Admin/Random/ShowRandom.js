@@ -8,16 +8,19 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import RandomContext from '../../../Context/Admin/Random/RandomContext';
 import AddRandom from './AddRandom';
+import ExportRandom from './ExportRandom';
 import { toast } from 'react-toastify';
 
 function ShowRandom() {
-  const { randomUserDetails, deleteRandomEntry, fetchRandomData } = useContext(RandomContext);
+  const { randomUserDetails, deleteRandomEntry, fetchRandomData, updateRandomStatus, yearFilter, setYearFilter, quarterFilter, setQuarterFilter } = useContext(RandomContext);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [yearFilter, setYearFilter] = useState("All");
-  const [quarterFilter, setQuarterFilter] = useState("All");
   const [deleteOpen, setDeleteOpen] = useState(false);
+
+  // 🔧 Edit status modal state
+  const [editOpen, setEditOpen] = useState(false);
+  const [statusValue, setStatusValue] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,14 +47,31 @@ function ShowRandom() {
 
   const handleDeleteConfirm = async () => {
     try {
-      await deleteRandomEntry({
-        selectedItem
-      });
+      await deleteRandomEntry({ selectedItem });
       setDeleteOpen(false);
       setSelectedItem(null);
-      fetchRandomData();
     } catch (error) {
-      toast.error("Delete failed:", error);
+      toast.error("Delete failed");
+    }
+  };
+
+  const handleEdit = () => {
+    setStatusValue(selectedItem?.status || 'pending');
+    setEditOpen(true);
+    handleMenuClose();
+  };
+
+  const handleEditConfirm = async () => {
+    try {
+      const data = {
+        selectedItem,
+        status: statusValue
+      }
+      await updateRandomStatus(data);
+      setEditOpen(false);
+      setSelectedItem(null);
+    } catch (error) {
+      toast.error("Update failed");
     }
   };
 
@@ -103,6 +123,7 @@ function ShowRandom() {
                 ))}
               </Select>
             </FormControl>
+            <ExportRandom/>
             <AddRandom />
           </Box>
         </Box>
@@ -120,9 +141,11 @@ function ShowRandom() {
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Year</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Quarter</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Test Type</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Status</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Action</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {filteredData?.length > 0 ? (
                 filteredData.map((item, index) => (
@@ -132,16 +155,18 @@ function ShowRandom() {
                     <TableCell>{item.year}</TableCell>
                     <TableCell>{item.quarter}</TableCell>
                     <TableCell>{item.testType}</TableCell>
+                    <TableCell>{item.status || "pending"}</TableCell>
                     <TableCell>
                       <IconButton onClick={(e) => handleMenuOpen(e, item)}>
                         <MoreVertIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
+
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
+                  <TableCell colSpan={7} align="center">
                     No data found.
                   </TableCell>
                 </TableRow>
@@ -157,6 +182,7 @@ function ShowRandom() {
         open={Boolean(menuAnchorEl)}
         onClose={handleMenuClose}
       >
+        <MenuItem onClick={handleEdit}>Edit</MenuItem> {/* ✅ EDIT OPTION */}
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
 
@@ -179,6 +205,40 @@ function ShowRandom() {
           <Button color="error" variant="contained" onClick={handleDeleteConfirm}>
             Confirm Delete
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* ✅ Edit Status Modal */}
+      <Dialog open={editOpen} onClose={() => setEditOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle>Edit Status</DialogTitle>
+        <DialogContent dividers>
+          <FormControl fullWidth>
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={statusValue}
+              label="Status"
+              onChange={(e) => setStatusValue(e.target.value)}
+            >
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="scheduled">Scheduled</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditOpen(false)}>Cancel</Button>
+          <Button variant="contained" onClick={handleEditConfirm} style={{
+                    backgroundColor: "#002D72",         // Navy Blue
+                    color: "#fff",                      // White text
+                    borderRadius: "6px",
+                    padding: "10px 20px",
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",                         // spacing between icon and text
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                }}>Save</Button>
         </DialogActions>
       </Dialog>
     </Box>

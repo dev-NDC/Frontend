@@ -72,15 +72,15 @@ function AddResult() {
             <Button
                 onClick={handleClickOpen}
                 style={{
-                    backgroundColor: "#007B55",
-                    color: "#fff",
+                    backgroundColor: "#002D72",         // Navy Blue
+                    color: "#fff",                      // White text
                     borderRadius: "6px",
                     padding: "10px 20px",
                     fontWeight: "bold",
                     textTransform: "none",
                     display: "flex",
                     alignItems: "center",
-                    gap: "8px",
+                    gap: "8px",                         // spacing between icon and text
                     boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
                 }}
             >

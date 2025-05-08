@@ -10,7 +10,7 @@ import CustomerContext from "../../../../Context/Agency/Customer/CustomerContext
 import DriverContext from "../../../../Context/Agency/Customer/Driver/DriverContext";
 
 function ActiveDriver() {
-    const { userDetails,currentId,getSingleUserData } = useContext(CustomerContext);
+    const { userDetails, currentId, getSingleUserData } = useContext(CustomerContext);
     const { updateDriver, deleteDriver } = useContext(DriverContext);
     const [drivers, setDrivers] = useState([]);
     const [menuAnchor, setMenuAnchor] = useState(null);
@@ -85,27 +85,36 @@ function ActiveDriver() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {drivers.map((driver, index) => (
-                        <TableRow key={index} hover>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{driver.name}</TableCell>
-                            {!isMobile && <TableCell>{driver.email}</TableCell>}
-                            {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
-                            {!isTablet && <TableCell>{driver.dob}</TableCell>}
-                            {!isTablet && <TableCell>{driver.phone}</TableCell>}
-                            <TableCell>
-                                <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                                <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
-                                    <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
-                                    <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-                                    <MenuItem onClick={handleViewOpen}>View More Details</MenuItem>
-                                </Menu>
+                    {drivers.length > 0 ? (
+                        drivers.map((driver, index) => (
+                            <TableRow key={index} hover>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{driver.name}</TableCell>
+                                {!isMobile && <TableCell>{driver.email}</TableCell>}
+                                {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
+                                {!isTablet && <TableCell>{driver.dob}</TableCell>}
+                                {!isTablet && <TableCell>{driver.phone}</TableCell>}
+                                <TableCell>
+                                    <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
+                                        <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
+                                        <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
+                                        <MenuItem onClick={handleViewOpen}>View More Details</MenuItem>
+                                    </Menu>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={6} align="center">
+                                <b>No active driver to display</b>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    )}
                 </TableBody>
+
             </Table>
 
             {/* Edit Modal */}

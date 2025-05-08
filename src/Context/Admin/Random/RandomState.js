@@ -9,6 +9,8 @@ const RandomState = (props) => {
 
     const [RandomUserAddDetails, setRandomUserAddDetails] = useState([])
     const [randomUserDetails, setRandomUserDetails] = useState([])
+    const [yearFilter, setYearFilter] = useState("All");
+    const [quarterFilter, setQuarterFilter] = useState("All");
     const AddRandomDriver = async (data) => {
         const token = Cookies.get("token");
         if (token) {
@@ -16,6 +18,7 @@ const RandomState = (props) => {
             axios.post(`${API_URL}/admin/addRandomDriver`, data)
                 .then(response => {
                     toast.success(response.data.message || "Random Driver added successfully");
+                    fetchRandomData();
                 })
                 .catch(error => {
                     const message = error?.response?.data?.message || "Server error, Please try again later";
@@ -77,9 +80,26 @@ const RandomState = (props) => {
         }
     }
 
+    const updateRandomStatus = async (data) => {
+        const token = Cookies.get("token");
+        if (token) {
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            axios.post(`${API_URL}/admin/updateRandomStatus`, data)
+                .then(response => {
+                    toast.success(response.data.message || "Random Updated successfully");
+                    fetchRandomData();
+                })
+                .catch(error => {
+                    const message = error?.response?.data?.message || "Server error, Please try again later";
+                    toast.error(message);
+                });
+        } else {
+            toast.error("Invalid access, Please login again");
+        }
+    }
 
     return (
-        <RandomContext.Provider value={{ AddRandomDriver, fetchRandomDriver,fetchRandomData,deleteRandomEntry, randomUserDetails, RandomUserAddDetails }}>
+        <RandomContext.Provider value={{ yearFilter, setYearFilter,quarterFilter, setQuarterFilter, AddRandomDriver, fetchRandomDriver, fetchRandomData, deleteRandomEntry, updateRandomStatus, randomUserDetails, RandomUserAddDetails }}>
             {props.children}
         </RandomContext.Provider>
     )

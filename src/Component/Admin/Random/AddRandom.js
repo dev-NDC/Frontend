@@ -17,7 +17,7 @@ function AddRandom() {
   const [quarter, setQuarter] = useState('');
   const [testType, setTestType] = useState('');
 
-  const years = ["2023", "2024", "2025"];
+  const years = ["2023", "2024", "2025", "2026", "2027", "2028", "2029"];
   const quarters = ["Q1", "Q2", "Q3", "Q4"];
   const testTypes = ["Random", "Pre-Employment", "Post-Accident", "Return-to-Duty"];
 
@@ -37,7 +37,7 @@ function AddRandom() {
     setSelectedDriverName(driver?.driverName || ''); // Set selected driver name
   };
 
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     const data = {
       year,
       quarter,
@@ -67,6 +67,18 @@ function AddRandom() {
         onClick={async () => {
           await fetchRandomDriver();  // Wait for data to be fetched
           setOpen(true);              // Then open the dialog
+        }}
+        style={{
+          backgroundColor: "#002D72",         // Navy Blue
+          color: "#fff",                      // White text
+          borderRadius: "6px",
+          padding: "10px 20px",
+          fontWeight: "bold",
+          textTransform: "none",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",                         // spacing between icon and text
+          boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
         }}
       >
         Add Random

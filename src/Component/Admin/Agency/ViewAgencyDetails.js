@@ -117,7 +117,18 @@ const CompanyDetails = () => {
             Agency Overview
           </Typography>
           {!editMode ? (
-            <Button variant="contained" color="primary" onClick={handleEditToggle}>
+            <Button variant="contained" color="primary" onClick={handleEditToggle} style={{
+              backgroundColor: "#002D72",         // Navy Blue
+              color: "#fff",                      // White text
+              borderRadius: "6px",
+              padding: "10px 20px",
+              fontWeight: "bold",
+              textTransform: "none",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",                         // spacing between icon and text
+              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+            }}>
               Edit
             </Button>
           ) : (
@@ -131,9 +142,9 @@ const CompanyDetails = () => {
             </>
           )}
         </Box>
-        <Divider sx={{ marginBottom: 2, marginTop:2 }} />
+        <Divider sx={{ marginBottom: 2, marginTop: 2 }} />
 
-        <Box sx={{ marginBottom:2 }}>
+        <Box sx={{ marginBottom: 2 }}>
           {editMode ? (
             <>
               <TextField

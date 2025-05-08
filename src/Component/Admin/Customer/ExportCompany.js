@@ -65,7 +65,18 @@ function ExportCompany() {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleExport}>
+      <Button variant="contained" color="primary" onClick={handleExport} style={{
+        backgroundColor: "#002D72",         // Navy Blue
+        color: "#fff",                      // White text
+        borderRadius: "6px",
+        padding: "10px 20px",
+        fontWeight: "bold",
+        textTransform: "none",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",                         // spacing between icon and text
+        boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+      }}>
         Export Company
       </Button>
 

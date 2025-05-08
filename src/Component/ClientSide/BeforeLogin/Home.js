@@ -15,7 +15,7 @@ import ResetPassword from "./ResetPassword";
 
 import SignupState from "../../../Context/ClientSide/SignUp/SignupState"
 import LoginState from "../../../Context/ClientSide/Login/LoginState";
-
+import Error404Page from "../../Error404Page";
 
 function Home() {
     return (
@@ -29,6 +29,7 @@ function Home() {
                 <Route path="/signup" element={<SignupState><SignUp /></SignupState>} />
                 <Route path="/forgotPassword" element={<ForgotPassword />} />
                 <Route path="/resetPassword" element={<ResetPassword />} />
+                <Route path="*" element={<Error404Page />} />
             </Routes>
             <Footer />
         </div>

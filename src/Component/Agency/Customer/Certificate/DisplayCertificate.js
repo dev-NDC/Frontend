@@ -11,7 +11,7 @@ import CustomerContext from "../../../../Context/Agency/Customer/CustomerContext
 import CertificateContext from "../../../../Context/Agency/Customer/Certificate/CertificateContext";
 
 function DisplayCertificate() {
-    const { currentId, userDetails,getSingleUserData } = useContext(CustomerContext);
+    const { currentId, userDetails, getSingleUserData } = useContext(CustomerContext);
     const { updateCertificate, deleteCertificate } = useContext(CertificateContext);
 
     const [loading, setLoading] = useState(true);
@@ -104,21 +104,30 @@ function DisplayCertificate() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {certificates.map((cert, index) => (
-                        <TableRow key={index}>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{cert.description}</TableCell>
-                            <TableCell>{new Date(cert.issueDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(cert.expirationDate).toLocaleDateString()}</TableCell>
-                            <TableCell align="right">
-                                <IconButton onClick={() => handleOpen("view", cert)}><Visibility /></IconButton>
-                                <IconButton onClick={() => handleDownload(cert)}><Download /></IconButton>
-                                <IconButton onClick={() => handleOpen("edit", cert)}><Edit /></IconButton>
-                                <IconButton onClick={() => handleOpen("delete", cert)}><Delete /></IconButton>
+                    {certificates.length > 0 ? (
+                        certificates.map((cert, index) => (
+                            <TableRow key={index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{cert.description}</TableCell>
+                                <TableCell>{new Date(cert.issueDate).toLocaleDateString()}</TableCell>
+                                <TableCell>{new Date(cert.expirationDate).toLocaleDateString()}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton onClick={() => handleOpen("view", cert)}><Visibility /></IconButton>
+                                    <IconButton onClick={() => handleDownload(cert)}><Download /></IconButton>
+                                    <IconButton onClick={() => handleOpen("edit", cert)}><Edit /></IconButton>
+                                    <IconButton onClick={() => handleOpen("delete", cert)}><Delete /></IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={5} align="center">
+                                <b>No Certificate to display</b>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    )}
                 </TableBody>
+
             </Table>
 
             {/* View Modal */}

@@ -12,7 +12,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
 function DisplayInvoice() {
-    const { currentId, userDetails,getSingleUserData } = useContext(CustomerContext);
+    const { currentId, userDetails, getSingleUserData } = useContext(CustomerContext);
     const { updateInvoice, deleteInvoice } = useContext(InvoiceContext);
 
     const [loading, setLoading] = useState(true);
@@ -98,23 +98,32 @@ function DisplayInvoice() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {invoices.map((invoice, index) => (
-                        <TableRow key={index}>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{invoice.invoiceNumber}</TableCell>
-                            <TableCell>${invoice.amount}</TableCell>
-                            <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>
-                            <TableCell>{invoice.status}</TableCell>
-                            <TableCell align="right">
-                                <IconButton onClick={() => handleOpen("view", invoice)}><Visibility /></IconButton>
-                                <IconButton onClick={() => handleDownload(invoice)}><Download /></IconButton>
-                                <IconButton onClick={() => handleOpen("edit", invoice)}><Edit /></IconButton>
-                                <IconButton onClick={() => handleOpen("delete", invoice)}><Delete /></IconButton>
+                    {invoices.length > 0 ? (
+                        invoices.map((invoice, index) => (
+                            <TableRow key={index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{invoice.invoiceNumber}</TableCell>
+                                <TableCell>${invoice.amount}</TableCell>
+                                <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>
+                                <TableCell>{invoice.status}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton onClick={() => handleOpen("view", invoice)}><Visibility /></IconButton>
+                                    <IconButton onClick={() => handleDownload(invoice)}><Download /></IconButton>
+                                    <IconButton onClick={() => handleOpen("edit", invoice)}><Edit /></IconButton>
+                                    <IconButton onClick={() => handleOpen("delete", invoice)}><Delete /></IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={6} align="center">
+                                <b>No Invoice to display</b>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    )}
                 </TableBody>
             </Table>
+
 
             {/* View Modal */}
             <Dialog open={openModal === "view"} onClose={handleClose} maxWidth="sm" fullWidth>

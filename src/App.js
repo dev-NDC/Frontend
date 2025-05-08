@@ -7,6 +7,7 @@ import Home from "./Component/ClientSide/BeforeLogin/Home";
 import PortalHome from './Component/ClientSide/AfterLogin/PortalHome';
 import AdminHome from './Component/Admin/AdminHome';
 import AgencyHome from './Component/Agency/AgencyHome';
+import Error404Page from './Component/Error404Page';
 
 import HomeState from './Context/ClientSide/AfterLogin/Home/HomeState';
 import AdminState from './Context/Admin/AdminState';
@@ -23,6 +24,7 @@ function App() {
           <Route path="/portal" element={<HomeState><PortalHome/></HomeState>}/>
           <Route path="/admin" element={<AdminState><AdminHome/> </AdminState>}/>
           <Route path="/agency" element={<AgencyState><AgencyHome/> </AgencyState>}/>
+          <Route path="*" element={<Error404Page />} />
         </Routes>
       </Router>
     </>

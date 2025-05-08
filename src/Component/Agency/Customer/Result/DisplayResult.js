@@ -11,7 +11,7 @@ import CustomerContext from "../../../../Context/Agency/Customer/CustomerContext
 import ResultContext from "../../../../Context/Agency/Customer/Result/ResultContext";
 
 function DisplayResult() {
-    const { currentId, userDetails,getSingleUserData } = useContext(CustomerContext);
+    const { currentId, userDetails, getSingleUserData } = useContext(CustomerContext);
     const { updateResult, deleteResult } = useContext(ResultContext);
 
     const [loading, setLoading] = useState(true);
@@ -103,23 +103,32 @@ function DisplayResult() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {results.map((result, index) => (
-                        <TableRow key={index}>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{result.name}</TableCell>
-                            <TableCell>{result.licenseNumber}</TableCell>
-                            <TableCell>{new Date(result.date).toLocaleDateString()}</TableCell>
-                            <TableCell>{result.testType}</TableCell>
-                            <TableCell align="right">
-                                <IconButton onClick={() => handleOpen("view", result)}><Visibility /></IconButton>
-                                <IconButton onClick={() => handleDownload(result)}><Download /></IconButton>
-                                <IconButton onClick={() => handleOpen("edit", result)}><Edit /></IconButton>
-                                <IconButton onClick={() => handleOpen("delete", result)}><Delete /></IconButton>
+                    {results.length > 0 ? (
+                        results.map((result, index) => (
+                            <TableRow key={index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{result.name}</TableCell>
+                                <TableCell>{result.licenseNumber}</TableCell>
+                                <TableCell>{new Date(result.date).toLocaleDateString()}</TableCell>
+                                <TableCell>{result.testType}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton onClick={() => handleOpen("view", result)}><Visibility /></IconButton>
+                                    <IconButton onClick={() => handleDownload(result)}><Download /></IconButton>
+                                    <IconButton onClick={() => handleOpen("edit", result)}><Edit /></IconButton>
+                                    <IconButton onClick={() => handleOpen("delete", result)}><Delete /></IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={6} align="center">
+                                <b>No Result to display</b>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    )}
                 </TableBody>
             </Table>
+
 
             {/* View Modal */}
             <Dialog open={openModal === "view"} onClose={handleClose} maxWidth="sm" fullWidth>
