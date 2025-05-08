@@ -59,7 +59,7 @@ function DeletedDriver() {
                             {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
                             {!isTablet && <TableCell>{driver.dob}</TableCell>}
                             {!isTablet && <TableCell>{driver.phone}</TableCell>}
-                            {!isMobile && <TableCell>{driver.deletionDate}</TableCell>}
+                            {!isMobile && <TableCell>{new Date(driver.deletionDate).toLocaleDateString()}</TableCell>}
                             <TableCell>
                                 <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
                                     <MoreVertIcon />

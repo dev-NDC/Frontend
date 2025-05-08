@@ -15,24 +15,48 @@ const LoginState = (props) => {
     const loginSubmit = async () => {
         try {
             const data = {
-                email,password
+                email, password
             };
             const response = await axios.post(`${API_URL}/loginAndSignUp/login`, data, {
                 headers: {
-                    "Content-Type": "application/json", // Use "multipart/form-data" if uploading files
+                    "Content-Type": "application/json", 
                 },
             });
             let token = response.data.token;
-            Cookies.set('token', token, { expires: 7 });
-            toast.success("Login successful!");
-            navigate("/portal")
+            let role = response.data.role;
+            Cookies.set('token', token, { expires: 30 });
+            
+            // Handle navigation based on roles
+            if (role.length === 1) {
+                if (role.includes("admin") || role.includes("superAdmin")) {
+                    navigate("/admin");
+                    toast.success("Login successful! Welcome to Admin Dashboard");
+                } else if (role.includes("agency")) {
+                    navigate("/agency");
+                    toast.success("Login successful! Welcome to Agency Dashboard");
+                } else if (role.includes("user")) {
+                    navigate("/portal");
+                    toast.success("Login successful! Welcome to User Dashboard");
+                }
+            } else {
+                if (role.includes("admin") || role.includes("superAdmin")) {
+                    navigate("/admin");
+                    toast.success("Login successful! Welcome to Admin Dashboard");
+                } else if (role.includes("agency")) {
+                    navigate("/agency");
+                    toast.success("Login successful! Welcome to Agency Dashboard");
+                } else {
+                    navigate("/portal");
+                    toast.success("Login successful! Welcome to User Dashboard");
+                }
+            }
         } catch (error) {
-            if(error.message === "Network Error"){
+            if (error.message === "Network Error") {
                 toast.error(error.message);
-            }else{
+            } else {
                 toast.error(error.response.data.message)
             }
-            
+
         }
     }
 
