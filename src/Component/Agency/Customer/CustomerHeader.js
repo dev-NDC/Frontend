@@ -7,6 +7,7 @@ import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import PaymentIcon from "@mui/icons-material/Payment";
+import { Shuffle } from "@mui/icons-material";
 
 import CompanyDetails from "./CompanyInfo";
 import PaymentInformation from "./Payment";
@@ -15,11 +16,13 @@ import Certificate from "./Certificate/Certificate";
 import Result from "./Result/Result";
 import Invoice from "./Invoice/Invoice";
 import Membership from "./Membership"
+import RandomDriver from "./Random/RandomDriver"
 
 import DriverState from "../../../Context/Agency/Customer/Driver/DriverState";
 import CertificateState from "../../../Context/Agency/Customer/Certificate/CertificateState";
 import InvoiceState from "../../../Context/Agency/Customer/Invoice/InvoiceState";
 import ResultState from "../../../Context/Agency/Customer/Result/ResultState";
+
 
 
 const tabData = [
@@ -30,6 +33,7 @@ const tabData = [
   { label: "Invoice", icon: <ReceiptIcon />, component:<InvoiceState> <Invoice /> </InvoiceState>},
   { label: "Result", icon: <AssessmentIcon />, component:<ResultState> <Result /> </ResultState>},
   { label: "Payment Info", icon: <PaymentIcon />, component: <PaymentInformation /> },
+  { label: "Random Driver", icon: <Shuffle />, component: <RandomDriver /> },
 ];
 
 function CustomerHeader() {

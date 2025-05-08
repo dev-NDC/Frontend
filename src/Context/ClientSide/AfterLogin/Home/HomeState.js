@@ -3,6 +3,7 @@ import HomeContext from "./HomeContext";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import { UpdateRounded } from "@mui/icons-material";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const HomeState = (props) => {
@@ -30,7 +31,7 @@ const HomeState = (props) => {
             .then(response => {
                 const data = response.data;
                 toast.success(data.message);
-                setUserData(data);
+                UpdateRounded();
             })
             .catch(error => {
                 toast.error("server error, Please try again later")

@@ -16,7 +16,6 @@ const PaymentInformation = () => {
   useEffect(() => {
     setPaymentInfo(userData.paymentData);
     setTempPaymentInfo(userData.paymentData);
-    console.log(userData.paymentData)
   }, [userData]);
 
 
