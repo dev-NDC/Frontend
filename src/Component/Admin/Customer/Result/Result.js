@@ -6,8 +6,10 @@ import AddResult from "./AddResult";
 function Result() {
     return (
         <>
-            <DisplayResult />
-            <AddResult />
+            <div style={{ marginTop: '40px' }}>
+                <DisplayResult />
+                <AddResult />
+            </div>
         </>
     );
 }

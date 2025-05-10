@@ -9,6 +9,7 @@ const CustomerState = (props) => {
     const [userDetails, setUserDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentId, setCurrentId] = useState("")
+    const [currentCompany, setCurrentCompany] = useState("")
 
     const getSingleUserData = async (id) => {
         setCurrentId(id)
@@ -18,6 +19,7 @@ const CustomerState = (props) => {
             await axios.post(`${API_URL}/admin/getSingleUserDetails`, { id: id })
                 .then(response => {
                     setUserDetails(response.data.data);
+                    setCurrentCompany(response?.data?.data?.companyInfoData?.companyName)
                     setLoading(false);
                 })
                 .catch((error) => {
@@ -66,7 +68,7 @@ const CustomerState = (props) => {
             });
     }
     return (
-        <CustomerContext.Provider value={{ userDetails, loading, currentId,updateMembershipInformation, updatePaymentInformation, updateCompanyInformation, setLoading, getSingleUserData, setUserDetails }}>
+        <CustomerContext.Provider value={{ userDetails, loading, currentId, currentCompany, updateMembershipInformation, updatePaymentInformation, updateCompanyInformation, setLoading, getSingleUserData, setUserDetails }}>
             {props.children}
         </CustomerContext.Provider>
     )

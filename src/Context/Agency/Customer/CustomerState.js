@@ -15,7 +15,7 @@ const CustomerState = (props) => {
         const token = Cookies.get("token");
         if (token) {
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            await axios.post(`${API_URL}/admin/getSingleUserDetails`, {id : id})
+            await axios.post(`${API_URL}/agency/getSingleUserDetails`, {id : id})
                 .then (response => {
                     setUserDetails(response.data.data);
                     setLoading(false);
@@ -30,7 +30,7 @@ const CustomerState = (props) => {
 
     //function to update company information in backend
     const updateCompanyInformation = async (data) => {
-        await axios.post(`${API_URL}/admin/updateCompanyInformation`, {data,currentId})
+        await axios.post(`${API_URL}/agency/updateCompanyInformation`, {data,currentId})
             .then(response => {
                 const data = response.data;
                 toast.success(data.message);
@@ -43,7 +43,7 @@ const CustomerState = (props) => {
 
     //function to update payment information in backend
     const updatePaymentInformation = async (data) => {
-        await axios.post(`${API_URL}/admin/updatePaymentInformation`, {data,currentId})
+        await axios.post(`${API_URL}/agency/updatePaymentInformation`, {data,currentId})
             .then(response => {
                 const data = response.data;
                 toast.success(data.message);

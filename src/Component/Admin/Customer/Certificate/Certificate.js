@@ -6,10 +6,12 @@ import AddCertificate from './AddCertificate';
 function Certificate() {
     return (
         <>
-            <DisplayCertificate />
-            <AddCertificate />
+            <div style={{ marginTop: '40px' }}>
+                <DisplayCertificate />
+                <AddCertificate />
+            </div>
         </>
     );
-}   
+}
 
 export default Certificate;

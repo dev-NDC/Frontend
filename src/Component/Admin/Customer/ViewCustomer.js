@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo } from "react";
+import React, { useContext, useState, useMemo,useEffect } from "react";
 import {
     Box,
     Table,
@@ -21,11 +21,15 @@ import ExportDriver from "./ExportDriver";
 import ExportCompany from "./ExportCompany";
 
 function ViewCustomer() {
-    const { AllUserData, setCurrentActiveButton } = useContext(AdminContext);
+    const { AllUserData, setCurrentActiveButton, getAllAdminData } = useContext(AdminContext);
     const { getSingleUserData, setLoading, setUserDetails } = useContext(CustomerContext);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
+
+    useEffect(() => {
+        getAllAdminData();
+    }, []);
 
     const handleViewDetails = (user) => {
         setUserDetails(null);
@@ -116,7 +120,14 @@ function ViewCustomer() {
                             <TableCell>{user.companyContactNumber}</TableCell>
                             <TableCell>{user.companyEmail}</TableCell>
                             <TableCell>{user.activeDriversCount}</TableCell>
-                            <TableCell sx={{ color: "green", fontWeight: "bold" }}>Active</TableCell>
+                            <TableCell
+                                sx={{
+                                    color: user.status === "Active" ? "green" : "red",
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                {user.status}
+                            </TableCell>
                             <TableCell>
                                 <IconButton onClick={() => handleViewDetails(user)}>
                                     <ArrowForwardIosIcon />

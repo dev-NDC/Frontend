@@ -44,7 +44,7 @@ const SignupState = (props) => {
         accountNumber: "",
         routingNumber: "",
         accountName: "",
-        accountType: "saving",
+        accountType: "Saving",
     });
 
     const [submitFormData, setSubmitFormData] = useState({

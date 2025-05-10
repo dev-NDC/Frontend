@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Tabs, Tab, Box } from "@mui/material";
 import BusinessIcon from "@mui/icons-material/Business";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
@@ -24,21 +24,23 @@ import InvoiceState from "../../../Context/Admin/Customer/Invoice/InvoiceState";
 import ResultState from "../../../Context/Admin/Customer/Result/ResultState";
 import DocumentState from "../../../Context/Admin/Customer/Document/DocumentState";
 
+import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
+
 
 const tabData = [
   { label: "Company Info", icon: <BusinessIcon />, component: <CompanyDetails /> },
-  { label: "Driver", icon: <DirectionsCarIcon />, component: <DriverState><Driver /></DriverState>  },
+  { label: "Driver", icon: <DirectionsCarIcon />, component: <DriverState><Driver /></DriverState> },
   { label: "Membership", icon: <CardMembershipIcon />, component: <Membership /> },
   { label: "Certificate", icon: <WorkspacePremiumIcon />, component: <CertificateState><Certificate /></CertificateState> },
-  { label: "Invoice", icon: <ReceiptIcon />, component:<InvoiceState> <Invoice /> </InvoiceState>},
-  { label: "Result", icon: <AssessmentIcon />, component:<ResultState> <Result /> </ResultState>},
+  { label: "Invoice", icon: <ReceiptIcon />, component: <InvoiceState> <Invoice /> </InvoiceState> },
+  { label: "Result", icon: <AssessmentIcon />, component: <ResultState> <Result /> </ResultState> },
   { label: "Payment Info", icon: <PaymentIcon />, component: <PaymentInformation /> },
   { label: "Upload Doc", icon: <UploadFileIcon />, component: <DocumentState> <Document /> </DocumentState> },
 ];
 
 function CustomerHeader() {
   const [activeTab, setActiveTab] = useState(0);
-
+  const { currentCompany } = useContext(CustomerContext)
   return (
     <Box>
       {/* Navbar */}
@@ -61,6 +63,23 @@ function CustomerHeader() {
       </Tabs>
 
       {/* Render Active Component */}
+      <div className="text-center">
+        <div
+          style={{
+            width:' 100%',
+            backgroundColor: "#d4edda", // light green
+            color: "#155724",           // dark green text
+            border: "2px solid #28a745",
+            padding: "10px 20px",
+            fontWeight: "bold",
+            fontSize: "24px"
+          }}
+        >
+          {currentCompany}
+        </div>
+      </div>
+
+
       <Box sx={{ p: 2 }}>
         {tabData[activeTab].component}
       </Box>

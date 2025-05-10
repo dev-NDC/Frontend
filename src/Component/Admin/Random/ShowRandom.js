@@ -155,7 +155,7 @@ function ShowRandom() {
                     <TableCell>{item.year}</TableCell>
                     <TableCell>{item.quarter}</TableCell>
                     <TableCell>{item.testType}</TableCell>
-                    <TableCell>{item.status || "pending"}</TableCell>
+                    <TableCell>{item.status || "Pending"}</TableCell>
                     <TableCell>
                       <IconButton onClick={(e) => handleMenuOpen(e, item)}>
                         <MoreVertIcon />
@@ -219,9 +219,9 @@ function ShowRandom() {
               label="Status"
               onChange={(e) => setStatusValue(e.target.value)}
             >
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="scheduled">Scheduled</SelectItem>
-              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="Pending">Pending</SelectItem>
+              <SelectItem value="Scheduled">Scheduled</SelectItem>
+              <SelectItem value="Completed">Completed</SelectItem>
             </Select>
           </FormControl>
         </DialogContent>

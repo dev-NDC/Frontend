@@ -58,7 +58,7 @@ function ViewAdmin() {
           <TableBody>
             {AllAdminData?.map((admin, index) => (
               <TableRow key={index} hover>
-                <TableCell>{admin.name}</TableCell>
+                <TableCell>{admin.firstName} {admin.lastName}</TableCell>
                 <TableCell>{admin.email}</TableCell>
                 <TableCell>{admin.contactNumber}</TableCell>
                 <TableCell>

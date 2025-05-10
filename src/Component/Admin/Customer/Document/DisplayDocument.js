@@ -24,7 +24,6 @@ function DisplayDocument() {
     useEffect(() => {
         if (userDetails?.documents) {
             setDocuments(userDetails.documents);
-            console.log(userDetails.documents);
             setLoading(false);
         }
     }, [userDetails]);

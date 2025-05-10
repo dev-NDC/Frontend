@@ -13,7 +13,7 @@ import HomeContext from "../../../../Context/ClientSide/AfterLogin/Home/HomeCont
 function CreateNewOrder() {
     const { currentPosition } = useContext(CreateNewOrderContext);
     const { userData } = useContext(HomeContext);
-    const [membershipStatus, setMembershipStatus] = useState("active");
+    const [membershipStatus, setMembershipStatus] = useState("Active");
 
     useEffect(() => {
         if (userData) {
@@ -37,7 +37,7 @@ function CreateNewOrder() {
         }
     };
 
-    if (membershipStatus === "active") {
+    if (membershipStatus === "Active") {
         return (
             <Box sx={{ marginTop: '90px', paddingTop: '60px', minHeight: `calc(100vh - 220px)` }}>
                 <Container maxWidth="md" sx={{ p: 3, border: "3px solid #ccc", borderRadius: 2 }}>
@@ -54,7 +54,7 @@ function CreateNewOrder() {
                 </Container>
             </Box>
         );
-    } else if (membershipStatus === "pending") {
+    } else if (membershipStatus === "Pending") {
         return (
             <Container maxWidth="sm" sx={{ mt: 10 }}>
                 <Typography variant="h5" color="warning.main" align="center">
@@ -62,7 +62,7 @@ function CreateNewOrder() {
                 </Typography>
             </Container>
         );
-    } else if (membershipStatus === "inactive") {
+    } else if (membershipStatus === "Inactive") {
         return (
             <Container maxWidth="sm" sx={{ mt: 10 }}>
                 <Typography variant="h5" color="error.main" align="center">

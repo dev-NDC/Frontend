@@ -184,10 +184,10 @@ function Payment() {
 
             <Typography variant="subtitle1" mt={2}>Account Type:</Typography>
             <RadioGroup row name="accountType" value={paymentData.accountType} onChange={handleChange}>
-                <FormControlLabel value="saving" control={<Radio />} label="Saving" />
-                <FormControlLabel value="checking" control={<Radio />} label="Checking" />
-                <FormControlLabel value="consumer" control={<Radio />} label="Consumer" />
-                <FormControlLabel value="business" control={<Radio />} label="Business" />
+                <FormControlLabel value="Saving" control={<Radio />} label="Saving" />
+                <FormControlLabel value="Checking" control={<Radio />} label="Checking" />
+                <FormControlLabel value="Consumer" control={<Radio />} label="Consumer" />
+                <FormControlLabel value="Business" control={<Radio />} label="Business" />
             </RadioGroup>
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>

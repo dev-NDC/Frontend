@@ -7,7 +7,7 @@ import DeletedDriver from "./DeletedDriver";
 function Driver() {
     return (
         <>
-            <div className="container" style={{ marginTop: '100px' }}>
+            <div className="container" style={{ marginTop: '40px' }}>
                 <h2 style={{color:"#003366"}}>Drivers Information</h2>
                 <AddDriver/>
                 <p style={{fontSize:'28px', fontWeight:500,marginBottom:'0px'}}>Active Driver</p>

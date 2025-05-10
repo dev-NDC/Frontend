@@ -8,10 +8,12 @@ import AddDocument from './AddDocument';
 function Document() {
     return (
         <>
-            <DisplayDocument />
-            <AddDocument />
+            <div style={{ marginTop: '40px' }}>
+                <DisplayDocument />
+                <AddDocument />
+            </div>
         </>
     );
-}   
+}
 
 export default Document;

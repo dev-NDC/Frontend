@@ -69,7 +69,9 @@ const CustomerState = (props) => {
             .then(response => {
                 const data = response.data;
                 toast.success(data.message);
+                getSingleAgencyData(currentId);
                 getAllAgencyData();
+
             })
             .catch(error => {
                 toast.error("server error, Please try again later")

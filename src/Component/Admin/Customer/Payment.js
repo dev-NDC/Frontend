@@ -3,6 +3,8 @@ import {
   Box, Card, CardContent, Typography, IconButton,
   Modal, TextField, Button, Grid, Divider, useMediaQuery, CircularProgress
 } from "@mui/material";
+import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+
 import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
 import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
@@ -53,7 +55,7 @@ const PaymentInformation = () => {
   }
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "100px", px: 2 }}>
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "40px", px: 2 }}>
       <Card sx={{ width: isMobile ? "100%" : 600, p: 3, position: "relative", borderRadius: 3, boxShadow: 3 }}>
         <IconButton onClick={handleOpen} sx={{ position: "absolute", top: 15, right: 15, color: "primary.main" }}>
           <EditIcon />
@@ -71,7 +73,8 @@ const PaymentInformation = () => {
               { label: "Billing Zip Code", key: "billingZip" },
               { label: "Account Number", key: "accountNumber", color: "#7B4F24" },
               { label: "Routing Number", key: "routingNumber", color: "#7B4F24" },
-              { label: "Account Name", key: "accountName", color: "#7B4F24" }
+              { label: "Account Name", key: "accountName", color: "#7B4F24" },
+              { label: "Account Type", key: "accountType", color: "#7B4F24" } // 👈 add this line
             ].map(({ label, key, color }) => (
               <Grid item xs={12} sm={6} key={key}>
                 <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: color || "text.secondary" }}>
@@ -82,6 +85,7 @@ const PaymentInformation = () => {
                 </Typography>
               </Grid>
             ))}
+
           </Grid>
         </CardContent>
       </Card>
@@ -94,15 +98,32 @@ const PaymentInformation = () => {
           <Grid container spacing={2}>
             {Object.entries(tempPaymentInfo).map(([key, value]) => (
               <Grid item xs={12} sm={6} key={key}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  label={key.replace(/([A-Z])/g, " $1").trim()}
-                  name={key}
-                  value={value || ""}
-                  onChange={handleChange}
-                  variant="outlined"
-                />
+                {key === "accountType" ? (
+                  <FormControl fullWidth size="small">
+                    <InputLabel id="account-type-label">Account Type</InputLabel>
+                    <Select
+                      labelId="account-type-label"
+                      name="accountType"
+                      value={value || ""}
+                      onChange={handleChange}
+                      label="Account Type"
+                    >
+                      {["Checking", "Saving", "Consumer", "Business"].map((option) => (
+                        <MenuItem key={option} value={option}>{option}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <TextField
+                    fullWidth
+                    size="small"
+                    label={key.replace(/([A-Z])/g, " $1").trim()}
+                    name={key}
+                    value={value || ""}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                )}
               </Grid>
             ))}
           </Grid>

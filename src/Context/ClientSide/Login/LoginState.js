@@ -38,22 +38,22 @@ const LoginState = (props) => {
                 localStorage.removeItem("rememberedPassword");
             }
             if (role.length === 1) {
-                if (role.includes("admin") || role.includes("superAdmin")) {
+                if (role.includes("Admin") || role.includes("SuperAdmin")) {
                     navigate("/admin");
                     toast.success("Login successful! Welcome to Admin Dashboard");
-                } else if (role.includes("agency")) {
+                } else if (role.includes("Agency")) {
                     navigate("/agency");
                     toast.success("Login successful! Welcome to Agency Dashboard");
-                } else if (role.includes("user")) {
+                } else if (role.includes("User")) {
                     navigate("/portal");
                     toast.success("Login successful! Welcome to User Dashboard");
                 }
             } else {
-                if (role.includes("admin") || role.includes("superAdmin")) {
+                if (role.includes("Admin") || role.includes("SuperAdmin")) {
                     navigate("/admin");
                     toast.success("Login successful! Welcome to Admin Dashboard");
                 } else if (role.includes("agency")) {
-                    navigate("/agency");
+                    navigate("/Agency");
                     toast.success("Login successful! Welcome to Agency Dashboard");
                 } else {
                     navigate("/portal");

@@ -41,8 +41,8 @@ function ExportDriver() {
             "License Number": driver["License Number"],
             "Company Name": driver["Company Name"],
             "Company Email": driver["Company Email"],
-            "Date Added": driver["Date Added"],
-            "Date Deleted": driver["Date Deleted"] || "Not Deleted",
+            "Date Added": new Date(driver["Date Added"]).toLocaleDateString() || "N/A",
+            "Date Deleted": new Date(driver["Date Deleted"]).toLocaleDateString() || "N/A" || "Not Deleted",
             "Agency Name": driver["Agency Name"],
         }));
 
@@ -100,8 +100,8 @@ function ExportDriver() {
                                         <TableCell>{driver["License Number"]}</TableCell>
                                         <TableCell>{driver["Company Name"]}</TableCell>
                                         <TableCell>{driver["Company Email"]}</TableCell>
-                                        <TableCell>{driver["Date Added"]}</TableCell>
-                                        <TableCell>{driver["Date Deleted"] || "Not Deleted"}</TableCell>
+                                        <TableCell>{new Date(driver["Date Added"]).toLocaleDateString() || "N/A"}</TableCell>
+                                        <TableCell>{new Date(driver["Date Deleted"]).toLocaleDateString() || "N/A" || "Not Deleted"}</TableCell>
                                         <TableCell>{driver["Agency Name"]}</TableCell>
                                     </TableRow>
                                 ))}

@@ -52,7 +52,7 @@ const CompanyDetails = () => {
         display: "flex", 
         justifyContent: "center", 
         alignItems: "center", 
-        marginTop: '100px',
+        marginTop: '40px',
         px: 2
       }}
     >

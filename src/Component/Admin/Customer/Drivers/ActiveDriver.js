@@ -81,6 +81,7 @@ function ActiveDriver() {
                         {!isTablet && <TableCell sx={{ color: "white", fontWeight: "bold" }}>License #</TableCell>}
                         {!isTablet && <TableCell sx={{ color: "white", fontWeight: "bold" }}>DOB</TableCell>}
                         {!isTablet && <TableCell sx={{ color: "white", fontWeight: "bold" }}>Phone No</TableCell>}
+                        {!isTablet && <TableCell sx={{ color: "white", fontWeight: "bold" }}>Created By</TableCell>}
                         <TableCell sx={{ color: "white", fontWeight: "bold" }}>Actions</TableCell>
                     </TableRow>
                 </TableHead>
@@ -91,8 +92,9 @@ function ActiveDriver() {
                             <TableCell>{driver.name}</TableCell>
                             {!isMobile && <TableCell>{driver.email}</TableCell>}
                             {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
-                            {!isTablet && <TableCell>{driver.dob}</TableCell>}
+                            {!isTablet && <TableCell>{new Date(driver.dob).toLocaleDateString()}</TableCell>}
                             {!isTablet && <TableCell>{driver.phone}</TableCell>}
+                            {!isTablet && <TableCell>{driver.createdBy}</TableCell>}
                             <TableCell>
                                 <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
                                     <MoreVertIcon />
@@ -140,13 +142,13 @@ function ActiveDriver() {
             <Dialog open={viewOpen} onClose={() => setViewOpen(false)}>
                 <DialogTitle>Driver Details</DialogTitle>
                 <DialogContent>
-                    <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9" }}>
+                    <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9", minWidth:'400px' }}>
                         <Typography variant="h6" gutterBottom>{selectedDriver?.name}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
                         <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.licenseNumber}</Typography>
-                        <Typography variant="body1"><strong>DOB:</strong> {selectedDriver?.dob}</Typography>
+                        <Typography variant="body1"><strong>DOB:</strong> {new Date(selectedDriver?.dob).toLocaleDateString()}</Typography>
                         <Typography variant="body1"><strong>Phone No:</strong> {selectedDriver?.phone}</Typography>
-                        <Typography variant="body1"><strong>Creation Date:</strong> {selectedDriver?.creationDate}</Typography>
+                        <Typography variant="body1"><strong>Creation Date:</strong> {new Date(selectedDriver?.creationDate).toLocaleDateString()}</Typography>
                         <Typography variant="body1"><strong>Created By:</strong> {selectedDriver?.createdBy}</Typography>
                     </Box>
                 </DialogContent>

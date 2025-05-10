@@ -6,8 +6,10 @@ import AddInvoice from './AddInvoice';
 function Invoice() {
     return (
         <>
-            <DisplayInvoice />
-            <AddInvoice />
+            <div style={{ marginTop: '40px' }}>
+                <DisplayInvoice />
+                <AddInvoice />
+            </div>
         </>
     );
 }

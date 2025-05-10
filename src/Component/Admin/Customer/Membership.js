@@ -3,10 +3,10 @@ import {
   Box, Card, CardContent, Typography, IconButton,
   Modal, TextField, Button, Grid, Divider, useMediaQuery, CircularProgress
 } from "@mui/material";
+import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
 import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
-import dayjs from "dayjs";
 
 const MembershipInformation = () => {
   const { userDetails, updateMembershipInformation } = useContext(CustomerContext);
@@ -56,7 +56,7 @@ const MembershipInformation = () => {
   }
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "100px", px: 2 }}>
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "40px", px: 2 }}>
       <Card sx={{ width: isMobile ? "100%" : 600, p: 3, position: "relative", borderRadius: 3, boxShadow: 3 }}>
         <IconButton onClick={handleOpen} sx={{ position: "absolute", top: 15, right: 15, color: "primary.main" }}>
           <EditIcon />
@@ -75,20 +75,30 @@ const MembershipInformation = () => {
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Join Date:</Typography>
               <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
-                {membershipInfo.planStartDate ? dayjs(membershipInfo.planStartDate).format("YYYY-MM-DD") : "N/A"}
+                {new Date(membershipInfo?.planStartDate).toLocaleDateString() || "N/A"}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Expiry Date:</Typography>
               <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
-                {membershipInfo.planEndDate ? dayjs(membershipInfo.planEndDate).format("YYYY-MM-DD") : "N/A"}
+                {new Date(membershipInfo?.planEndDate).toLocaleDateString() || "N/A"}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Status:</Typography>
-              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 700,
+                  color:
+                    membershipInfo.planStatus === "Active"
+                      ? "green"
+                      : "red"
+                }}
+              >
                 {membershipInfo.planStatus || "N/A"}
               </Typography>
+
             </Grid>
           </Grid>
         </CardContent>
@@ -138,15 +148,18 @@ const MembershipInformation = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Status"
-                name="planStatus"
-                value={tempMembershipInfo.planStatus || ""}
-                onChange={handleChange}
-                variant="outlined"
-              />
+              <FormControl fullWidth size="small">
+                <InputLabel>Status</InputLabel>
+                <Select
+                  name="planStatus"
+                  value={tempMembershipInfo.planStatus || ""}
+                  label="Status"
+                  onChange={handleChange}
+                >
+                  <MenuItem value="Active">Active</MenuItem>
+                  <MenuItem value="Inactive">Inactive</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
           <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>
