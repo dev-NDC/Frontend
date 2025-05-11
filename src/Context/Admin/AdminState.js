@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState} from "react";
 import AdminContext from "./AdminContext";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -8,7 +8,6 @@ const API_URL = process.env.REACT_APP_API_URL;
 const AdminState = (props) => {
     const [currentActiveButton, setCurrentActiveButton] = useState(1);
     const [AllUserData,setAllUserData] = useState([]);
-    
     const getAllAdminData = async()=>{
         const token = Cookies.get("token");
         if (token) {

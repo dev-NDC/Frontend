@@ -17,6 +17,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AdminContext from "../../../Context/Admin/AdminContext";
 import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
 
+
 import ExportDriver from "./ExportDriver";
 import ExportCompany from "./ExportCompany";
 
@@ -29,6 +30,7 @@ function ViewCustomer() {
 
     useEffect(() => {
         getAllAdminData();
+        // eslint-disable-next-line
     }, []);
 
     const handleViewDetails = (user) => {
