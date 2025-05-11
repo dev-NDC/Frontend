@@ -15,7 +15,7 @@ import {
     Box,
 } from "@mui/material";
 import { Row, Col } from "react-bootstrap";
-import CreateNewOrderContext from "../../../Context/Agency/CreateNewOrder/CreateNewOrderContext";;
+import CreateNewOrderContext from "../../../Context/Admin/CreateNewOrder/CreateNewOrderContext";
 
 function ParticipantInformation() {
     const {

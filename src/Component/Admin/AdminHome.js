@@ -14,12 +14,14 @@ import ViewAgency  from "./Agency/ViewAgency";
 import ViewAgencyDetails from "./Agency/ViewAgencyDetails";
 import ViewAdmin from "./Admin/ViewAdmin";
 import Random from "./Random/Random"
+import CreateNewOrder from "./CreateNewOrder/CreateNewOrder";
 
 import AdminContext from "../../Context/Admin/AdminContext";
 import CustomerState from "../../Context/Admin/Customer/CustomerState"
 import AgencyState from "../../Context/Admin/Agency/AgencyState";
 import AdminState from "../../Context/Admin/Admin/AdminState";
 import RandomState from "../../Context/Admin/Random/RandomState";
+import CreateNewAdmin from "../../Context/Admin/CreateNewOrder/CreateNewOrderState";
 
 const API_URL = process.env.REACT_APP_API_URL
 const drawerWidth = 240;
@@ -72,6 +74,8 @@ function AdminHome() {
                 return <AgencyState><ViewAgencyDetails /></AgencyState>
             case 7:
                 return <RandomState><Random /></RandomState>
+            case 9:
+                return <CreateNewAdmin><CreateNewOrder /></CreateNewAdmin>;
             default:
                 return <Welcome />; // Default component
         }

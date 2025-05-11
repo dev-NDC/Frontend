@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-import CreateNewOrderContext from "../../../Context/Agency/CreateNewOrder/CreateNewOrderContext";;
+import CreateNewOrderContext from "../../../Context/Admin/CreateNewOrder/CreateNewOrderContext";
 const API_URL = process.env.REACT_APP_API_URL;
 
 function OrderInformation() {
@@ -24,7 +24,7 @@ function OrderInformation() {
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
-                const res = await axios.get(`${API_URL}/agency/getAllCompanyAllDetials`);
+                const res = await axios.get(`${API_URL}/admin/getAllCompanyAllDetials`);
                 setAllCompanyData(res.data.data || []);
             } catch (err) {
                 console.error("Failed to fetch company data:", err);

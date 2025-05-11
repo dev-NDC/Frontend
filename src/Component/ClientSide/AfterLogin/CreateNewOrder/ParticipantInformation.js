@@ -1,26 +1,32 @@
-import React, { useState,useContext } from "react";
-import { Form, Row, Col, Button } from "react-bootstrap";
-import CreateNewOrderContext from "../../../../Context/ClientSide/AfterLogin/CreateNewOrder/CreateNewOrderContext";
+import React, { useContext } from "react";
+import {
+    TextField,
+    FormControl,
+    FormLabel,
+    RadioGroup,
+    FormControlLabel,
+    Radio,
+    Checkbox,
+    Select,
+    MenuItem,
+    InputLabel,
+    Button,
+    Typography,
+    Box,
+} from "@mui/material";
+import { Row, Col } from "react-bootstrap";
+import CreateNewOrderContext from "../../../../Context/ClientSide/AfterLogin/CreateNewOrder/CreateNewOrderContext";;
+
 function ParticipantInformation() {
-    const { currentPosition, maxPosition, setCurrentPosition, setMaxPosition } = useContext(CreateNewOrderContext);
-    const [formData, setFormData] = useState({
-        firstName: "",
-        middleName: "",
-        lastName: "",
-        ssn: "",
-        dob: "",
-        phone1: "",
-        phone2: "",
-        locationCode: "",
-        orderExpires: "",
-        observed: "No",
-        participantAddress: true,
-        address: "",
-        address2: "",
-        city: "",
-        state: "",
-        zip: "",
-    });
+    const {
+        currentPosition,
+        maxPosition,
+        setCurrentPosition,
+        setMaxPosition,
+        formData,
+        setFormData,
+        getSiteInformation,
+    } = useContext(CreateNewOrderContext);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -35,146 +41,245 @@ function ParticipantInformation() {
     };
 
     const handleContinue = () => {
-        console.log("Collected Participant Info:", formData);
         if (currentPosition === maxPosition) {
             setMaxPosition(maxPosition + 1);
         }
         setCurrentPosition(currentPosition + 1);
+        getSiteInformation();
+    };
+
+    // Check that all required fields are non-empty
+    const validateRequiredFields = () => {
+        const required = [
+            formData.firstName,
+            formData.lastName,
+            formData.ssn,
+            formData.dob,
+            formData.phone1,
+            formData.locationCode,
+            formData.address,
+            formData.city,
+            formData.state,
+            formData.zip,
+        ];
+        return required.every((val) => val?.toString().trim() !== "");
     };
 
     return (
-        <Form>
-            <h5 className="mb-1 fw-bold">Participant Information</h5>
-            <p className="text-muted mb-4">
+        <Box p={2}>
+            <Typography variant="h6" className="fw-bold mb-1">
+                Participant Information
+            </Typography>
+            <Typography variant="body2" color="text.secondary" className="mb-4">
                 Use the form below to enter participant information. All required fields are marked <span className="text-danger">*</span>.
-            </p>
+            </Typography>
 
             <Row className="mb-3">
                 <Col md={4}>
-                    <Form.Label>First Name <span className="text-danger">*</span></Form.Label>
-                    <Form.Control name="firstName" value={formData.firstName} onChange={handleChange} required />
+                    <TextField
+                        fullWidth
+                        required
+                        label="First Name"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                    />
                 </Col>
                 <Col md={4}>
-                    <Form.Label>Middle Name</Form.Label>
-                    <Form.Control name="middleName" value={formData.middleName} onChange={handleChange} />
+                    <TextField
+                        fullWidth
+                        label="Middle Name"
+                        name="middleName"
+                        value={formData.middleName}
+                        onChange={handleChange}
+                    />
                 </Col>
                 <Col md={4}>
-                    <Form.Label>Last Name <span className="text-danger">*</span></Form.Label>
-                    <Form.Control name="lastName" value={formData.lastName} onChange={handleChange} required />
-                </Col>
-            </Row>
-
-            <Row className="mb-3">
-                <Col md={4}>
-                    <Form.Label>SSN/EID <span className="text-danger">*</span></Form.Label>
-                    <Form.Control name="ssn" value={formData.ssn} onChange={handleChange} required />
-                </Col>
-                <Col md={4}>
-                    <Form.Label>DOB <span className="text-danger">*</span></Form.Label>
-                    <Form.Control type="date" name="dob" value={formData.dob} onChange={handleChange} required />
-                </Col>
-                <Col md={4}>
-                    <Form.Label>Phone 1 <span className="text-danger">*</span></Form.Label>
-                    <Form.Control name="phone1" value={formData.phone1} onChange={handleChange} required />
-                </Col>
-            </Row>
-
-            <Row className="mb-3">
-                <Col md={4}>
-                    <Form.Label>Phone 2</Form.Label>
-                    <Form.Control name="phone2" value={formData.phone2} onChange={handleChange} />
-                </Col>
-                <Col md={4}>
-                    <Form.Label>Location Code <span className="text-danger">*</span></Form.Label>
-                    <Form.Control name="locationCode" value={formData.locationCode} onChange={handleChange} required />
-                </Col>
-                <Col md={4}>
-                    <Form.Label>Order Expires</Form.Label>
-                    <Form.Control type="datetime-local" name="orderExpires" value={formData.orderExpires} onChange={handleChange} />
-                </Col>
-            </Row>
-
-            <Row className="mb-3">
-                <Col md={4}>
-                    <Form.Label>Observed Collection?</Form.Label>
-                    <div>
-                        <Form.Check
-                            inline
-                            label="No"
-                            name="observed"
-                            type="radio"
-                            id="observed-no"
-                            value="No"
-                            checked={formData.observed === "No"}
-                            onChange={handleChange}
-                        />
-                        <Form.Check
-                            inline
-                            label="Yes"
-                            name="observed"
-                            type="radio"
-                            id="observed-yes"
-                            value="Yes"
-                            checked={formData.observed === "Yes"}
-                            onChange={handleChange}
-                        />
-                    </div>
-                </Col>
-            </Row>
-
-            <Row className="mb-2">
-                <Col>
-                    <Form.Check
-                        type="checkbox"
-                        label="Participant Address"
-                        name="participantAddress"
-                        checked={formData.participantAddress}
+                    <TextField
+                        fullWidth
+                        required
+                        label="Last Name"
+                        name="lastName"
+                        value={formData.lastName}
                         onChange={handleChange}
                     />
                 </Col>
             </Row>
 
             <Row className="mb-3">
+                <Col md={4}>
+                    <TextField
+                        fullWidth
+                        required
+                        label="SSN/EID"
+                        name="ssn"
+                        value={formData.ssn}
+                        onChange={handleChange}
+                    />
+                </Col>
+                <Col md={4}>
+                    <TextField
+                        fullWidth
+                        required
+                        type="date"
+                        InputLabelProps={{ shrink: true }}
+                        label="DOB"
+                        name="dob"
+                        value={formData.dob}
+                        onChange={handleChange}
+                    />
+                </Col>
+                <Col md={4}>
+                    <TextField
+                        fullWidth
+                        required
+                        label="Phone 1"
+                        name="phone1"
+                        value={formData.phone1}
+                        onChange={handleChange}
+                    />
+                </Col>
+            </Row>
+
+            <Row className="mb-3">
+                <Col md={4}>
+                    <TextField
+                        fullWidth
+                        label="Phone 2"
+                        name="phone2"
+                        value={formData.phone2}
+                        onChange={handleChange}
+                    />
+                </Col>
+                <Col md={4}>
+                    <TextField
+                        fullWidth
+                        required
+                        label="Location Code"
+                        name="locationCode"
+                        value={formData.locationCode}
+                        onChange={handleChange}
+                    />
+                </Col>
+                <Col md={4}>
+                    <TextField
+                        fullWidth
+                        label="Order Expires"
+                        type="datetime-local"
+                        InputLabelProps={{ shrink: true }}
+                        name="orderExpires"
+                        value={formData.orderExpires}
+                        onChange={handleChange}
+                    />
+                </Col>
+            </Row>
+
+            <Row className="mb-3">
+                <Col md={4}>
+                    <FormControl>
+                        <FormLabel>Observed Collection?</FormLabel>
+                        <RadioGroup
+                            row
+                            name="observed"
+                            value={formData.observed}
+                            onChange={handleChange}
+                        >
+                            <FormControlLabel value="0" control={<Radio />} label="No" />
+                            <FormControlLabel value="1" control={<Radio />} label="Yes" />
+                        </RadioGroup>
+                    </FormControl>
+                </Col>
+            </Row>
+
+            <Row className="mb-3">
+                <Col>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                name="participantAddress"
+                                checked={formData.participantAddress}
+                                onChange={handleChange}
+                            />
+                        }
+                        label="Participant Address"
+                    />
+                </Col>
+            </Row>
+
+            <Row className="mb-3">
                 <Col md={6}>
-                    <Form.Label>Address <span className="text-danger">*</span></Form.Label>
-                    <Form.Control name="address" value={formData.address} onChange={handleChange} required />
+                    <TextField
+                        fullWidth
+                        required
+                        label="Address"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleChange}
+                    />
                 </Col>
                 <Col md={6}>
-                    <Form.Label>Address 2</Form.Label>
-                    <Form.Control name="address2" value={formData.address2} onChange={handleChange} />
+                    <TextField
+                        fullWidth
+                        label="Address 2"
+                        name="address2"
+                        value={formData.address2}
+                        onChange={handleChange}
+                    />
                 </Col>
             </Row>
 
             <Row className="mb-4">
                 <Col md={4}>
-                    <Form.Label>City <span className="text-danger">*</span></Form.Label>
-                    <Form.Control name="city" value={formData.city} onChange={handleChange} required />
+                    <TextField
+                        fullWidth
+                        required
+                        label="City"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                    />
                 </Col>
                 <Col md={4}>
-                    <Form.Label>State <span className="text-danger">*</span></Form.Label>
-                    <Form.Select name="state" value={formData.state} onChange={handleChange} required>
-                        <option value="">Select state</option>
-                        <option value="CA">California</option>
-                        <option value="NY">New York</option>
-                        <option value="TX">Texas</option>
-                        {/* Add more states as needed */}
-                    </Form.Select>
+                    <FormControl fullWidth required>
+                        <InputLabel>State</InputLabel>
+                        <Select
+                            name="state"
+                            value={formData.state}
+                            onChange={handleChange}
+                            label="State"
+                        >
+                            <MenuItem value="">Select state</MenuItem>
+                            <MenuItem value="CA">California</MenuItem>
+                            <MenuItem value="NY">New York</MenuItem>
+                            <MenuItem value="TX">Texas</MenuItem>
+                        </Select>
+                    </FormControl>
                 </Col>
                 <Col md={4}>
-                    <Form.Label>Zip Code <span className="text-danger">*</span></Form.Label>
-                    <Form.Control name="zip" value={formData.zip} onChange={handleChange} required />
+                    <TextField
+                        fullWidth
+                        required
+                        label="Zip Code"
+                        name="zip"
+                        value={formData.zip}
+                        onChange={handleChange}
+                    />
                 </Col>
             </Row>
 
-            <div className="d-flex justify-content-between">
-                <Button variant="secondary" onClick={handlePrevious}>
+            <Box display="flex" justifyContent="space-between">
+                <Button variant="outlined" onClick={handlePrevious}>
                     Previous
                 </Button>
-                <Button variant="primary" onClick={handleContinue}>
+                <Button
+                    variant="contained"
+                    onClick={handleContinue}
+                    disabled={!validateRequiredFields()}
+                >
                     Continue
                 </Button>
-            </div>
-        </Form>
+            </Box>
+        </Box>
     );
 }
 

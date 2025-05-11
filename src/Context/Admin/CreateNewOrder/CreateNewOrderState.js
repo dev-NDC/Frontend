@@ -41,7 +41,7 @@ const CreateNewOrderState = (props) => {
         setSiteInformationLoading(true);
         if (token) {
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            await axios.post(`${API_URL}/agency/getSiteInformation`, { companyId, packageId, orderReasonId, formData })
+            await axios.post(`${API_URL}/admin/getSiteInformation`, { companyId, packageId, orderReasonId, formData })
                 .then(response => {
                     setSiteInformation(response.data.data);
                     setSiteInformationLoading(false);

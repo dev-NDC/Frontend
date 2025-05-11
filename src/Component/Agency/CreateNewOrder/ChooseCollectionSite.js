@@ -1,47 +1,52 @@
-import React, { useEffect, useState, useContext} from "react";
-import { Container, Row, Col, Card, Button, Pagination } from "react-bootstrap";
-
+import React, {useState, useContext } from "react";
+import {
+    Grid,
+    Card,
+    CardContent,
+    Typography,
+    Button,
+    Pagination,
+    Box,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    CircularProgress,
+    Table,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody
+} from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CreateNewOrderContext from "../../../Context/Agency/CreateNewOrder/CreateNewOrderContext";
 
 function ChooseCollectionSite() {
-    const { currentPosition, maxPosition, setCurrentPosition, setMaxPosition } = useContext(CreateNewOrderContext);
-    const [sites, setSites] = useState([]);
+    const {
+        currentPosition,
+        maxPosition,
+        setCurrentPosition,
+        setMaxPosition,
+        siteInformation,
+        siteInformationLoading,
+    } = useContext(CreateNewOrderContext);
+
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedSiteId, setSelectedSiteId] = useState(null);
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedSiteDetails, setSelectedSiteDetails] = useState(null);
 
-    const sitesPerPage = 5;
-
-    useEffect(() => {
-        const fetchData = () => {
-            const simulatedData = [
-                { id: 1, name: 'LABCORP - NEW YORK', address: '111 3rd Avenue, New York, NY 10003' },
-                { id: 2, name: 'MEDRITE URGENT CARE - EAST VILLAGE', address: '123 3rd Avenue, New York, NY 10003' },
-                { id: 3, name: 'QUEST DIAGNOSTICS NEW YORK', address: '268 3rd Avenue, New York, NY 10010' },
-                { id: 4, name: 'QUEST DIAGNOSTICS - NEW YORK', address: '139 Centre St, New York, NY 10013' },
-                { id: 5, name: 'CITYMD - NEW YORK', address: '156 William St, New York, NY 10038' },
-                { id: 6, name: 'CITYMD - BROOKLYN', address: '81 Fleet Pl, Brooklyn, NY 11201' },
-                { id: 7, name: 'MEDICAL CENTER - NEW YORK', address: '100 E 77th St, New York, NY 10075' },
-                { id: 8, name: 'HOSPITAL - NEW YORK', address: '170 William St, New York, NY 10038' },
-                { id: 9, name: 'HEALTH CENTER - NEW YORK', address: '450 Clarkson Ave, Brooklyn, NY 11203' },
-                { id: 10, name: 'CLINIC - NEW YORK', address: '1470 Madison Ave, New York, NY 10029' },
-            ];
-            setSites(simulatedData);
-        };
-
-        fetchData();
-    }, []);
+    const sitesPerPage = 6;
 
     const indexOfLastSite = currentPage * sitesPerPage;
     const indexOfFirstSite = indexOfLastSite - sitesPerPage;
-    const currentSites = sites.slice(indexOfFirstSite, indexOfLastSite);
-    const totalPages = Math.ceil(sites.length / sitesPerPage);
+    const currentSites = siteInformation.slice(indexOfFirstSite, indexOfLastSite);
+    const totalPages = Math.ceil(siteInformation.length / sitesPerPage);
 
     const handleSelectSite = (siteId) => {
         setSelectedSiteId(siteId);
-    };
-
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
     };
 
     const handlePrevious = () => {
@@ -55,69 +60,198 @@ function ChooseCollectionSite() {
         setCurrentPosition(currentPosition + 1);
     };
 
+    const handleOpenModal = (site) => {
+        setSelectedSiteDetails(site);
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+        setSelectedSiteDetails(null);
+    };
+
+    if (siteInformationLoading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
+
     return (
-        <Container className="my-4">
-            <h4 className="fw-bold mb-4 text-center">Choose Collection Site</h4>
-            <Row className="g-3">
-                {currentSites.map((site) => (
-                    <Col xs={12} md={6} key={site.id}>
-                        <Card
-                            className={`shadow-sm h-100 ${selectedSiteId === site.id ? "bg-success text-white" : ""}`}
-                        >
-                            <Card.Body>
-                                <Card.Title className="fw-semibold text-uppercase mb-1" style={{ fontSize: "0.95rem" }}>
-                                    {site.name}
-                                </Card.Title>
-                                <Card.Text className="mb-3" style={{ fontSize: "0.9rem" }}>
-                                    {site.address}
-                                </Card.Text>
-                                <Button
-                                    variant={selectedSiteId === site.id ? "light" : "dark"}
-                                    size="sm"
-                                    className="px-3"
-                                    onClick={() => handleSelectSite(site.id)}
-                                >
-                                    {selectedSiteId === site.id ? "Selected" : "Select Site"}
-                                </Button>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
+        <Box p={3}>
+            <Typography variant="h5" fontWeight={600} align="center" gutterBottom>
+                Choose a Collection Site
+            </Typography>
+
+            <Grid container spacing={3}>
+                {currentSites.map((site) => {
+                    const isSelected = selectedSiteId === site.collection_site_link_id;
+
+                    return (
+                        <Grid item xs={12} sm={6} key={site.collection_site_link_id}>
+                            <Card
+                                variant="outlined"
+                                sx={{
+                                    borderColor: isSelected ? 'primary.main' : 'grey.300',
+                                    backgroundColor: isSelected ? 'primary.light' : '#fff',
+                                    cursor: 'pointer',
+                                    transition: '0.3s',
+                                    '&:hover': {
+                                        boxShadow: 3
+                                    },
+                                    position: 'relative'
+                                }}
+                                onClick={() => handleSelectSite(site.collection_site_link_id)}
+                            >
+                                <CardContent>
+                                    {isSelected && (
+                                        <CheckCircleIcon
+                                            color="primary"
+                                            sx={{ position: 'absolute', top: 8, right: 8 }}
+                                        />
+                                    )}
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight={600}
+                                        textTransform="uppercase"
+                                        gutterBottom
+                                    >
+                                        {site.collection_site_city}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {site.collection_site_address}
+                                    </Typography>
+                                    <Typography variant="caption" color="text.secondary">
+                                        Distance: {site.distance_miles_numeric}
+                                    </Typography>
+
+                                    <Box display="flex" justifyContent="space-between" mt={2}>
+                                        <Button
+                                            size="small"
+                                            variant="contained"
+                                            sx={{
+                                                backgroundColor: 'black',
+                                                color: 'white',
+                                                '&:hover': {
+                                                    backgroundColor: '#333'
+                                                }
+                                            }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleOpenModal(site);
+                                            }}
+                                        >
+                                            More Details
+                                        </Button>
+
+                                        <Button
+                                            size="small"
+                                            variant={isSelected ? "contained" : "outlined"}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleSelectSite(site.collection_site_link_id);
+                                            }}
+                                        >
+                                            {isSelected ? "Selected" : "Select Site"}
+                                        </Button>
+                                    </Box>
+
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    );
+                })}
+            </Grid>
 
             {/* Pagination */}
-            <div className="d-flex justify-content-center mt-4">
-                <Pagination>
-                    <Pagination.Prev
-                        disabled={currentPage === 1}
-                        onClick={() => handlePageChange(currentPage - 1)}
-                    />
-                    {[...Array(totalPages)].map((_, index) => (
-                        <Pagination.Item
-                            key={index + 1}
-                            active={index + 1 === currentPage}
-                            onClick={() => handlePageChange(index + 1)}
-                        >
-                            {index + 1}
-                        </Pagination.Item>
-                    ))}
-                    <Pagination.Next
-                        disabled={currentPage === totalPages}
-                        onClick={() => handlePageChange(currentPage + 1)}
-                    />
-                </Pagination>
-            </div>
+            <Box display="flex" justifyContent="center" mt={4}>
+                <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    onChange={(_, value) => setCurrentPage(value)}
+                    color="primary"
+                    variant="outlined"
+                    shape="rounded"
+                />
+            </Box>
 
             {/* Navigation Buttons */}
-            <div className="d-flex justify-content-between mt-4">
-                <Button variant="secondary" onClick={handlePrevious}>
+            <Box display="flex" justifyContent="space-between" mt={4}>
+                <Button
+                    startIcon={<ArrowBackIcon />}
+                    variant="outlined"
+                    onClick={handlePrevious}
+                >
                     Previous
                 </Button>
-                <Button variant="primary" onClick={handleContinue} disabled={!selectedSiteId}>
+                <Button
+                    endIcon={<ArrowForwardIcon />}
+                    variant="contained"
+                    onClick={handleContinue}
+                    disabled={!selectedSiteId}
+                >
                     Continue
                 </Button>
-            </div>
-        </Container>
+            </Box>
+
+            <Dialog open={openModal} onClose={handleCloseModal} fullWidth maxWidth="sm">
+    <DialogTitle>More Details</DialogTitle>
+    <DialogContent dividers>
+        <Typography gutterBottom><strong>Name:</strong> {selectedSiteDetails?.collection_site_city}</Typography>
+        <Typography gutterBottom><strong>Address:</strong> {selectedSiteDetails?.collection_site_address}</Typography>
+        <Typography gutterBottom><strong>Distance:</strong> {selectedSiteDetails?.distance_miles_numeric} miles</Typography>
+        <Typography gutterBottom><strong>Site Fax:</strong> {selectedSiteDetails?.collection_site_fax}</Typography>
+        <Typography gutterBottom><strong>Site Phone:</strong> {selectedSiteDetails?.collection_site_phone}</Typography>
+
+        <Box mt={3}>
+            <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                Weekly Operating Hours
+            </Typography>
+            <Table size="small">
+                <TableHead>
+                    <TableRow>
+                        <TableCell><strong>Day</strong></TableCell>
+                        <TableCell><strong>Opening</strong></TableCell>
+                        <TableCell><strong>Closing</strong></TableCell>
+                        <TableCell><strong>Open During Lunch</strong></TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {[
+                        "mon",
+                        "tue",
+                        "wed",
+                        "thur",
+                        "fri",
+                        "sat",
+                        "sun",
+                    ].map((day) => {
+                        const opening = selectedSiteDetails?.[`${day}_open`];
+                        const closing = selectedSiteDetails?.[`${day}_close`];
+                        const lunch = selectedSiteDetails?.[`${day}_open_lunch`] === "1";
+
+                        const isClosed = !opening && !closing;
+
+                        return (
+                            <TableRow key={day}>
+                                <TableCell sx={{ textTransform: "capitalize" }}>{day}</TableCell>
+                                <TableCell>{isClosed ? "Closed" : opening}</TableCell>
+                                <TableCell>{isClosed ? "—" : closing}</TableCell>
+                                <TableCell>{isClosed ? "—" : lunch ? "Yes" : "No"}</TableCell>
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
+        </Box>
+    </DialogContent>
+    <DialogActions>
+        <Button onClick={handleCloseModal}>Close</Button>
+    </DialogActions>
+</Dialog>
+
+        </Box>
     );
 }
 

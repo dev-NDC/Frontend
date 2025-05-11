@@ -1,5 +1,7 @@
 import React, { useContext } from "react";
 import { Box } from "@mui/material";
+import { Typography } from "@mui/material";
+
 
 import CreateNewOrderContext from "../../../Context/Agency/CreateNewOrder/CreateNewOrderContext";
 
@@ -37,7 +39,9 @@ function CurrentTurn() {
                         }}
                         onClick={() => handleFormClick(position)}
                     >
+                        <Typography variant="body1" sx={{ fontWeight: "bold", color: "white" }}>
                         {position}
+                        </Typography>
                     </Box>
                 );
             })}

@@ -1,95 +1,149 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import {
+    Typography,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Button,
+    Box,
+} from "@mui/material";
+import axios from "axios";
+
 import CreateNewOrderContext from "../../../../Context/ClientSide/AfterLogin/CreateNewOrder/CreateNewOrderContext";
+const API_URL = process.env.REACT_APP_API_URL;
 
 function OrderInformation() {
-    const { currentPosition, maxPosition, setCurrentPosition, setMaxPosition } = useContext(CreateNewOrderContext);
-    const [companyLocation, setCompanyLocation] = useState("");
-    const [packageOption, setPackageOption] = useState("");
-    const [orderReason, setOrderReason] = useState("");
+    const { orderReasonId, packageId, companyId, allCompanyData, currentPosition, maxPosition, setAllCompanyData, setCurrentPosition, setCompanyId, setPackageId, setOrderReasonId, setMaxPosition } =
+        useContext(CreateNewOrderContext);
+
+    const [availablePackages, setAvailablePackages] = useState([]);
+    const [availableReasons, setAvailableReasons] = useState([]);
+
+    // Fetch all companies and their details
+    useEffect(() => {
+        const fetchCompanies = async () => {
+            try {
+                const res = await axios.get(`${API_URL}/user/getAllCompanyAllDetials`);
+                setAllCompanyData(res.data.data || []);
+            } catch (err) {
+                console.error("Failed to fetch company data:", err);
+            }
+        };
+        fetchCompanies();
+        // eslint-disable-next-line
+    }, []);
+    useEffect(() => {
+        if (companyId && allCompanyData.length > 0) {
+            const selectedCompany = allCompanyData.find(c => c._id === companyId);
+            setAvailablePackages(selectedCompany?.packages || []);
+            setAvailableReasons(selectedCompany?.orderReasons || []);
+        }
+    }, [companyId, allCompanyData]);
 
     const handleCompanyChange = (e) => {
-        setCompanyLocation(e.target.value);
-        setPackageOption("");
-        setOrderReason("");
+        const selectedId = e.target.value;
+        setCompanyId(selectedId);
+        setPackageId("");
+        setOrderReasonId("");
+
+        const selectedCompany = allCompanyData.find(c => c._id === selectedId);
+        setAvailablePackages(selectedCompany?.packages || []);
+        setAvailableReasons(selectedCompany?.orderReasons || []);
     };
 
     const handlePackageChange = (e) => {
-        setPackageOption(e.target.value);
-        setOrderReason("");
+        setPackageId(e.target.value);
+        setOrderReasonId("");
     };
 
     const handleReasonChange = (e) => {
-        setOrderReason(e.target.value);
+        setOrderReasonId(e.target.value);
     };
 
-    const handleSubmit = async () => {
-        const data = {
-            companyLocation,
-            packageOption,
-            orderReason,
-        };
-        console.log("Form Data:", data);
+    const handleSubmit = () => {
         if (currentPosition === maxPosition) {
             setMaxPosition(maxPosition + 1);
         }
         setCurrentPosition(currentPosition + 1);
-
     };
 
     return (
-        <div style={{  width: "100%" }}>
-            <h5 className="mb-4 fw-bold">Order Information</h5>
+        <div className="container py-4">
+            <Typography variant="h6" className="fw-bold mb-4">
+                Order Information
+            </Typography>
 
-            <div className="mb-3">
-                <label className="form-label">Company Location</label>
-                <select
-                    className="form-select"
-                    value={companyLocation}
-                    onChange={handleCompanyChange}
-                >
-                    <option value="" disabled>Select Company</option>
-                    <option value="BITO LOGISTICS LLC">BITO LOGISTICS LLC</option>
-                    <option value="XYZ TRANSPORT INC">XYZ TRANSPORT INC</option>
-                </select>
+            <div className="row mb-3">
+                <div className="col-12">
+                    <FormControl fullWidth>
+                        <InputLabel id="company-location-label">Company</InputLabel>
+                        <Select
+                            labelId="company-location-label"
+                            value={companyId}
+                            onChange={handleCompanyChange}
+                            label="Company"
+                        >
+                            {allCompanyData.map((company) => (
+                                <MenuItem key={company._id} value={company._id}>
+                                    {company.companyName}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </div>
             </div>
 
-            <div className="mb-3">
-                <label className="form-label">Package</label>
-                <select
-                    className="form-select"
-                    value={packageOption}
-                    onChange={handlePackageChange}
-                    disabled={!companyLocation}
-                >
-                    <option value="" disabled>Select Package</option>
-                    <option value="Package 1">Package 1</option>
-                    <option value="Package 2">Package 2</option>
-                </select>
+            <div className="row mb-3">
+                <div className="col-12">
+                    <FormControl fullWidth disabled={!companyId}>
+                        <InputLabel id="package-label">Package</InputLabel>
+                        <Select
+                            labelId="package-label"
+                            value={packageId}
+                            onChange={handlePackageChange}
+                            label="Package"
+                        >
+                            {availablePackages.map((pkg) => (
+                                <MenuItem key={pkg._id} value={pkg._id}>
+                                    {pkg.packageName}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </div>
             </div>
 
-            <div className="mb-4">
-                <label className="form-label">Order Reason</label>
-                <select
-                    className="form-select"
-                    value={orderReason}
-                    onChange={handleReasonChange}
-                    disabled={!packageOption}
-                >
-                    <option value="" disabled>Select Reason</option>
-                    <option value="Reason 1">Reason 1</option>
-                    <option value="Reason 2">Reason 2</option>
-                </select>
+            <div className="row mb-4">
+                <div className="col-12">
+                    <FormControl fullWidth disabled={!packageId}>
+                        <InputLabel id="order-reason-label">Order Reason</InputLabel>
+                        <Select
+                            labelId="order-reason-label"
+                            value={orderReasonId}
+                            onChange={handleReasonChange}
+                            label="Order Reason"
+                        >
+                            {availableReasons.map((reason) => (
+                                <MenuItem key={reason._id} value={reason._id}>
+                                    {reason.orderReasonName}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </div>
             </div>
 
-            <div className="d-flex justify-content-end">
-                <button
-                    className="btn btn-primary"
+            <Box display="flex" justifyContent="flex-end">
+                <Button
+                    variant="contained"
+                    color="primary"
                     onClick={handleSubmit}
-                    disabled={!orderReason}
+                    disabled={!orderReasonId}
                 >
                     Continue
-                </button>
-            </div>
+                </Button>
+            </Box>
         </div>
     );
 }

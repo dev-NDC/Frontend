@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Container, Box, Typography } from "@mui/material";
 
 import OrderInformation from "./OrderInformation";
@@ -8,18 +8,9 @@ import SubmitOrder from "./SubmitOrder";
 import CurrentTurn from "./CurrentTurn";
 
 import CreateNewOrderContext from "../../../../Context/ClientSide/AfterLogin/CreateNewOrder/CreateNewOrderContext";
-import HomeContext from "../../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 
 function CreateNewOrder() {
     const { currentPosition } = useContext(CreateNewOrderContext);
-    const { userData } = useContext(HomeContext);
-    const [membershipStatus, setMembershipStatus] = useState("Active");
-
-    useEffect(() => {
-        if (userData) {
-            setMembershipStatus(userData?.Membership?.planStatus);
-        }
-    }, [userData]);
 
     // Function to render the component based on `currentPosition`
     const renderStep = () => {
@@ -37,43 +28,27 @@ function CreateNewOrder() {
         }
     };
 
-    if (membershipStatus === "Active") {
-        return (
-            <Box sx={{ marginTop: '90px', paddingTop: '60px', minHeight: `calc(100vh - 220px)` }}>
-                <Container maxWidth="md" sx={{ p: 3, border: "3px solid #ccc", borderRadius: 2 }}>
-                    <Typography variant="h4" align="center" sx={{ fontWeight: 900, color: 'rgba(9,51,120,1)' }} gutterBottom>
-                        Create New Order
-                    </Typography>
-                    <hr />
-                    <CurrentTurn />
-                    <p className="text-center" style={{ margin: "30px 10px" }}>
-                        <b>All fields marked with * are required and must be filled.</b>
-                    </p>
-
-                    {renderStep()}
-                </Container>
-            </Box>
-        );
-    } else if (membershipStatus === "Pending") {
-        return (
-            <Container maxWidth="sm" sx={{ mt: 10 }}>
-                <Typography variant="h5" color="warning.main" align="center">
-                    Your account is pending approval. Please wait for activation.
+    return (
+        <Box sx={{ marginTop: '90px', marginBottom: '50px', paddingTop: '60px', minHeight: `calc(100vh - 220px)` }}>
+            <Container maxWidth="md" sx={{ p: 3, border: "3px solid #ccc", borderRadius: 2 }}>
+                <Typography variant="h4" align="center" sx={{ fontWeight: 900, color: 'rgba(9,51,120,1)' }} gutterBottom>
+                    Create New Order
                 </Typography>
-            </Container>
-        );
-    } else if (membershipStatus === "Inactive") {
-        return (
-            <Container maxWidth="sm" sx={{ mt: 10 }}>
-                <Typography variant="h5" color="error.main" align="center">
-                    Your account is inactive. Please contact support.
+                <hr />
+                <CurrentTurn />
+                <Typography
+                    variant="body1"
+                    align="center"
+                    sx={{ fontWeight: 'bold', my: 4, mx: 1 }}
+                >
+                    All fields marked with * are required and must be filled.
                 </Typography>
-            </Container>
-        );
-    } else {
-        return null; // or a loading spinner / unknown status message
-    }
 
+                {/* Renders the correct step based on `currentPosition` */}
+                {renderStep()}
+            </Container>
+        </Box>
+    );
 }
 
 export default CreateNewOrder;

@@ -5,7 +5,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import PersonIcon from '@mui/icons-material/Person';
 import BusinessIcon from '@mui/icons-material/Business';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
-
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
 import { useTheme } from "@mui/material/styles";
 import AdminContext from "../../Context/Admin/AdminContext";
@@ -41,6 +41,7 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
     { text: "Customer", icon: <PersonIcon />, index: 2,index2 : 5 },
     { text: "Agency", icon: <BusinessIcon />, index: 3,index2:6 },
     { text: "Admin", icon: <AdminPanelSettingsIcon />, index: 4,index2:4 },
+    { text: "Create New Order", icon: <NoteAddIcon />, index: 9,index2:9},
     { text: "Random", icon: <ShuffleIcon />, index: 7,index2:7 },
     { text: "Logout", icon: <ExitToApp />, index: 8, index2 : 8 }
   ];
