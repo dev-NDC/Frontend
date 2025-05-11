@@ -100,6 +100,18 @@ const MembershipInformation = () => {
               </Typography>
 
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>OrgId:</Typography>
+              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
+                {membershipInfo?.orgId || "N/A"}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Location code:</Typography>
+              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
+                {membershipInfo.locationCode || "N/A"}
+              </Typography>
+            </Grid>
           </Grid>
         </CardContent>
       </Card>
@@ -160,6 +172,30 @@ const MembershipInformation = () => {
                   <MenuItem value="Inactive">Inactive</MenuItem>
                 </Select>
               </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                size="small"
+                label="OrgId"
+                name="orgId"
+                value={tempMembershipInfo.orgId || ""}
+                onChange={handleChange}
+                variant="outlined"
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                size="small"
+                label="Location Code"
+                name="locationCode"
+                value={tempMembershipInfo.locationCode || ""}
+                onChange={handleChange}
+                variant="outlined"
+              />
             </Grid>
           </Grid>
           <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>
