@@ -108,7 +108,7 @@ function DisplayResult() {
                     {results.map((result, index) => (
                         <TableRow key={index}>
                             <TableCell>{index + 1}</TableCell>
-                            <TableCell>{result.name}</TableCell>
+                            <TableCell>{result.driverName}</TableCell>
                             <TableCell>{result.licenseNumber}</TableCell>
                             <TableCell>{new Date(result.date).toLocaleDateString()}</TableCell>
                             <TableCell>{result.testType}</TableCell>

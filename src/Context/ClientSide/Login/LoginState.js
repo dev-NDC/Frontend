@@ -15,8 +15,6 @@ const LoginState = (props) => {
 
     const loginSubmit = async () => {
         try {
-            console.log("Login function called");
-            console.log(API_URL);
             const data = {
                 email, password
             };
@@ -28,7 +26,6 @@ const LoginState = (props) => {
             let token = response.data.token;
             let role = response.data.role;
             Cookies.set('token', token, { expires: 30 });
-            console.log(response)
             // Handle navigation based on roles
             if (rememberMe) {
                 localStorage.setItem("rememberedEmail", email);

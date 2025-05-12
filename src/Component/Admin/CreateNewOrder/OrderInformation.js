@@ -14,8 +14,7 @@ import CreateNewOrderContext from "../../../Context/Admin/CreateNewOrder/CreateN
 const API_URL = process.env.REACT_APP_API_URL;
 
 function OrderInformation() {
-    const { orderReasonId, packageId, companyId, allCompanyData, currentPosition, maxPosition, setAllCompanyData, setCurrentPosition, setCompanyId, setPackageId, setOrderReasonId, setMaxPosition } =
-        useContext(CreateNewOrderContext);
+    const { orderReasonId, packageId, companyId, allCompanyData, currentPosition, maxPosition, setAllCompanyData, setCurrentPosition, setCompanyId, setPackageId, setOrderReasonId, setMaxPosition, setFormData } = useContext(CreateNewOrderContext);
 
     const [availablePackages, setAvailablePackages] = useState([]);
     const [availableReasons, setAvailableReasons] = useState([]);
@@ -48,8 +47,16 @@ function OrderInformation() {
         setOrderReasonId("");
 
         const selectedCompany = allCompanyData.find(c => c._id === selectedId);
+        setFormData((prev) => ({
+            ...prev,
+            address: selectedCompany.companyDetails.address || "",
+            city: selectedCompany.companyDetails.city || "",
+            zip: selectedCompany.companyDetails.zip || "",
+            phone1: selectedCompany.companyDetails.contactNumber || "",
+        }));
         setAvailablePackages(selectedCompany?.packages || []);
         setAvailableReasons(selectedCompany?.orderReasons || []);
+
     };
 
     const handlePackageChange = (e) => {

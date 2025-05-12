@@ -20,6 +20,7 @@ const CustomerState = (props) => {
                 .then(response => {
                     setUserDetails(response.data.data);
                     setCurrentCompany(response?.data?.data?.companyInfoData?.companyName)
+                    console.log(response.data.data)
                     setLoading(false);
                 })
                 .catch((error) => {
