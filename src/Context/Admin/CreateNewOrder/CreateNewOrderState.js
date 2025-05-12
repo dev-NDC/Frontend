@@ -13,6 +13,12 @@ const CreateNewOrderState = (props) => {
     const [companyId, setCompanyId] = useState("");
     const [packageId, setPackageId] = useState("");
     const [orderReasonId, setOrderReasonId] = useState("");
+    const [caseNumber, setCaseNumber] = useState("");
+
+    const [selectedSiteId, setSelectedSiteId] = useState(null);
+    const [selectedSiteDetails, setSelectedSiteDetails] = useState(null);
+    const [finlSelectedSite, setFinalSelectedSite] = useState(null)
+    const [savedPincode, setSavedPincode] = useState("");
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -35,19 +41,21 @@ const CreateNewOrderState = (props) => {
 
     const [siteInformation, setSiteInformation] = useState([]);
     const [siteInformationLoading, setSiteInformationLoading] = useState(false);
+    const [submitLoading, setSubmitLoading] = useState(false);
 
     const getSiteInformation = async () => {
         const token = Cookies.get("token");
-        setSiteInformationLoading(true);
         if (token) {
+            setSiteInformationLoading(true);
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             await axios.post(`${API_URL}/admin/getSiteInformation`, { companyId, packageId, orderReasonId, formData })
                 .then(response => {
                     setSiteInformation(response.data.data);
                     setSiteInformationLoading(false);
-                    console.log(response.data.data)
+                    setCaseNumber(response.data.caseNumber);
                 })
                 .catch((error) => {
+                    setSiteInformationLoading(false);
                     console.error("Error fetching user details:", error);
                 });
         } else {
@@ -55,8 +63,50 @@ const CreateNewOrderState = (props) => {
         }
     }
 
+    const handleNewPincode = async (data) => {
+        const token = Cookies.get("token");
+        formData.zip = savedPincode;
+        if (token) {
+            setSiteInformationLoading(true);
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            await axios.post(`${API_URL}/admin/handleNewPincode`, { caseNumber, data })
+                .then(response => {
+                    setSiteInformation(response.data.data);
+                    setSiteInformationLoading(false);
+                })
+                .catch((error) => {
+                    setSiteInformationLoading(false);
+                    console.error("Error fetching user details:", error);
+                });
+        } else {
+            toast.error("Invalid access, Please login again");
+        }
+    }
+
+    const newDriverSubmitOrder = async () => {
+        const token = Cookies.get("token");
+        if (token) {
+            setSubmitLoading(true);
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            await axios.post(`${API_URL}/admin/newDriverSubmitOrder`, { companyId, packageId, orderReasonId, caseNumber, formData, finlSelectedSite })
+                .then(response => {
+                    toast.success(response.data.message)
+                    setSubmitLoading(false);
+                    setAllCompanyData([])
+                    setCompanyId("");
+                    setPackageId("");
+                    setOrderReasonId("");
+                })
+                .catch((error) => {
+                    toast.error(error?.response?.data?.message)
+                });
+        } else {
+            toast.error("Invalid access, Please login again");
+        }
+    }
+
     return (
-        <CreateNewOrderContext.Provider value={{ orderReasonId, packageId, companyId, allCompanyData, currentPosition, maxPosition, formData, siteInformation,siteInformationLoading, setSiteInformation, getSiteInformation, setFormData, setAllCompanyData, setCurrentPosition, setCompanyId, setPackageId, setOrderReasonId, setMaxPosition }}>
+        <CreateNewOrderContext.Provider value={{ orderReasonId, packageId, companyId, allCompanyData, currentPosition, maxPosition, formData, siteInformation, siteInformationLoading, selectedSiteId, selectedSiteDetails, finlSelectedSite, submitLoading, handleNewPincode, setSavedPincode, setSubmitLoading, newDriverSubmitOrder, setFinalSelectedSite, setSelectedSiteDetails, setSelectedSiteId, setSiteInformation, getSiteInformation, setFormData, setAllCompanyData, setCurrentPosition, setCompanyId, setPackageId, setOrderReasonId, setMaxPosition }}>
             {props.children}
         </CreateNewOrderContext.Provider>
     )

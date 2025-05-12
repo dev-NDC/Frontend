@@ -109,21 +109,30 @@ function DisplayCertificate() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {certificates.map((cert, index) => (
-                        <TableRow key={cert._id || index}>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{cert.description}</TableCell>
-                            <TableCell>{new Date(cert.issueDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(cert.expirationDate).toLocaleDateString()}</TableCell>
-                            <TableCell align="right">
-                                <IconButton onClick={() => handleOpen("view", cert)}><Visibility /></IconButton>
-                                <IconButton onClick={() => handleDownload(cert)}><Download /></IconButton>
-                                <IconButton onClick={() => handleOpen("edit", cert)}><Edit /></IconButton>
-                                <IconButton onClick={() => handleOpen("delete", cert)}><Delete /></IconButton>
+                    {certificates.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={5} align="center">
+                                <strong>No certificate to show</strong>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    ) : (
+                        certificates.map((cert, index) => (
+                            <TableRow key={cert._id || index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{cert.description}</TableCell>
+                                <TableCell>{new Date(cert.issueDate).toLocaleDateString()}</TableCell>
+                                <TableCell>{new Date(cert.expirationDate).toLocaleDateString()}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton onClick={() => handleOpen("view", cert)}><Visibility /></IconButton>
+                                    <IconButton onClick={() => handleDownload(cert)}><Download /></IconButton>
+                                    <IconButton onClick={() => handleOpen("edit", cert)}><Edit /></IconButton>
+                                    <IconButton onClick={() => handleOpen("delete", cert)}><Delete /></IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
                 </TableBody>
+
             </Table>
 
             {/* View Modal */}

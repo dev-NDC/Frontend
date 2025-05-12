@@ -105,7 +105,7 @@ function AllQuarter() {
                                 ) : (
                                     <TableRow>
                                         <TableCell colSpan={7} align="center">
-                                            No data found.
+                                            <b>No data found.</b>
                                         </TableCell>
                                     </TableRow>
                                 )}

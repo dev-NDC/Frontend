@@ -12,7 +12,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
 function DisplayInvoice() {
-    const { currentId, userDetails,getSingleUserData } = useContext(CustomerContext);
+    const { currentId, userDetails, getSingleUserData } = useContext(CustomerContext);
     const { updateInvoice, deleteInvoice } = useContext(InvoiceContext);
 
     const [loading, setLoading] = useState(true);
@@ -98,21 +98,29 @@ function DisplayInvoice() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {invoices.map((invoice, index) => (
-                        <TableRow key={index}>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{invoice.invoiceNumber}</TableCell>
-                            <TableCell>${invoice.amount}</TableCell>
-                            <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>
-                            <TableCell>{invoice.status}</TableCell>
-                            <TableCell align="right">
-                                <IconButton onClick={() => handleOpen("view", invoice)}><Visibility /></IconButton>
-                                <IconButton onClick={() => handleDownload(invoice)}><Download /></IconButton>
-                                <IconButton onClick={() => handleOpen("edit", invoice)}><Edit /></IconButton>
-                                <IconButton onClick={() => handleOpen("delete", invoice)}><Delete /></IconButton>
+                    {invoices.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={6} align="center">
+                                <strong>No invoice to show</strong>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    ) : (
+                        invoices.map((invoice, index) => (
+                            <TableRow key={index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{invoice.invoiceNumber}</TableCell>
+                                <TableCell>${invoice.amount}</TableCell>
+                                <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>
+                                <TableCell>{invoice.status}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton onClick={() => handleOpen("view", invoice)}><Visibility /></IconButton>
+                                    <IconButton onClick={() => handleDownload(invoice)}><Download /></IconButton>
+                                    <IconButton onClick={() => handleOpen("edit", invoice)}><Edit /></IconButton>
+                                    <IconButton onClick={() => handleOpen("delete", invoice)}><Delete /></IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
                 </TableBody>
             </Table>
 

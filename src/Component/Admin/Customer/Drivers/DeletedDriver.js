@@ -1,4 +1,4 @@
-import React, { useState , useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Menu, MenuItem, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, useMediaQuery } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -51,33 +51,42 @@ function DeletedDriver() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {drivers.map((driver, index) => (
-                        <TableRow key={index} hover>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{driver.name}</TableCell>
-                            {!isMobile && <TableCell>{driver.email}</TableCell>}
-                            {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
-                            {!isTablet && <TableCell>{new Date(driver.dob).toLocaleDateString()}</TableCell>}
-                            {!isTablet && <TableCell>{driver.phone}</TableCell>}
-                            {!isMobile && <TableCell>{new Date(driver.deletionDate).toLocaleDateString()}</TableCell>}
-                            <TableCell>
-                                <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                                <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
-                                    <MenuItem onClick={handleViewOpen}>View More Details</MenuItem>
-                                </Menu>
+                    {drivers.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={8} align="center">
+                                <strong>No deleted driver to show</strong>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    ) : (
+                        drivers.map((driver, index) => (
+                            <TableRow key={index} hover>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{driver.name}</TableCell>
+                                {!isMobile && <TableCell>{driver.email}</TableCell>}
+                                {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
+                                {!isTablet && <TableCell>{new Date(driver.dob).toLocaleDateString()}</TableCell>}
+                                {!isTablet && <TableCell>{driver.phone}</TableCell>}
+                                {!isMobile && <TableCell>{new Date(driver.deletionDate).toLocaleDateString()}</TableCell>}
+                                <TableCell>
+                                    <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
+                                        <MenuItem onClick={handleViewOpen}>View More Details</MenuItem>
+                                    </Menu>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
                 </TableBody>
+
             </Table>
 
             {/* View More Details Modal */}
             <Dialog open={viewOpen} onClose={() => setViewOpen(false)}>
                 <DialogTitle>Driver Details</DialogTitle>
                 <DialogContent>
-                    <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9",minWidth:'400px' }}>
+                    <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9", minWidth: '400px' }}>
                         <Typography variant="h6" gutterBottom>{selectedDriver?.name}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
                         <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.licenseNumber}</Typography>

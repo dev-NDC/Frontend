@@ -99,6 +99,8 @@ function DisplayResult() {
                         <TableCell style={{ color: "white" }}>License #</TableCell>
                         <TableCell style={{ color: "white" }}>Test Date</TableCell>
                         <TableCell style={{ color: "white" }}>Test Type</TableCell>
+                        <TableCell style={{ color: "white" }}>Status</TableCell>
+                        <TableCell style={{ color: "white" }}>Case Number</TableCell>
                         <TableCell style={{ color: "white" }} align="right">Actions</TableCell>
                     </TableRow>
                 </TableHead>
@@ -110,6 +112,8 @@ function DisplayResult() {
                             <TableCell>{result.licenseNumber}</TableCell>
                             <TableCell>{new Date(result.date).toLocaleDateString()}</TableCell>
                             <TableCell>{result.testType}</TableCell>
+                            <TableCell>{result.status}</TableCell>
+                            <TableCell>{result.caseNumber}</TableCell>
                             <TableCell align="right">
                                 <IconButton onClick={() => handleOpen("view", result)}><Visibility /></IconButton>
                                 <IconButton onClick={() => handleDownload(result)}><Download /></IconButton>

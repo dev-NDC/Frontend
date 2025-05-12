@@ -85,27 +85,36 @@ function ActiveDriver() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {drivers.map((driver, index) => (
-                        <TableRow key={index} hover>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{driver.name}</TableCell>
-                            {!isMobile && <TableCell>{driver.email}</TableCell>}
-                            {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
-                            {!isTablet && <TableCell>{driver.dob}</TableCell>}
-                            {!isTablet && <TableCell>{driver.phone}</TableCell>}
-                            <TableCell>
-                                <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                                <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
-                                    <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
-                                    <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-                                    <MenuItem onClick={handleViewOpen}>View More Details</MenuItem>
-                                </Menu>
+                    {drivers.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={isTablet ? 3 : isMobile ? 2 : 6} align="center">
+                                <b>No active driver</b>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    ) : (
+                        drivers.map((driver, index) => (
+                            <TableRow key={index} hover>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{driver.name}</TableCell>
+                                {!isMobile && <TableCell>{driver.email}</TableCell>}
+                                {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
+                                {!isTablet && <TableCell>{driver.dob}</TableCell>}
+                                {!isTablet && <TableCell>{driver.phone}</TableCell>}
+                                <TableCell>
+                                    <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
+                                        <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
+                                        <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
+                                        <MenuItem onClick={handleViewOpen}>View More Details</MenuItem>
+                                    </Menu>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
                 </TableBody>
+
             </Table>
 
             {/* Edit Modal */}

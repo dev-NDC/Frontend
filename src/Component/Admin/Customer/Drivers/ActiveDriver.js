@@ -10,7 +10,7 @@ import CustomerContext from "../../../../Context/Admin/Customer/CustomerContext"
 import DriverContext from "../../../../Context/Admin/Customer/Driver/DriverContext";
 
 function ActiveDriver() {
-    const { userDetails,currentId,getSingleUserData } = useContext(CustomerContext);
+    const { userDetails, currentId, getSingleUserData } = useContext(CustomerContext);
     const { updateDriver, deleteDriver } = useContext(DriverContext);
     const [drivers, setDrivers] = useState([]);
     const [menuAnchor, setMenuAnchor] = useState(null);
@@ -86,27 +86,35 @@ function ActiveDriver() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {drivers.map((driver, index) => (
-                        <TableRow key={index} hover>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{driver.name}</TableCell>
-                            {!isMobile && <TableCell>{driver.email}</TableCell>}
-                            {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
-                            {!isTablet && <TableCell>{new Date(driver.dob).toLocaleDateString()}</TableCell>}
-                            {!isTablet && <TableCell>{driver.phone}</TableCell>}
-                            {!isTablet && <TableCell>{driver.createdBy}</TableCell>}
-                            <TableCell>
-                                <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                                <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
-                                    <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
-                                    <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-                                    <MenuItem onClick={handleViewOpen}>View More Details</MenuItem>
-                                </Menu>
+                    {drivers.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={8} align="center">
+                                <strong>No Active driver to show</strong>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    ) : (
+                        drivers.map((driver, index) => (
+                            <TableRow key={index} hover>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{driver.first_name} {driver.last_name}</TableCell>
+                                {!isMobile && <TableCell>{driver.email}</TableCell>}
+                                {!isTablet && <TableCell>{driver.government_id}</TableCell>}
+                                {!isTablet && <TableCell>{new Date(driver.dob).toLocaleDateString()}</TableCell>}
+                                {!isTablet && <TableCell>{driver.phone}</TableCell>}
+                                {!isTablet && <TableCell>{driver.createdBy}</TableCell>}
+                                <TableCell>
+                                    <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
+                                        <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
+                                        <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
+                                        <MenuItem onClick={handleViewOpen}>View More Details</MenuItem>
+                                    </Menu>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
                 </TableBody>
             </Table>
 
@@ -142,7 +150,7 @@ function ActiveDriver() {
             <Dialog open={viewOpen} onClose={() => setViewOpen(false)}>
                 <DialogTitle>Driver Details</DialogTitle>
                 <DialogContent>
-                    <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9", minWidth:'400px' }}>
+                    <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9", minWidth: '400px' }}>
                         <Typography variant="h6" gutterBottom>{selectedDriver?.name}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
                         <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.licenseNumber}</Typography>

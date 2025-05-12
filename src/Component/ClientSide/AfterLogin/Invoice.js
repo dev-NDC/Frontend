@@ -56,29 +56,38 @@ function Invoice() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {invoices.map((invoice, index) => (
-                            <TableRow key={index} hover>
-                                <TableCell>{invoice.invoiceNumber}</TableCell>
-                                {!isMobile && <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>}
-                                {!isMobile && <TableCell>${invoice.amount}</TableCell>}
-                                {!isMobile && (
-                                    <TableCell>
-                                        <Typography sx={{ color: invoice.status === "Paid" ? "green" : "red" }}>
-                                            {invoice.status}
-                                        </Typography>
-                                    </TableCell>
-                                )}
-                                <TableCell>
-                                    <IconButton onClick={(event) => handleMenuOpen(event, invoice)}>
-                                        <MoreVertIcon />
-                                    </IconButton>
-                                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
-                                        <MenuItem onClick={handleViewOpen}>View Details</MenuItem>
-                                    </Menu>
+                        {invoices.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={isMobile ? 2 : 5} align="center">
+                                    <b>No invoices found</b>
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ) : (
+                            invoices.map((invoice, index) => (
+                                <TableRow key={index} hover>
+                                    <TableCell>{invoice.invoiceNumber}</TableCell>
+                                    {!isMobile && <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>}
+                                    {!isMobile && <TableCell>${invoice.amount}</TableCell>}
+                                    {!isMobile && (
+                                        <TableCell>
+                                            <Typography sx={{ color: invoice.status === "Paid" ? "green" : "red" }}>
+                                                {invoice.status}
+                                            </Typography>
+                                        </TableCell>
+                                    )}
+                                    <TableCell>
+                                        <IconButton onClick={(event) => handleMenuOpen(event, invoice)}>
+                                            <MoreVertIcon />
+                                        </IconButton>
+                                        <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
+                                            <MenuItem onClick={handleViewOpen}>View Details</MenuItem>
+                                        </Menu>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
                     </TableBody>
+
                 </Table>
 
                 {/* View Details Modal */}

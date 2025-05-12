@@ -1,4 +1,4 @@
-import React, { useState , useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Menu, MenuItem, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, useMediaQuery } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import HomeContext from "../../../../Context/ClientSide/AfterLogin/Home/HomeContext";
@@ -50,26 +50,37 @@ function DeletedDriver() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {drivers.map((driver, index) => (
-                        <TableRow key={index} hover>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{driver.name}</TableCell>
-                            {!isMobile && <TableCell>{driver.email}</TableCell>}
-                            {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
-                            {!isTablet && <TableCell>{driver.dob}</TableCell>}
-                            {!isTablet && <TableCell>{driver.phone}</TableCell>}
-                            {!isMobile && <TableCell>{new Date(driver.deletionDate).toLocaleDateString()}</TableCell>}
-                            <TableCell>
-                                <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                                <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
-                                    <MenuItem onClick={handleViewOpen}>View More Details</MenuItem>
-                                </Menu>
+                    {drivers.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={isTablet ? 4 : isMobile ? 3 : 7} align="center">
+                                <b>No deleted drivers</b>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    ) : (
+                        drivers.map((driver, index) => (
+                            <TableRow key={index} hover>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{driver.name}</TableCell>
+                                {!isMobile && <TableCell>{driver.email}</TableCell>}
+                                {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
+                                {!isTablet && <TableCell>{driver.dob}</TableCell>}
+                                {!isTablet && <TableCell>{driver.phone}</TableCell>}
+                                {!isMobile && (
+                                    <TableCell>{new Date(driver.deletionDate).toLocaleDateString()}</TableCell>
+                                )}
+                                <TableCell>
+                                    <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
+                                        <MenuItem onClick={handleViewOpen}>View More Details</MenuItem>
+                                    </Menu>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
                 </TableBody>
+
             </Table>
 
             {/* View More Details Modal */}
