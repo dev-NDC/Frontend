@@ -24,7 +24,9 @@ function ActiveDriver() {
 
     useEffect(() => {
         if (userDetails?.drivers) {
-            const activeDrivers = userDetails.drivers.filter(driver => !driver.isDeleted);
+            const activeDrivers = userDetails.drivers.filter(
+                driver => !driver.isDeleted && driver.isActive === true
+            );
             setDrivers(activeDrivers);
         }
     }, [userDetails]);

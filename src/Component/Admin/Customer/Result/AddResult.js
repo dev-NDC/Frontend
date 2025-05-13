@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
     Button,
     TextField,
@@ -6,34 +6,51 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Typography
+    Typography,
+    MenuItem,
+    Select,
+    FormControl,
+    InputLabel
 } from "@mui/material";
 import CustomerContext from "../../../../Context/Admin/Customer/CustomerContext";
 import ResultContext from "../../../../Context/Admin/Customer/Result/ResultContext";
 
 function AddResult() {
-    const { currentId, getSingleUserData } = useContext(CustomerContext);
+    const { currentId, getSingleUserData, userDetails } = useContext(CustomerContext);
     const { addResult } = useContext(ResultContext);
 
     const [open, setOpen] = useState(false);
+    const [drivers, setDrivers] = useState([]);
     const [resultData, setResultData] = useState({
-        name: "",
-        licenseNumber: "",
+        driverId: "",
         date: "",
         testType: "",
+        caseNumber :"",
         file: null,
+        status: "Pending",
     });
+
+    useEffect(() => {
+        // Load active & non-deleted drivers
+        if (userDetails?.drivers) {
+            const filteredDrivers = userDetails.drivers.filter(
+                (driver) => driver.isActive && !driver.isDeleted
+            );
+            setDrivers(filteredDrivers);
+        }
+    }, [userDetails]);
 
     const handleClickOpen = () => setOpen(true);
 
     const handleClose = () => {
         setOpen(false);
         setResultData({
-            name: "",
-            licenseNumber: "",
+            driverId: "",
             date: "",
             testType: "",
+            caseNumber:"",
             file: null,
+            status: "Pending",
         });
     };
 
@@ -51,11 +68,12 @@ function AddResult() {
 
     const handleSave = async () => {
         const formData = new FormData();
-        formData.append("name", resultData.name);
-        formData.append("licenseNumber", resultData.licenseNumber);
+        formData.append("driverId", resultData.driverId);
         formData.append("date", resultData.date);
         formData.append("testType", resultData.testType);
+        formData.append("caseNumber", resultData.caseNumber);
         formData.append("file", resultData.file);
+        formData.append("status", resultData.status);
         formData.append("currentId", currentId);
         await addResult(formData);
         getSingleUserData(currentId);
@@ -72,15 +90,15 @@ function AddResult() {
             <Button
                 onClick={handleClickOpen}
                 style={{
-                    backgroundColor: "#002D72",         // Navy Blue
-                    color: "#fff",                      // White text
+                    backgroundColor: "#002D72",
+                    color: "#fff",
                     borderRadius: "6px",
                     padding: "10px 20px",
                     fontWeight: "bold",
                     textTransform: "none",
                     display: "flex",
                     alignItems: "center",
-                    gap: "8px",                         // spacing between icon and text
+                    gap: "8px",
                     boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
                 }}
             >
@@ -90,22 +108,22 @@ function AddResult() {
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Add New Result</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        fullWidth
-                        margin="dense"
-                        label="Driver Name"
-                        name="name"
-                        value={resultData.name}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="dense"
-                        label="License Number"
-                        name="licenseNumber"
-                        value={resultData.licenseNumber}
-                        onChange={handleChange}
-                    />
+                    <FormControl fullWidth margin="dense">
+                        <InputLabel>Driver</InputLabel>
+                        <Select
+                            value={resultData.driverId}
+                            name="driverId"
+                            onChange={handleChange}
+                            label="Driver"
+                        >
+                            {drivers.map((driver) => (
+                                <MenuItem key={driver._id} value={driver._id}>
+                                    {driver.first_name} {driver.last_name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
                     <Typography variant="subtitle2" style={{ marginTop: "10px" }}>Test Date</Typography>
                     <TextField
                         fullWidth
@@ -124,6 +142,27 @@ function AddResult() {
                         value={resultData.testType}
                         onChange={handleChange}
                     />
+                    <TextField
+                        fullWidth
+                        margin="dense"
+                        label="Case Number"
+                        name="caseNumber"
+                        value={resultData.caseNumber}
+                        onChange={handleChange}
+                    />
+                    <FormControl fullWidth margin="dense">
+                        <InputLabel>Status</InputLabel>
+                        <Select
+                            value={resultData.status}
+                            name="status"
+                            onChange={handleChange}
+                            label="Status"
+                        >
+                            <MenuItem value="Pending">Pending</MenuItem>
+                            <MenuItem value="Positive">Positive</MenuItem>
+                            <MenuItem value="Negative">Negative</MenuItem>
+                        </Select>
+                    </FormControl>
                     <Typography variant="subtitle2" style={{ marginTop: "10px" }}>Upload File</Typography>
                     <input
                         type="file"

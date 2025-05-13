@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import {
     Dialog, DialogTitle, DialogContent, DialogActions, Button,
     IconButton, Table, TableBody, TableCell, TableContainer,
-    TableHead, TableRow, Typography, TextField, CircularProgress
+    TableHead, TableRow, Typography, TextField, MenuItem, CircularProgress
 } from "@mui/material";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -11,7 +11,7 @@ import CustomerContext from "../../../../Context/Admin/Customer/CustomerContext"
 import ResultContext from "../../../../Context/Admin/Customer/Result/ResultContext";
 
 function DisplayResult() {
-    const { currentId, userDetails,getSingleUserData } = useContext(CustomerContext);
+    const { currentId, userDetails, getSingleUserData } = useContext(CustomerContext);
     const { updateResult, deleteResult } = useContext(ResultContext);
 
     const [loading, setLoading] = useState(true);
@@ -19,6 +19,7 @@ function DisplayResult() {
     const [openModal, setOpenModal] = useState(null);
     const [selectedResult, setSelectedResult] = useState(null);
     const [editData, setEditData] = useState({});
+    const [previewUrl, setPreviewUrl] = useState(null);
 
     useEffect(() => {
         if (userDetails?.results) {
@@ -27,9 +28,19 @@ function DisplayResult() {
         }
     }, [userDetails]);
 
+    useEffect(() => {
+        return () => {
+            if (previewUrl) URL.revokeObjectURL(previewUrl);
+        };
+    }, [previewUrl]);
+
     const handleOpen = (type, result) => {
         setSelectedResult(result);
-        setEditData(result);
+        setEditData({
+            status: result.status,
+        });
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(null);
         setOpenModal(type);
     };
 
@@ -37,6 +48,8 @@ function DisplayResult() {
         setOpenModal(null);
         setSelectedResult(null);
         setEditData({});
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(null);
     };
 
     const handleDownload = async (result) => {
@@ -48,15 +61,15 @@ function DisplayResult() {
         container.style.backgroundColor = "white";
         container.innerHTML = `
             <h2>Test Result</h2>
-            <p><strong>Name:</strong> ${result.name}</p>
+            <p><strong>Name:</strong> ${result.driverName}</p>
             <p><strong>License Number:</strong> ${result.licenseNumber}</p>
             <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString()}</p>
             <p><strong>Test Type:</strong> ${result.testType}</p>
             <img id="resultImage" src="" style="width:100%; margin-top:10px; border-radius:10px;" />
         `;
 
-        const blob = new Blob([new Uint8Array(result.file.data)], { type: result.mimeType });
-        const imageUrl = URL.createObjectURL(blob);
+        // Base64 image src
+        const imageUrl = `data:${result.mimeType};base64,${result.file}`;
         container.querySelector("#resultImage").src = imageUrl;
 
         document.body.appendChild(container);
@@ -69,14 +82,24 @@ function DisplayResult() {
         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${result.name || "result"}.pdf`);
+        pdf.save(`${result.driverName || "result"}.pdf`);
 
         document.body.removeChild(container);
-        URL.revokeObjectURL(imageUrl);
     };
 
+
     const handleUpdate = async () => {
-        await updateResult(currentId, selectedResult._id, editData);
+        const formData = new FormData();
+        formData.append("currentId", currentId);
+        formData.append("resultId", selectedResult._id);
+        formData.append("updatedData", JSON.stringify(editData));
+
+        // If previewUrl exists, that means a new file was selected
+        if (previewUrl && document.querySelector("input[type='file']").files[0]) {
+            formData.append("file", document.querySelector("input[type='file']").files[0]);
+        }
+
+        await updateResult(formData); // This should call your API with FormData
         getSingleUserData(currentId);
         handleClose();
     };
@@ -85,6 +108,29 @@ function DisplayResult() {
         await deleteResult(currentId, selectedResult._id);
         getSingleUserData(currentId);
         handleClose();
+    };
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const objectURL = URL.createObjectURL(file);
+            setPreviewUrl(objectURL);
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                if (ev.target.result) {
+                    const base64Data = ev.target.result.split(',')[1];
+                    setEditData((prev) => ({
+                        ...prev,
+                        file: {
+                            data: Array.from(atob(base64Data), c => c.charCodeAt(0))
+                        },
+                        mimeType: file.type
+                    }));
+                }
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     if (loading) return <CircularProgress />;
@@ -129,71 +175,79 @@ function DisplayResult() {
             <Dialog open={openModal === "view"} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Result Details</DialogTitle>
                 <DialogContent>
-                    <Typography gutterBottom><strong>Name:</strong> {selectedResult?.name}</Typography>
+                    <Typography gutterBottom><strong>Name:</strong> {selectedResult?.driverName}</Typography>
                     <Typography gutterBottom><strong>License Number:</strong> {selectedResult?.licenseNumber}</Typography>
                     <Typography gutterBottom><strong>Date:</strong> {new Date(selectedResult?.date).toLocaleDateString()}</Typography>
                     <Typography gutterBottom><strong>Test Type:</strong> {selectedResult?.testType}</Typography>
 
-                    {selectedResult?.file?.data && (
+                    {selectedResult?.file && (
                         <img
-                            src={URL.createObjectURL(
-                                new Blob(
-                                    [new Uint8Array(selectedResult.file.data)],
-                                    { type: selectedResult.mimeType || "image/png" }
-                                )
-                            )}
+                            src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
                             alt="Result"
                             style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
                         />
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary">Close</Button>
+                    <Button onClick={handleClose}>Close</Button>
                 </DialogActions>
             </Dialog>
 
             {/* Edit Modal */}
-            <Dialog open={openModal === "edit"} onClose={handleClose}>
+            <Dialog open={openModal === "edit"} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Edit Result</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        margin="dense"
-                        label="Name"
-                        fullWidth
-                        value={editData.name ?? ""}
-                        onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                    />
 
+                    {/* Status Dropdown */}
                     <TextField
+                        select
+                        label="Status"
                         margin="dense"
-                        label="License Number"
                         fullWidth
-                        value={editData.licenseNumber ?? ""}
-                        onChange={(e) => setEditData({ ...editData, licenseNumber: e.target.value })}
-                    />
+                        value={editData.status || ""}
+                        onChange={(e) => setEditData({ ...editData, status: e.target.value })}
+                    >
+                        <MenuItem value="">Select Status</MenuItem>
+                        <MenuItem value="Pending">Pending</MenuItem>
+                        <MenuItem value="Positive">Positive</MenuItem>
+                        <MenuItem value="Negative">Negative</MenuItem>
+                    </TextField>
 
-                    <TextField
-                        margin="dense"
-                        label="Test Date"
-                        type="date"
-                        fullWidth
-                        value={editData.date ? editData.date.slice(0, 10) : ""}
-                        onChange={(e) => setEditData({ ...editData, date: e.target.value })}
-                        InputLabelProps={{ shrink: true }}
-                    />
+                    {/* Upload Image */}
+                    <Button variant="contained" component="label" sx={{ mt: 2 }}>
+                        Upload Image
+                        <input
+                            type="file"
+                            hidden
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                        />
+                    </Button>
 
-                    <TextField
-                        margin="dense"
-                        label="Test Type"
-                        fullWidth
-                        value={editData.testType ?? ""}
-                        onChange={(e) => setEditData({ ...editData, testType: e.target.value })}
-                    />
+                    {/* Image Preview */}
+                    <div style={{ marginTop: "1rem" }}>
+                        <Typography variant="subtitle2">Image Preview:</Typography>
+                        {previewUrl ? (
+                            <img
+                                src={previewUrl}
+                                alt="New Preview"
+                                style={{ width: "100%", borderRadius: 8 }}
+                            />
+                        ) : selectedResult?.file ? (
+                            <img
+                                src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
+                                alt="Current"
+                                style={{ width: "100%", borderRadius: 8 }}
+                            />
+                        ) : (
+                            <Typography color="text.secondary">No image available.</Typography>
+                        )}
+                    </div>
 
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="secondary">Cancel</Button>
-                    <Button onClick={handleUpdate} color="primary" variant="contained">Update</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleUpdate} variant="contained" color="primary">Update</Button>
                 </DialogActions>
             </Dialog>
 
@@ -204,7 +258,7 @@ function DisplayResult() {
                     <Typography>Are you sure you want to delete this result?</Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary">Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleDelete} color="secondary" variant="contained">Delete</Button>
                 </DialogActions>
             </Dialog>

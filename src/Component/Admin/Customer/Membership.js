@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import {
-  Box, Card, CardContent, Typography, IconButton,
-  Modal, TextField, Button, Grid, Divider, useMediaQuery, CircularProgress
+  Box, Card, CardContent, Typography, IconButton, Modal,
+  TextField, Button, Grid, Divider, useMediaQuery, CircularProgress,
+  Chip
 } from "@mui/material";
 import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,30 +21,40 @@ const MembershipInformation = () => {
 
   useEffect(() => {
     if (userDetails?.Membership) {
-      setMembershipInfo(userDetails.Membership);
+      const mem = userDetails.Membership;
+      setMembershipInfo(mem);
       setTempMembershipInfo({
-        ...userDetails.Membership,
-        planStartDate: userDetails.Membership.planStartDate?.slice(0, 10) || "",
-        planEndDate: userDetails.Membership.planEndDate?.slice(0, 10) || ""
+        ...mem,
+        planStartDate: mem.planStartDate?.slice(0, 10) || "",
+        planEndDate: mem.planEndDate?.slice(0, 10) || "",
+        package: mem.package?.map(p => p.package_name) || [],
+        order_reason: mem.order_reason?.map(r => r.order_reason_name) || [],
       });
       setLoading(false);
     }
   }, [userDetails]);
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleChange = (e) => {
     setTempMembershipInfo({ ...tempMembershipInfo, [e.target.name]: e.target.value });
   };
 
+  const handleRemoveItem = (field, item) => {
+    setTempMembershipInfo(prev => ({
+      ...prev,
+      [field]: prev[field].filter(val => val !== item)
+    }));
+  };
+
   const handleUpdate = async () => {
-    await updateMembershipInformation(tempMembershipInfo);
+    const formattedInfo = {
+      ...tempMembershipInfo,
+      package: tempMembershipInfo.package.map(name => ({ package_name: name })),
+      order_reason: tempMembershipInfo.order_reason.map(name => ({ order_reason_name: name })),
+    };
+    await updateMembershipInformation(formattedInfo);
     setOpen(false);
   };
 
@@ -67,49 +78,49 @@ const MembershipInformation = () => {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Current Plan:</Typography>
-              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
-                {membershipInfo.selectedPlan || "N/A"}
+              <Typography variant="subtitle2">Current Plan:</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700 }}>{membershipInfo.selectedPlan || "N/A"}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="subtitle2">Join Date:</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700 }}>
+                {membershipInfo.planStartDate ? new Date(membershipInfo.planStartDate).toLocaleDateString() : "N/A"}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Join Date:</Typography>
-              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
-                {new Date(membershipInfo?.planStartDate).toLocaleDateString() || "N/A"}
+              <Typography variant="subtitle2">Expiry Date:</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700 }}>
+                {membershipInfo.planEndDate ? new Date(membershipInfo.planEndDate).toLocaleDateString() : "N/A"}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Expiry Date:</Typography>
-              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
-                {new Date(membershipInfo?.planEndDate).toLocaleDateString() || "N/A"}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Status:</Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  fontWeight: 700,
-                  color:
-                    membershipInfo.planStatus === "Active"
-                      ? "green"
-                      : "red"
-                }}
-              >
+              <Typography variant="subtitle2">Status:</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700, color: membershipInfo.planStatus === "Active" ? "green" : "red" }}>
                 {membershipInfo.planStatus || "N/A"}
               </Typography>
-
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>OrgId:</Typography>
-              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
-                {membershipInfo?.orgId || "N/A"}
+              <Typography variant="subtitle2">OrgId:</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700 }}>{membershipInfo.orgId || "N/A"}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="subtitle2">Location Code:</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700 }}>{membershipInfo.locationCode || "N/A"}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle2">Packages:</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700 }}>
+                {membershipInfo.package?.length
+                  ? membershipInfo.package.map((pkg) => pkg.package_name).join(", ")
+                  : "N/A"}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>Location code:</Typography>
-              <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
-                {membershipInfo.locationCode || "N/A"}
+            <Grid item xs={12}>
+              <Typography variant="subtitle2">Reason Names:</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700 }}>
+                {membershipInfo.order_reason?.length
+                  ? membershipInfo.order_reason.map((reason) => reason.order_reason_name).join(", ")
+                  : "N/A"}
               </Typography>
             </Grid>
           </Grid>
@@ -125,77 +136,74 @@ const MembershipInformation = () => {
           <Divider sx={{ mb: 3 }} />
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Current Plan"
-                name="selectedPlan"
-                value={tempMembershipInfo.selectedPlan || ""}
-                onChange={handleChange}
-                variant="outlined"
-              />
+              <TextField name="selectedPlan" fullWidth size="small" label="Current Plan" value={tempMembershipInfo.selectedPlan || ""} onChange={handleChange} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Join Date"
-                name="planStartDate"
-                type="date"
-                value={tempMembershipInfo.planStartDate || ""}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-              />
+              <TextField name="planStartDate" type="date" fullWidth size="small" label="Join Date" value={tempMembershipInfo.planStartDate || ""} onChange={handleChange} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Expiry Date"
-                name="planEndDate"
-                type="date"
-                value={tempMembershipInfo.planEndDate || ""}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-              />
+              <TextField name="planEndDate" type="date" fullWidth size="small" label="Expiry Date" value={tempMembershipInfo.planEndDate || ""} onChange={handleChange} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Status</InputLabel>
-                <Select
-                  name="planStatus"
-                  value={tempMembershipInfo.planStatus || ""}
-                  label="Status"
-                  onChange={handleChange}
-                >
+                <Select name="planStatus" value={tempMembershipInfo.planStatus || ""} onChange={handleChange} label="Status">
                   <MenuItem value="Active">Active</MenuItem>
                   <MenuItem value="Inactive">Inactive</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                size="small"
-                label="OrgId"
-                name="orgId"
-                value={tempMembershipInfo.orgId || ""}
-                onChange={handleChange}
-                variant="outlined"
-              />
+              <TextField name="orgId" fullWidth size="small" label="OrgId" value={tempMembershipInfo.orgId || ""} onChange={handleChange} />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField name="locationCode" fullWidth size="small" label="Location Code" value={tempMembershipInfo.locationCode || ""} onChange={handleChange} />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Location Code"
-                name="locationCode"
-                value={tempMembershipInfo.locationCode || ""}
-                onChange={handleChange}
-                variant="outlined"
-              />
+            {/* Selected Packages Chips */}
+            <Grid item xs={12}>
+              <Typography variant="subtitle2">Selected Packages:</Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
+                {tempMembershipInfo.package?.map((item, i) => (
+                  <Chip key={i} label={item} onDelete={() => handleRemoveItem("package", item)} />
+                ))}
+              </Box>
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Packages</InputLabel>
+                <Select multiple name="package" value={tempMembershipInfo.package || []} onChange={(e) => setTempMembershipInfo({ ...tempMembershipInfo, package: e.target.value })} renderValue={(selected) => selected.join(", ")}>
+                  <MenuItem value="DOT11">DOT11</MenuItem>
+                  <MenuItem value="DOTBATUR">DOTBATUR</MenuItem>
+                  <MenuItem value="NONDOT">NONDOT</MenuItem>
+                  <MenuItem value="DOTPACK">DOTPACK</MenuItem>
+                  <MenuItem value="NONPACK">NONPACK</MenuItem>
+                  <MenuItem value="NDCDEMO">NDCDEMO</MenuItem>
+                  <MenuItem value="DOTDEMO">DOTDEMO</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            {/* Selected Reasons Chips */}
+            <Grid item xs={12}>
+              <Typography variant="subtitle2">Selected Reasons:</Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
+                {tempMembershipInfo.order_reason?.map((item, i) => (
+                  <Chip key={i} label={item} onDelete={() => handleRemoveItem("order_reason", item)} />
+                ))}
+              </Box>
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Reason Names</InputLabel>
+                <Select multiple name="order_reason" value={tempMembershipInfo.order_reason || []} onChange={(e) => setTempMembershipInfo({ ...tempMembershipInfo, order_reason: e.target.value })} renderValue={(selected) => selected.join(", ")}>
+                  <MenuItem value="PRE-EMPLOYMENT">PRE-EMPLOYMENT</MenuItem>
+                  <MenuItem value="RANDOM">RANDOM</MenuItem>
+                  <MenuItem value="POST-ACCIDENT">POST-ACCIDENT</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
           <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>

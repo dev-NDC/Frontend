@@ -26,19 +26,25 @@ const ResultState = (props) => {
         }
     };
 
-    const updateResult = async (currentId, resultId, updatedData) => {
+    const updateResult = async (formData) => {
         try {
-            await axios.post(`${API_URL}/admin/editResult`, {
-                currentId,
-                resultId,
-                updatedData
+            const response = await axios.post(`${API_URL}/admin/editResult`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
             });
-            toast.success("Result updated successfully");
+
+            if (response.status !== 200) {
+                toast.error("Error adding result");
+            } else {
+                toast.success("Result added successfully");
+            }
         } catch (error) {
-            console.error("Update Result Error:", error);
-            toast.error("Failed to update result");
+            console.error("Add Result Error:", error);
+            toast.error("Error adding result");
         }
     };
+
 
     const deleteResult = async (currentId, resultId) => {
         try {

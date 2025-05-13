@@ -112,7 +112,7 @@ function OrderInformation() {
                             label="Package"
                         >
                             {availablePackages.map((pkg) => (
-                                <MenuItem key={pkg._id} value={pkg._id}>
+                                <MenuItem key={pkg._id} value={pkg.packageName}>
                                     {pkg.packageName}
                                 </MenuItem>
                             ))}
@@ -132,7 +132,7 @@ function OrderInformation() {
                             label="Order Reason"
                         >
                             {availableReasons.map((reason) => (
-                                <MenuItem key={reason._id} value={reason._id}>
+                                <MenuItem key={reason._id} value={reason.orderReasonName}>
                                     {reason.orderReasonName}
                                 </MenuItem>
                             ))}

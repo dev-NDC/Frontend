@@ -63,7 +63,7 @@ function DeletedDriver() {
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{driver.name}</TableCell>
                                 {!isMobile && <TableCell>{driver.email}</TableCell>}
-                                {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
+                                {!isTablet && <TableCell>{driver.government_id}</TableCell>}
                                 {!isTablet && <TableCell>{new Date(driver.dob).toLocaleDateString()}</TableCell>}
                                 {!isTablet && <TableCell>{driver.phone}</TableCell>}
                                 {!isMobile && <TableCell>{new Date(driver.deletionDate).toLocaleDateString()}</TableCell>}
@@ -89,7 +89,7 @@ function DeletedDriver() {
                     <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9", minWidth: '400px' }}>
                         <Typography variant="h6" gutterBottom>{selectedDriver?.name}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
-                        <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.licenseNumber}</Typography>
+                        <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.government_id}</Typography>
                         <Typography variant="body1"><strong>DOB:</strong> {selectedDriver?.dob}</Typography>
                         <Typography variant="body1"><strong>Phone No:</strong> {selectedDriver?.phone}</Typography>
                         <Typography variant="body1"><strong>Creation Date:</strong> {new Date(selectedDriver?.creationDate).toLocaleDateString()}</Typography>
