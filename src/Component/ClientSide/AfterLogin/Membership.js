@@ -52,24 +52,50 @@ function Membership() {
                 <Typography variant="h5" fontWeight="bold" gutterBottom>Membership Information</Typography>
                 <Box sx={{ mb: 2, p: 2, borderRadius: 2, bgcolor: "#f5f5f5" }}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                            <Typography><strong>Current Plan:</strong> {membership?.selectedPlan}</Typography>
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="subtitle2">Current Plan:</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 700 }}>{membership.selectedPlan || "N/A"}</Typography>
                         </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Typography><strong>Price:</strong> {membership?.price || "N/A"}</Typography>
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="subtitle2">Join Date:</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 700 }}>
+                                {membership.planStartDate ? new Date(membership.planStartDate).toLocaleDateString() : "N/A"}
+                            </Typography>
                         </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Typography><strong>Join Date:</strong> {new Date(membership?.planStartDate).toLocaleDateString()}</Typography>
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="subtitle2">Expiry Date:</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 700 }}>
+                                {membership.planEndDate ? new Date(membership.planEndDate).toLocaleDateString() : "N/A"}
+                            </Typography>
                         </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Typography><strong>Expiry Date:</strong> {new Date(membership?.planEndDate).toLocaleDateString()}</Typography>
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="subtitle2">Status:</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 700, color: membership.planStatus === "Active" ? "green" : "red" }}>
+                                {membership.planStatus || "N/A"}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="subtitle2">OrgId:</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 700 }}>{membership.orgId || "N/A"}</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="subtitle2">Location Code:</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 700 }}>{membership.locationCode || "N/A"}</Typography>
                         </Grid>
                         <Grid item xs={12}>
-                            <Typography>
-                                <strong>Status:</strong>{" "}
-                                <Box component="span" sx={{ color: membership.planStatus === "active" ? "green" : "red" }}>
-                                    <b>{membership.planStatus}</b>
-                                </Box>
+                            <Typography variant="subtitle2">Packages:</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 700 }}>
+                                {membership.package?.length
+                                    ? membership.package.map((pkg) => pkg.package_name).join(", ")
+                                    : "N/A"}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle2">Reason Names:</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 700 }}>
+                                {membership.order_reason?.length
+                                    ? membership.order_reason.map((reason) => reason.order_reason_name).join(", ")
+                                    : "N/A"}
                             </Typography>
                         </Grid>
                     </Grid>

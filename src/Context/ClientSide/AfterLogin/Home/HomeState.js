@@ -16,6 +16,7 @@ const HomeState = (props) => {
             axios.get(`${API_URL}/user/getdata`)
                 .then(response => {
                     setUserData(response.data.data);
+                    console.log(response.data.data)
                 })
                 .catch(() => {
                     toast.error("Server error, Please try again later");

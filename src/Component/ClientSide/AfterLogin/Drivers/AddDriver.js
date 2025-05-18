@@ -1,10 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
-import DriverContext from "../../../../Context/ClientSide/AfterLogin/Driver/DriverContext";
 import HomeContext from "../../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 
 function AddDriver() {
-    const {AddDriver} = useContext(DriverContext);
     const {updateUserData} = useContext(HomeContext);
     const [open, setOpen] = useState(false);
     const [driverData, setDriverData] = useState({

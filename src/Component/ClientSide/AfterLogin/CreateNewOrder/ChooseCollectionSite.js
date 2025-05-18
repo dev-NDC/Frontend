@@ -1,4 +1,4 @@
-import React, {useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
     Grid,
     Card,
@@ -31,12 +31,13 @@ function ChooseCollectionSite() {
         setMaxPosition,
         siteInformation,
         siteInformationLoading,
+        selectedSiteId, selectedSiteDetails, setSelectedSiteDetails, setSelectedSiteId, setFinalSelectedSite, setSavedPincode, handleNewPincode
     } = useContext(CreateNewOrderContext);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedSiteId, setSelectedSiteId] = useState(null);
     const [openModal, setOpenModal] = useState(false);
-    const [selectedSiteDetails, setSelectedSiteDetails] = useState(null);
+    const [pincodeModalOpen, setPincodeModalOpen] = useState(false);
+    const [enteredPincode, setEnteredPincode] = useState("");
 
     const sitesPerPage = 6;
 
@@ -45,8 +46,9 @@ function ChooseCollectionSite() {
     const currentSites = siteInformation.slice(indexOfFirstSite, indexOfLastSite);
     const totalPages = Math.ceil(siteInformation.length / sitesPerPage);
 
-    const handleSelectSite = (siteId) => {
-        setSelectedSiteId(siteId);
+    const handleSelectSite = (site) => {
+        setSelectedSiteId(site.collection_site_link_id);
+        setFinalSelectedSite(site)
     };
 
     const handlePrevious = () => {
@@ -70,6 +72,10 @@ function ChooseCollectionSite() {
         setSelectedSiteDetails(null);
     };
 
+    const handlechangePincode = (data) => {
+        handleNewPincode(data)
+    }
+
     if (siteInformationLoading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
@@ -80,6 +86,11 @@ function ChooseCollectionSite() {
 
     return (
         <Box p={3}>
+            <Box display="flex" justifyContent="flex-end" mb={2}>
+                <Button variant="outlined" onClick={() => setPincodeModalOpen(true)}>
+                    Change Pincode
+                </Button>
+            </Box>
             <Typography variant="h5" fontWeight={600} align="center" gutterBottom>
                 Choose a Collection Site
             </Typography>
@@ -102,7 +113,7 @@ function ChooseCollectionSite() {
                                     },
                                     position: 'relative'
                                 }}
-                                onClick={() => handleSelectSite(site.collection_site_link_id)}
+                                onClick={() => handleSelectSite(site)}
                             >
                                 <CardContent>
                                     {isSelected && (
@@ -150,7 +161,7 @@ function ChooseCollectionSite() {
                                             variant={isSelected ? "contained" : "outlined"}
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                handleSelectSite(site.collection_site_link_id);
+                                                handleSelectSite(site);
                                             }}
                                         >
                                             {isSelected ? "Selected" : "Select Site"}
@@ -163,6 +174,41 @@ function ChooseCollectionSite() {
                     );
                 })}
             </Grid>
+
+            <Dialog open={pincodeModalOpen} onClose={() => setPincodeModalOpen(false)} fullWidth maxWidth="xs">
+                <DialogTitle>Change Pincode</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body2" mb={1}>Enter new pincode:</Typography>
+                    <input
+                        type="text"
+                        value={enteredPincode}
+                        onChange={(e) => setEnteredPincode(e.target.value)}
+                        style={{
+                            width: "100%",
+                            padding: "10px",
+                            fontSize: "16px",
+                            border: "1px solid #ccc",
+                            borderRadius: "4px"
+                        }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setPincodeModalOpen(false)}>Cancel</Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => {
+                            setSavedPincode(enteredPincode);
+                            setPincodeModalOpen(false);
+                            handlechangePincode(enteredPincode);
+                            // You can now send `savedPincode` to the backend on form submission
+                        }}
+                        disabled={!enteredPincode.trim()}
+                    >
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
 
             {/* Pagination */}
             <Box display="flex" justifyContent="center" mt={4}>
@@ -196,60 +242,73 @@ function ChooseCollectionSite() {
             </Box>
 
             <Dialog open={openModal} onClose={handleCloseModal} fullWidth maxWidth="sm">
-    <DialogTitle>More Details</DialogTitle>
-    <DialogContent dividers>
-        <Typography gutterBottom><strong>Name:</strong> {selectedSiteDetails?.collection_site_city}</Typography>
-        <Typography gutterBottom><strong>Address:</strong> {selectedSiteDetails?.collection_site_address}</Typography>
-        <Typography gutterBottom><strong>Distance:</strong> {selectedSiteDetails?.distance_miles_numeric} miles</Typography>
-        <Typography gutterBottom><strong>Site Fax:</strong> {selectedSiteDetails?.collection_site_fax}</Typography>
-        <Typography gutterBottom><strong>Site Phone:</strong> {selectedSiteDetails?.collection_site_phone}</Typography>
+                <DialogTitle>
+                    <Box display="flex" justifyContent="center">
+                        <img
+                            src={
+                                selectedSiteDetails?.resulting_vendor_name === "Quest Diagnostics"
+                                    ? "./Images/Admin/Quest-Diagnostics-logo.png"
+                                    : "./Images/Admin/Labcorp_Logo_updated_12-2020.svg.png"
+                            }
+                            alt="Vendor Logo"
+                            style={{ maxWidth: "100px", height: "auto" }}
+                        />
+                    </Box>
+                </DialogTitle>
 
-        <Box mt={3}>
-            <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                Weekly Operating Hours
-            </Typography>
-            <Table size="small">
-                <TableHead>
-                    <TableRow>
-                        <TableCell><strong>Day</strong></TableCell>
-                        <TableCell><strong>Opening</strong></TableCell>
-                        <TableCell><strong>Closing</strong></TableCell>
-                        <TableCell><strong>Open During Lunch</strong></TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {[
-                        "mon",
-                        "tue",
-                        "wed",
-                        "thur",
-                        "fri",
-                        "sat",
-                        "sun",
-                    ].map((day) => {
-                        const opening = selectedSiteDetails?.[`${day}_open`];
-                        const closing = selectedSiteDetails?.[`${day}_close`];
-                        const lunch = selectedSiteDetails?.[`${day}_open_lunch`] === "1";
+                <DialogContent dividers>
+                    <Typography gutterBottom><strong>Name:</strong> {selectedSiteDetails?.collection_site_city}</Typography>
+                    <Typography gutterBottom><strong>Address:</strong> {selectedSiteDetails?.collection_site_address}</Typography>
+                    <Typography gutterBottom><strong>Distance:</strong> {selectedSiteDetails?.distance_miles_numeric} miles</Typography>
+                    <Typography gutterBottom><strong>Site Fax:</strong> {selectedSiteDetails?.collection_site_fax}</Typography>
+                    <Typography gutterBottom><strong>Site Phone:</strong> {selectedSiteDetails?.collection_site_phone}</Typography>
 
-                        const isClosed = !opening && !closing;
+                    <Box mt={3}>
+                        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                            Weekly Operating Hours
+                        </Typography>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell><strong>Day</strong></TableCell>
+                                    <TableCell><strong>Opening</strong></TableCell>
+                                    <TableCell><strong>Closing</strong></TableCell>
+                                    <TableCell><strong>Open During Lunch</strong></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {[
+                                    "mon",
+                                    "tue",
+                                    "wed",
+                                    "thur",
+                                    "fri",
+                                    "sat",
+                                    "sun",
+                                ].map((day) => {
+                                    const opening = selectedSiteDetails?.[`${day}_open`];
+                                    const closing = selectedSiteDetails?.[`${day}_close`];
+                                    const lunch = selectedSiteDetails?.[`${day}_open_lunch`] === "1";
 
-                        return (
-                            <TableRow key={day}>
-                                <TableCell sx={{ textTransform: "capitalize" }}>{day}</TableCell>
-                                <TableCell>{isClosed ? "Closed" : opening}</TableCell>
-                                <TableCell>{isClosed ? "—" : closing}</TableCell>
-                                <TableCell>{isClosed ? "—" : lunch ? "Yes" : "No"}</TableCell>
-                            </TableRow>
-                        );
-                    })}
-                </TableBody>
-            </Table>
-        </Box>
-    </DialogContent>
-    <DialogActions>
-        <Button onClick={handleCloseModal}>Close</Button>
-    </DialogActions>
-</Dialog>
+                                    const isClosed = !opening && !closing;
+
+                                    return (
+                                        <TableRow key={day}>
+                                            <TableCell sx={{ textTransform: "capitalize" }}>{day}</TableCell>
+                                            <TableCell>{isClosed ? "Closed" : opening}</TableCell>
+                                            <TableCell>{isClosed ? "—" : closing}</TableCell>
+                                            <TableCell>{isClosed ? "—" : lunch ? "Yes" : "No"}</TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseModal}>Close</Button>
+                </DialogActions>
+            </Dialog>
 
         </Box>
     );

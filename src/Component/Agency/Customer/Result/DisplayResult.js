@@ -2,23 +2,20 @@ import React, { useContext, useState, useEffect } from "react";
 import {
     Dialog, DialogTitle, DialogContent, DialogActions, Button,
     IconButton, Table, TableBody, TableCell, TableContainer,
-    TableHead, TableRow, Typography, TextField, CircularProgress
+    TableHead, TableRow, Typography, CircularProgress
 } from "@mui/material";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import { Edit, Delete, Visibility, Download } from "@mui/icons-material";
+import { Visibility, Download } from "@mui/icons-material";
 import CustomerContext from "../../../../Context/Agency/Customer/CustomerContext";
-import ResultContext from "../../../../Context/Agency/Customer/Result/ResultContext";
 
 function DisplayResult() {
-    const { currentId, userDetails, getSingleUserData } = useContext(CustomerContext);
-    const { updateResult, deleteResult } = useContext(ResultContext);
+    const { userDetails } = useContext(CustomerContext);
 
     const [loading, setLoading] = useState(true);
     const [results, setResults] = useState([]);
     const [openModal, setOpenModal] = useState(null);
     const [selectedResult, setSelectedResult] = useState(null);
-    const [editData, setEditData] = useState({});
 
     useEffect(() => {
         if (userDetails?.results) {
@@ -29,14 +26,12 @@ function DisplayResult() {
 
     const handleOpen = (type, result) => {
         setSelectedResult(result);
-        setEditData(result);
         setOpenModal(type);
     };
 
     const handleClose = () => {
         setOpenModal(null);
         setSelectedResult(null);
-        setEditData({});
     };
 
     const handleDownload = async (result) => {
@@ -47,17 +42,16 @@ function DisplayResult() {
         container.style.padding = "20px";
         container.style.backgroundColor = "white";
         container.innerHTML = `
-            <h2>Test Result</h2>
-            <p><strong>Name:</strong> ${result.name}</p>
-            <p><strong>License Number:</strong> ${result.licenseNumber}</p>
-            <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString()}</p>
-            <p><strong>Test Type:</strong> ${result.testType}</p>
-            <img id="resultImage" src="" style="width:100%; margin-top:10px; border-radius:10px;" />
-        `;
-
-        const blob = new Blob([new Uint8Array(result.file.data)], { type: result.mimeType });
-        const imageUrl = URL.createObjectURL(blob);
-        container.querySelector("#resultImage").src = imageUrl;
+        <h2>Test Result</h2>
+        <p><strong>Name:</strong> ${result.driverName}</p>
+        <p><strong>License Number:</strong> ${result.licenseNumber}</p>
+        <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString()}</p>
+        <p><strong>Test Type:</strong> ${result.testType}</p>
+        <p><strong>Status:</strong> ${result.status}</p>
+        <p><strong>Case Number:</strong> ${result.caseNumber}</p>
+        <img id="resultImage" src="data:${result.mimeType};base64,${result.file}" 
+             style="width:100%; margin-top:10px; border-radius:10px;" />
+    `;
 
         document.body.appendChild(container);
 
@@ -69,23 +63,11 @@ function DisplayResult() {
         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${result.name || "result"}.pdf`);
+        pdf.save(`${result.driverName || "result"}.pdf`);
 
         document.body.removeChild(container);
-        URL.revokeObjectURL(imageUrl);
     };
 
-    const handleUpdate = async () => {
-        await updateResult(currentId, selectedResult._id, editData);
-        getSingleUserData(currentId);
-        handleClose();
-    };
-
-    const handleDelete = async () => {
-        await deleteResult(currentId, selectedResult._id);
-        getSingleUserData(currentId);
-        handleClose();
-    };
 
     if (loading) return <CircularProgress />;
 
@@ -99,6 +81,8 @@ function DisplayResult() {
                         <TableCell style={{ color: "white" }}>License #</TableCell>
                         <TableCell style={{ color: "white" }}>Test Date</TableCell>
                         <TableCell style={{ color: "white" }}>Test Type</TableCell>
+                        <TableCell style={{ color: "white" }}>Status</TableCell>
+                        <TableCell style={{ color: "white" }}>Case Number</TableCell>
                         <TableCell style={{ color: "white" }} align="right">Actions</TableCell>
                     </TableRow>
                 </TableHead>
@@ -107,15 +91,15 @@ function DisplayResult() {
                         results.map((result, index) => (
                             <TableRow key={index}>
                                 <TableCell>{index + 1}</TableCell>
-                                <TableCell>{result.name}</TableCell>
+                                <TableCell>{result.driverName}</TableCell>
                                 <TableCell>{result.licenseNumber}</TableCell>
                                 <TableCell>{new Date(result.date).toLocaleDateString()}</TableCell>
                                 <TableCell>{result.testType}</TableCell>
+                                <TableCell>{result.status}</TableCell>
+                                <TableCell>{result.caseNumber}</TableCell>
                                 <TableCell align="right">
                                     <IconButton onClick={() => handleOpen("view", result)}><Visibility /></IconButton>
                                     <IconButton onClick={() => handleDownload(result)}><Download /></IconButton>
-                                    <IconButton onClick={() => handleOpen("edit", result)}><Edit /></IconButton>
-                                    <IconButton onClick={() => handleOpen("delete", result)}><Delete /></IconButton>
                                 </TableCell>
                             </TableRow>
                         ))
@@ -134,19 +118,16 @@ function DisplayResult() {
             <Dialog open={openModal === "view"} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Result Details</DialogTitle>
                 <DialogContent>
-                    <Typography gutterBottom><strong>Name:</strong> {selectedResult?.name}</Typography>
+                    <Typography gutterBottom><strong>Name:</strong> {selectedResult?.driverName}</Typography>
                     <Typography gutterBottom><strong>License Number:</strong> {selectedResult?.licenseNumber}</Typography>
                     <Typography gutterBottom><strong>Date:</strong> {new Date(selectedResult?.date).toLocaleDateString()}</Typography>
                     <Typography gutterBottom><strong>Test Type:</strong> {selectedResult?.testType}</Typography>
+                    <Typography gutterBottom><strong>Status:</strong> {selectedResult?.status}</Typography>
+                    <Typography gutterBottom><strong>Case Number:</strong> {selectedResult?.caseNumber}</Typography>
 
-                    {selectedResult?.file?.data && (
+                    {selectedResult?.file && (
                         <img
-                            src={URL.createObjectURL(
-                                new Blob(
-                                    [new Uint8Array(selectedResult.file.data)],
-                                    { type: selectedResult.mimeType || "image/png" }
-                                )
-                            )}
+                            src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
                             alt="Result"
                             style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
                         />
@@ -157,62 +138,6 @@ function DisplayResult() {
                 </DialogActions>
             </Dialog>
 
-            {/* Edit Modal */}
-            <Dialog open={openModal === "edit"} onClose={handleClose}>
-                <DialogTitle>Edit Result</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        margin="dense"
-                        label="Name"
-                        fullWidth
-                        value={editData.name ?? ""}
-                        onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                    />
-
-                    <TextField
-                        margin="dense"
-                        label="License Number"
-                        fullWidth
-                        value={editData.licenseNumber ?? ""}
-                        onChange={(e) => setEditData({ ...editData, licenseNumber: e.target.value })}
-                    />
-
-                    <TextField
-                        margin="dense"
-                        label="Test Date"
-                        type="date"
-                        fullWidth
-                        value={editData.date ? editData.date.slice(0, 10) : ""}
-                        onChange={(e) => setEditData({ ...editData, date: e.target.value })}
-                        InputLabelProps={{ shrink: true }}
-                    />
-
-                    <TextField
-                        margin="dense"
-                        label="Test Type"
-                        fullWidth
-                        value={editData.testType ?? ""}
-                        onChange={(e) => setEditData({ ...editData, testType: e.target.value })}
-                    />
-
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="secondary">Cancel</Button>
-                    <Button onClick={handleUpdate} color="primary" variant="contained">Update</Button>
-                </DialogActions>
-            </Dialog>
-
-            {/* Delete Modal */}
-            <Dialog open={openModal === "delete"} onClose={handleClose}>
-                <DialogTitle>Confirm Delete</DialogTitle>
-                <DialogContent>
-                    <Typography>Are you sure you want to delete this result?</Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">Cancel</Button>
-                    <Button onClick={handleDelete} color="secondary" variant="contained">Delete</Button>
-                </DialogActions>
-            </Dialog>
         </TableContainer>
     );
 }

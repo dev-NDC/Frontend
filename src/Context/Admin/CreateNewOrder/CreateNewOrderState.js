@@ -28,7 +28,7 @@ const CreateNewOrderState = (props) => {
         dob: "",
         phone1: "",
         phone2: "",
-        locationCode: "",
+        email: "",
         orderExpires: "",
         observed: "1",
         participantAddress: true,
@@ -37,6 +37,8 @@ const CreateNewOrderState = (props) => {
         city: "",
         state: "",
         zip: "",
+        sendLink: false,
+        ccEmail: ""
     });
 
     const [siteInformation, setSiteInformation] = useState([]);
@@ -50,9 +52,39 @@ const CreateNewOrderState = (props) => {
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             await axios.post(`${API_URL}/admin/getSiteInformation`, { companyId, packageId, orderReasonId, formData })
                 .then(response => {
-                    setSiteInformation(response.data.data);
-                    setSiteInformationLoading(false);
-                    setCaseNumber(response.data.caseNumber);
+                    if (formData.sendLink === true) {
+                        setCurrentPosition(1);
+                        setMaxPosition(1);
+                        setFormData({
+                            firstName: "",
+                            middleName: "",
+                            lastName: "",
+                            ssn: "",
+                            dob: "",
+                            phone1: "",
+                            phone2: "",
+                            email: "",
+                            orderExpires: "",
+                            observed: "1",
+                            participantAddress: true,
+                            address: "",
+                            address2: "",
+                            city: "",
+                            state: "",
+                            zip: "",
+                            sendLink: false,
+                            ccEmail: ""
+                        })
+                        setAllCompanyData([])
+                        setCompanyId("");
+                        setPackageId("");
+                        setOrderReasonId("");
+                        toast.success("Scheduling URL sent successfully")
+                    } else {
+                        setSiteInformation(response.data.data);
+                        setSiteInformationLoading(false);
+                        setCaseNumber(response.data.caseNumber);
+                    }
                 })
                 .catch((error) => {
                     setSiteInformationLoading(false);
@@ -96,6 +128,26 @@ const CreateNewOrderState = (props) => {
                     setCompanyId("");
                     setPackageId("");
                     setOrderReasonId("");
+                    setFormData({
+                        firstName: "",
+                        middleName: "",
+                        lastName: "",
+                        ssn: "",
+                        dob: "",
+                        phone1: "",
+                        phone2: "",
+                        email: "",
+                        orderExpires: "",
+                        observed: "1",
+                        participantAddress: true,
+                        address: "",
+                        address2: "",
+                        city: "",
+                        state: "",
+                        zip: "",
+                        sendLink: false,
+                        ccEmail: ""
+                    })
                 })
                 .catch((error) => {
                     toast.error(error?.response?.data?.message)

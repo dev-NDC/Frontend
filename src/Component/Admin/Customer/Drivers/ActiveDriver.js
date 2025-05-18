@@ -153,7 +153,7 @@ function ActiveDriver() {
                 <DialogTitle>Driver Details</DialogTitle>
                 <DialogContent>
                     <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9", minWidth: '400px' }}>
-                        <Typography variant="h6" gutterBottom>{selectedDriver?.name}</Typography>
+                        <Typography variant="h6" gutterBottom>{selectedDriver?.first_name} {selectedDriver?.last_name}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
                         <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.licenseNumber}</Typography>
                         <Typography variant="body1"><strong>DOB:</strong> {new Date(selectedDriver?.dob).toLocaleDateString()}</Typography>

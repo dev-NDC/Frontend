@@ -173,7 +173,19 @@ const MembershipInformation = () => {
             <Grid item xs={12}>
               <FormControl fullWidth size="small">
                 <InputLabel>Packages</InputLabel>
-                <Select multiple name="package" value={tempMembershipInfo.package || []} onChange={(e) => setTempMembershipInfo({ ...tempMembershipInfo, package: e.target.value })} renderValue={(selected) => selected.join(", ")}>
+                <Select
+                  multiple
+                  name="package"
+                  label="Packages" // Add this line
+                  value={tempMembershipInfo.package || []}
+                  onChange={(e) =>
+                    setTempMembershipInfo({
+                      ...tempMembershipInfo,
+                      package: e.target.value,
+                    })
+                  }
+                  renderValue={(selected) => selected.join(", ")}
+                >
                   <MenuItem value="DOT11">DOT11</MenuItem>
                   <MenuItem value="DOTBATUR">DOTBATUR</MenuItem>
                   <MenuItem value="NONDOT">NONDOT</MenuItem>
@@ -183,6 +195,7 @@ const MembershipInformation = () => {
                   <MenuItem value="DOTDEMO">DOTDEMO</MenuItem>
                 </Select>
               </FormControl>
+
             </Grid>
 
             {/* Selected Reasons Chips */}
@@ -198,12 +211,39 @@ const MembershipInformation = () => {
             <Grid item xs={12}>
               <FormControl fullWidth size="small">
                 <InputLabel>Reason Names</InputLabel>
-                <Select multiple name="order_reason" value={tempMembershipInfo.order_reason || []} onChange={(e) => setTempMembershipInfo({ ...tempMembershipInfo, order_reason: e.target.value })} renderValue={(selected) => selected.join(", ")}>
+                <Select
+                  multiple
+                  name="order_reason"
+                  label="Reason Names" 
+                  value={tempMembershipInfo.order_reason || []}
+                  onChange={(e) =>
+                    setTempMembershipInfo({
+                      ...tempMembershipInfo,
+                      order_reason: e.target.value,
+                    })
+                  }
+                  renderValue={(selected) => selected.join(", ")}
+                >
                   <MenuItem value="PRE-EMPLOYMENT">PRE-EMPLOYMENT</MenuItem>
                   <MenuItem value="RANDOM">RANDOM</MenuItem>
                   <MenuItem value="POST-ACCIDENT">POST-ACCIDENT</MenuItem>
+                  <MenuItem value="REASONABLE SUSPICION/CAUSE">REASONABLE SUSPICION/CAUSE</MenuItem>
+                  <MenuItem value="FOLLOW-UP">FOLLOW-UP</MenuItem>
+                  <MenuItem value="PERIODIC">PERIODIC</MenuItem>
+                  <MenuItem value="ANNUAL">ANNUAL</MenuItem>
+                  <MenuItem value="RETURN TO DUTY">RETURN TO DUTY</MenuItem>
+                  <MenuItem value="FITNESS FOR DUTY">FITNESS FOR DUTY</MenuItem>
+                  <MenuItem value="JOB TRANSFER">JOB TRANSFER</MenuItem>
+                  <MenuItem value="PROMOTION">PROMOTION</MenuItem>
+                  <MenuItem value="PRE-SITE ACCESS">PRE-SITE ACCESS</MenuItem>
+                  <MenuItem value="SWEEP">SWEEP</MenuItem>
+                  <MenuItem value="COURT ORDERED">COURT ORDERED</MenuItem>
+                  <MenuItem value="CONTRACTUAL">CONTRACTUAL</MenuItem>
+                  <MenuItem value="PROBATION">PROBATION</MenuItem>
+                  <MenuItem value="OTHER">OTHER</MenuItem>
                 </Select>
               </FormControl>
+
             </Grid>
           </Grid>
           <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>

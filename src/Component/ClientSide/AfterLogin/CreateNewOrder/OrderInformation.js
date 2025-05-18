@@ -10,12 +10,11 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-import CreateNewOrderContext from "../../../../Context/ClientSide/AfterLogin/CreateNewOrder/CreateNewOrderContext";
+import CreateNewOrderContext from "../../../../Context/ClientSide/AfterLogin/CreateNewOrder/CreateNewOrderContext";;
 const API_URL = process.env.REACT_APP_API_URL;
 
 function OrderInformation() {
-    const { orderReasonId, packageId, companyId, allCompanyData, currentPosition, maxPosition, setAllCompanyData, setCurrentPosition, setCompanyId, setPackageId, setOrderReasonId, setMaxPosition } =
-        useContext(CreateNewOrderContext);
+    const { orderReasonId, packageId, companyId, allCompanyData, currentPosition, maxPosition, setAllCompanyData, setCurrentPosition, setCompanyId, setPackageId, setOrderReasonId, setMaxPosition, setFormData } = useContext(CreateNewOrderContext);
 
     const [availablePackages, setAvailablePackages] = useState([]);
     const [availableReasons, setAvailableReasons] = useState([]);
@@ -48,8 +47,16 @@ function OrderInformation() {
         setOrderReasonId("");
 
         const selectedCompany = allCompanyData.find(c => c._id === selectedId);
+        setFormData((prev) => ({
+            ...prev,
+            address: selectedCompany.companyDetails.address || "",
+            city: selectedCompany.companyDetails.city || "",
+            zip: selectedCompany.companyDetails.zip || "",
+            phone1: selectedCompany.companyDetails.contactNumber || "",
+        }));
         setAvailablePackages(selectedCompany?.packages || []);
         setAvailableReasons(selectedCompany?.orderReasons || []);
+
     };
 
     const handlePackageChange = (e) => {
@@ -105,7 +112,7 @@ function OrderInformation() {
                             label="Package"
                         >
                             {availablePackages.map((pkg) => (
-                                <MenuItem key={pkg._id} value={pkg._id}>
+                                <MenuItem key={pkg._id} value={pkg.packageName}>
                                     {pkg.packageName}
                                 </MenuItem>
                             ))}
@@ -125,7 +132,7 @@ function OrderInformation() {
                             label="Order Reason"
                         >
                             {availableReasons.map((reason) => (
-                                <MenuItem key={reason._id} value={reason._id}>
+                                <MenuItem key={reason._id} value={reason.orderReasonName}>
                                     {reason.orderReasonName}
                                 </MenuItem>
                             ))}

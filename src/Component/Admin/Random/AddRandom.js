@@ -25,6 +25,7 @@ function AddRandom() {
     const selectedId = e.target.value;
     setSelectedCompany(selectedId);
     const company = RandomUserAddDetails.find(comp => comp.companyId === selectedId);
+    console.log(company)
     setDrivers(company?.drivers || []);
     setSelectedDriver('');
     setSelectedCompanyName(company?.companyName || ''); // Set selected company name

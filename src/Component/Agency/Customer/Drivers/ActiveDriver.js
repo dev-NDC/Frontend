@@ -24,7 +24,7 @@ function ActiveDriver() {
 
     useEffect(() => {
         if (userDetails?.drivers) {
-            const activeDrivers = userDetails.drivers.filter(driver => !driver.isDeleted);
+            const activeDrivers = userDetails.drivers.filter(driver => !driver.isDeleted && driver.isActive === true);
             setDrivers(activeDrivers);
         }
     }, [userDetails]);
@@ -89,9 +89,9 @@ function ActiveDriver() {
                         drivers.map((driver, index) => (
                             <TableRow key={index} hover>
                                 <TableCell>{index + 1}</TableCell>
-                                <TableCell>{driver.name}</TableCell>
+                                <TableCell>{driver.first_name} {driver.last_name}</TableCell>
                                 {!isMobile && <TableCell>{driver.email}</TableCell>}
-                                {!isTablet && <TableCell>{driver.licenseNumber}</TableCell>}
+                                {!isTablet && <TableCell>{driver.government_id}</TableCell>}
                                 {!isTablet && <TableCell>{driver.dob}</TableCell>}
                                 {!isTablet && <TableCell>{driver.phone}</TableCell>}
                                 <TableCell>
@@ -150,9 +150,9 @@ function ActiveDriver() {
                 <DialogTitle>Driver Details</DialogTitle>
                 <DialogContent>
                     <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9" }}>
-                        <Typography variant="h6" gutterBottom>{selectedDriver?.name}</Typography>
+                        <Typography variant="h6" gutterBottom>{selectedDriver?.first_name} {selectedDriver?.last_name}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
-                        <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.licenseNumber}</Typography>
+                        <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.government_id}</Typography>
                         <Typography variant="body1"><strong>DOB:</strong> {selectedDriver?.dob}</Typography>
                         <Typography variant="body1"><strong>Phone No:</strong> {selectedDriver?.phone}</Typography>
                         <Typography variant="body1"><strong>Creation Date:</strong> {selectedDriver?.creationDate}</Typography>

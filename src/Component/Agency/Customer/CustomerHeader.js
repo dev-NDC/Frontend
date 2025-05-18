@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Tabs, Tab, Box } from "@mui/material";
 import BusinessIcon from "@mui/icons-material/Business";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
@@ -21,23 +21,23 @@ import RandomDriver from "./Random/RandomDriver"
 import DriverState from "../../../Context/Agency/Customer/Driver/DriverState";
 import CertificateState from "../../../Context/Agency/Customer/Certificate/CertificateState";
 import InvoiceState from "../../../Context/Agency/Customer/Invoice/InvoiceState";
-import ResultState from "../../../Context/Agency/Customer/Result/ResultState";
 
-
+import CustomerContext from "../../../Context/Agency/Customer/CustomerContext";
 
 const tabData = [
   { label: "Company Info", icon: <BusinessIcon />, component: <CompanyDetails /> },
-  { label: "Driver", icon: <DirectionsCarIcon />, component: <DriverState><Driver /></DriverState>  },
+  { label: "Driver", icon: <DirectionsCarIcon />, component: <DriverState><Driver /></DriverState> },
   { label: "Membership", icon: <CardMembershipIcon />, component: <Membership /> },
   { label: "Certificate", icon: <WorkspacePremiumIcon />, component: <CertificateState><Certificate /></CertificateState> },
-  { label: "Invoice", icon: <ReceiptIcon />, component:<InvoiceState> <Invoice /> </InvoiceState>},
-  { label: "Result", icon: <AssessmentIcon />, component:<ResultState> <Result /> </ResultState>},
+  { label: "Invoice", icon: <ReceiptIcon />, component: <InvoiceState> <Invoice /> </InvoiceState> },
+  { label: "Result", icon: <AssessmentIcon />, component: <Result /> },
   { label: "Payment Info", icon: <PaymentIcon />, component: <PaymentInformation /> },
   { label: "Random Driver", icon: <Shuffle />, component: <RandomDriver /> },
 ];
 
 function CustomerHeader() {
   const [activeTab, setActiveTab] = useState(0);
+  const { currentCompany } = useContext(CustomerContext)
 
   return (
     <Box>
@@ -59,7 +59,21 @@ function CustomerHeader() {
           />
         ))}
       </Tabs>
-
+      <div className="text-center">
+        <div
+          style={{
+            width: ' 100%',
+            backgroundColor: "#d4edda", // light green
+            color: "#155724",           // dark green text
+            border: "2px solid #28a745",
+            padding: "10px 20px",
+            fontWeight: "bold",
+            fontSize: "24px"
+          }}
+        >
+          {currentCompany}
+        </div>
+      </div>
       {/* Render Active Component */}
       <Box sx={{ p: 2 }}>
         {tabData[activeTab].component}

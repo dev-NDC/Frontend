@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { TextField, Button, Box, Typography, Grid } from "@mui/material";
+import { TextField, Button, Box, Typography, Grid, MenuItem } from "@mui/material";
 import SignupContext from "../../../../Context/ClientSide/SignUp/SignupContext";
 
 function CompanyInfo() {
@@ -160,13 +160,23 @@ function CompanyInfo() {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <TextField
+                        select
                         name="state"
+                        label="State / Province"
                         value={companyInfoData.state}
                         onChange={handleChange}
-                        placeholder="State / Province"
                         fullWidth
                         required
-                    />
+                        SelectProps={{
+                            MenuProps: menuProps,
+                        }}
+                    >
+                        {US_STATES.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
+                    </TextField>
                 </Grid>
                 <Grid item xs={12}>
                     <TextField
@@ -181,14 +191,14 @@ function CompanyInfo() {
                     />
                 </Grid>
                 <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Button 
-                        variant="contained" 
-                        onClick={handleNext} 
-                        style={{ 
-                            backgroundColor: isFormValid ? "#003366" : "#E0E0E0", 
-                            color: isFormValid ? "#FFFFFF" : "#A0A0A0", 
+                    <Button
+                        variant="contained"
+                        onClick={handleNext}
+                        style={{
+                            backgroundColor: isFormValid ? "#003366" : "#E0E0E0",
+                            color: isFormValid ? "#FFFFFF" : "#A0A0A0",
                             cursor: isFormValid ? "pointer" : "not-allowed"
-                        }} 
+                        }}
                         disabled={!isFormValid}
                     >
                         Next
@@ -200,3 +210,65 @@ function CompanyInfo() {
 }
 
 export default CompanyInfo;
+
+
+const US_STATES = [
+    { label: "Alabama", value: "AL" },
+    { label: "Alaska", value: "AK" },
+    { label: "Arizona", value: "AZ" },
+    { label: "Arkansas", value: "AR" },
+    { label: "California", value: "CA" },
+    { label: "Colorado", value: "CO" },
+    { label: "Connecticut", value: "CT" },
+    { label: "Delaware", value: "DE" },
+    { label: "Florida", value: "FL" },
+    { label: "Georgia", value: "GA" },
+    { label: "Hawaii", value: "HI" },
+    { label: "Idaho", value: "ID" },
+    { label: "Illinois", value: "IL" },
+    { label: "Indiana", value: "IN" },
+    { label: "Iowa", value: "IA" },
+    { label: "Kansas", value: "KS" },
+    { label: "Kentucky", value: "KY" },
+    { label: "Louisiana", value: "LA" },
+    { label: "Maine", value: "ME" },
+    { label: "Maryland", value: "MD" },
+    { label: "Massachusetts", value: "MA" },
+    { label: "Michigan", value: "MI" },
+    { label: "Minnesota", value: "MN" },
+    { label: "Mississippi", value: "MS" },
+    { label: "Missouri", value: "MO" },
+    { label: "Montana", value: "MT" },
+    { label: "Nebraska", value: "NE" },
+    { label: "Nevada", value: "NV" },
+    { label: "New Hampshire", value: "NH" },
+    { label: "New Jersey", value: "NJ" },
+    { label: "New Mexico", value: "NM" },
+    { label: "New York", value: "NY" },
+    { label: "North Carolina", value: "NC" },
+    { label: "North Dakota", value: "ND" },
+    { label: "Ohio", value: "OH" },
+    { label: "Oklahoma", value: "OK" },
+    { label: "Oregon", value: "OR" },
+    { label: "Pennsylvania", value: "PA" },
+    { label: "Rhode Island", value: "RI" },
+    { label: "South Carolina", value: "SC" },
+    { label: "South Dakota", value: "SD" },
+    { label: "Tennessee", value: "TN" },
+    { label: "Texas", value: "TX" },
+    { label: "Utah", value: "UT" },
+    { label: "Vermont", value: "VT" },
+    { label: "Virginia", value: "VA" },
+    { label: "Washington", value: "WA" },
+    { label: "West Virginia", value: "WV" },
+    { label: "Wisconsin", value: "WI" },
+    { label: "Wyoming", value: "WY" },
+];
+
+const menuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: 200, // limit dropdown height to 200px
+        },
+    },
+};

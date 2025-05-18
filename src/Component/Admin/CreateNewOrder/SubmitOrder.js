@@ -54,16 +54,9 @@ function SubmitOrder() {
         if (!selectedCompany) return;
 
         setCompanyName(selectedCompany.companyName || "—");
+        setOrderReasonName(orderReasonId || "—");
+        setPackageName(packageId || "—");
 
-        const selectedOrderReason = selectedCompany.orderReasons?.find(
-            (reason) => reason._id === orderReasonId
-        );
-        setOrderReasonName(selectedOrderReason?.orderReasonName || "—");
-
-        const selectedPackage = selectedCompany.packages?.find(
-            (pkg) => pkg._id === packageId
-        );
-        setPackageName(selectedPackage?.packageName || "—");
     }, [companyId, orderReasonId, packageId, allCompanyData]);
 
     const handleSubmit = () => {
@@ -78,6 +71,7 @@ function SubmitOrder() {
     };
 
     function formatDateTime(input) {
+        if (!input) return "N/A"; // covers undefined, null, empty
         const [date, time] = input.split("T");
         const [hour, minute] = time.split(":");
         return `${date} ${hour}:${minute}:00`;

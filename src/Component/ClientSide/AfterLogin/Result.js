@@ -41,25 +41,6 @@ function Result() {
         setSelectedResult(null);
     };
 
-    const renderResultImage = () => {
-        if (!selectedResult?.file?.data) return null;
-
-        const blob = new Blob([new Uint8Array(selectedResult.file.data)], {
-            type: selectedResult.mimeType || "image/png"
-        });
-
-        const imageUrl = URL.createObjectURL(blob);
-
-        return (
-            <img
-                src={imageUrl}
-                alt="Result"
-                style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
-                onLoad={() => URL.revokeObjectURL(imageUrl)} // Clean up URL after load
-            />
-        );
-    };
-
     return (
         <div className="container" style={{ marginTop: '100px' }}>
             <Typography variant="h3" align="center" gutterBottom>Test Results</Typography>
@@ -73,6 +54,7 @@ function Result() {
                             {!isMobile && !isTablet && <TableCell sx={{ color: "white", fontWeight: "bold" }}>Date</TableCell>}
                             {!isMobile && <TableCell sx={{ color: "white", fontWeight: "bold" }}>Test Type</TableCell>}
                             {!isMobile && <TableCell sx={{ color: "white", fontWeight: "bold" }}>Status</TableCell>}
+                            {!isMobile && <TableCell sx={{ color: "white", fontWeight: "bold" }}>Case Number</TableCell>}
                             <TableCell sx={{ color: "white", fontWeight: "bold" }}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
@@ -80,11 +62,12 @@ function Result() {
                         {results.map((result, index) => (
                             <TableRow key={index} hover>
                                 <TableCell>{index + 1}</TableCell>
-                                <TableCell>{result.name}</TableCell>
+                                <TableCell>{result.driverName}</TableCell>
                                 {!isMobile && !isTablet && <TableCell>{result.licenseNumber}</TableCell>}
                                 {!isMobile && !isTablet && <TableCell>{new Date(result.date).toLocaleDateString()}</TableCell>}
                                 {!isMobile && <TableCell>{result.testType}</TableCell>}
                                 {!isMobile && <TableCell>{result.status}</TableCell>}
+                                {!isMobile && <TableCell>{result.caseNumber}</TableCell>}
                                 <TableCell>
                                     <IconButton onClick={(event) => handleMenuOpen(event, result)}>
                                         <MoreVertIcon />
@@ -102,12 +85,19 @@ function Result() {
                 <Dialog open={viewOpen} onClose={handleViewClose} maxWidth="sm" fullWidth>
                     <DialogTitle>Result Details</DialogTitle>
                     <DialogContent>
-                        <Typography gutterBottom><strong>Name:</strong> {selectedResult?.name}</Typography>
+                        <Typography gutterBottom><strong>Name:</strong> {selectedResult?.driverName}</Typography>
                         <Typography gutterBottom><strong>License Number:</strong> {selectedResult?.licenseNumber}</Typography>
                         <Typography gutterBottom><strong>Date:</strong> {new Date(selectedResult?.date).toLocaleDateString()}</Typography>
                         <Typography gutterBottom><strong>Test Type:</strong> {selectedResult?.testType}</Typography>
                         <Typography gutterBottom><strong>Status:</strong> {selectedResult?.status}</Typography>
-                        {renderResultImage()}
+                        <Typography gutterBottom><strong>Case Number:</strong> {selectedResult?.caseNumber}</Typography>
+                        {selectedResult?.file && (
+                            <img
+                                src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
+                                alt="Result"
+                                style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
+                            />
+                        )}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleViewClose} color="primary">Close</Button>

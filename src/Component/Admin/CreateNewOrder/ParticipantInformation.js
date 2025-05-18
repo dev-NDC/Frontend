@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import { Row, Col } from "react-bootstrap";
 import CreateNewOrderContext from "../../../Context/Admin/CreateNewOrder/CreateNewOrderContext";
+import DonarPass from "./DonarPass";
 
 function ParticipantInformation() {
     const {
@@ -48,6 +49,10 @@ function ParticipantInformation() {
         getSiteInformation();
     };
 
+    const handSubmitLink = ()=>{
+        getSiteInformation();
+    }
+
     // Check that all required fields are non-empty
     const validateRequiredFields = () => {
         const required = [
@@ -56,7 +61,7 @@ function ParticipantInformation() {
             formData.ssn,
             formData.dob,
             formData.phone1,
-            formData.locationCode,
+            formData.email,
             formData.address,
             formData.city,
             formData.state,
@@ -155,9 +160,9 @@ function ParticipantInformation() {
                     <TextField
                         fullWidth
                         required
-                        label="Location Code"
-                        name="locationCode"
-                        value={formData.locationCode}
+                        label="Email"
+                        name="email"
+                        value={formData.email}
                         onChange={handleChange}
                     />
                 </Col>
@@ -266,18 +271,31 @@ function ParticipantInformation() {
                     />
                 </Col>
             </Row>
-
+            <DonarPass />
             <Box display="flex" justifyContent="space-between">
                 <Button variant="outlined" onClick={handlePrevious}>
                     Previous
                 </Button>
-                <Button
-                    variant="contained"
-                    onClick={handleContinue}
-                    disabled={!validateRequiredFields()}
-                >
-                    Continue
-                </Button>
+                <Box>
+                    {formData.sendLink ? (
+                        <Button
+                            variant="contained"
+                            onClick={handSubmitLink}
+                            disabled={!validateRequiredFields()}
+                        >
+                            Submit
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="contained"
+                            onClick={handleContinue}
+                            disabled={!validateRequiredFields()}
+                        >
+                            Continue
+                        </Button>
+                    )}
+                </Box>
+
             </Box>
         </Box>
     );
