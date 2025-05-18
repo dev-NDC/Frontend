@@ -1,6 +1,5 @@
 import React from "react";
 
-import AddDriver from "./AddDriver";
 import ActiveDriver from "./ActiveDriver";
 import DeletedDriver from "./DeletedDriver";
 
