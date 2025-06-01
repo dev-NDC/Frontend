@@ -4,9 +4,7 @@ import HomeContext from "./HomeContext";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
-import { UpdateRounded } from "@mui/icons-material";
 import handleApiError from "../../../handleAPIError";
-
 
 const API_URL = process.env.REACT_APP_API_URL;
 
