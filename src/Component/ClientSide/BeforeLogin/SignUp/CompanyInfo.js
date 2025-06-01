@@ -73,13 +73,12 @@ function CompanyInfo() {
                     contactNumber: data.phone || "",
                     companyEmail: data.email_address || "",
                     safetyAgencyName: data.company_officer_1 || "",
-                    employees: data.driver_total || "",
+                    employees: data.employees || "",
                     address: data.phy_street || "",
                     city: data.phy_city || "",
                     state: data.phy_state || "",
                     zip: data.phy_zip || "",
                     suite: "", // optional
-                    driverCount:data.total_drivers || ""
                 }));
             } else {
 
@@ -179,10 +178,10 @@ function CompanyInfo() {
                 <Grid item xs={12} md={6}>
                     <TextField
                         label="No. of Employees/Drivers"
-                        name="driverCount"
-                        value={companyInfoData.driverCount}
+                        name="employees"
+                        value={companyInfoData.employees}
                         onChange={handleChange}
-                        placeholder="e.g., 23"
+                        placeholder="23"
                         fullWidth
                         required
                         error={employeesError}
