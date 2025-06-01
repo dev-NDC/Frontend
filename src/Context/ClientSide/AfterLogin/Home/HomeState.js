@@ -1,30 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import HomeContext from "./HomeContext";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { UpdateRounded } from "@mui/icons-material";
+import handleApiError from "../../../handleAPIError";
+
+
 const API_URL = process.env.REACT_APP_API_URL;
 
 const HomeState = (props) => {
+    let navigate = useNavigate();
     const [currentActiveButton, setCurrentActiveButton] = useState(1);
     const [userData, setUserData] = useState();
-    useEffect(() => {
+
+    const getUserData = () => {
         const token = Cookies.get("token");
         if (token) {
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             axios.get(`${API_URL}/user/getdata`)
                 .then(response => {
                     setUserData(response.data.data);
-                    console.log(response.data.data)
                 })
-                .catch(() => {
-                    toast.error("Server error, Please try again later");
+                .catch((error) => {
+                    handleApiError(error, "Network error")
                 });
         } else {
-            toast.error("Invalid access, Please login again");
+            toast.error("No token is Provided, Please login again");
+            setUserData(null);
+            Cookies.remove("token");
+            localStorage.removeItem("rememberedEmail");
+            localStorage.removeItem("rememberedPassword");
+            navigate("/login");
         }
-    }, []);
+    }
 
     //function to update company information in backend
     const updateCompanyInformation = async (data) => {
@@ -32,28 +42,16 @@ const HomeState = (props) => {
             .then(response => {
                 const data = response.data;
                 toast.success(data.message);
-                UpdateRounded();
+                getUserData();
             })
             .catch(error => {
-                toast.error("server error, Please try again later")
+                handleApiError(error, "Failed to update company Information !")
             });
     }
 
     // function to update userdata
     const updateUserData = async () => {
-        const token = Cookies.get("token");
-        if (token) {
-            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            await axios.get(`${API_URL}/user/getdata`)
-                .then(response => {
-                    setUserData(response.data.data);
-                })
-                .catch(() => {
-                    toast.error("Server error, Please try again later");
-                });
-        } else {
-            toast.error("Invalid access, Please login again");
-        }
+        getUserData();
     }
 
     // fnction to update payment Info
@@ -62,14 +60,15 @@ const HomeState = (props) => {
             .then(response => {
                 const data = response.data;
                 toast.success(data.message);
+                getUserData();
             })
             .catch(error => {
-                toast.error("server error, Please try again later")
+                handleApiError(error, "Failed to update payment information")
             });
     }
 
     return (
-        <HomeContext.Provider value={{ currentActiveButton, userData,updatePayment, updateUserData, updateCompanyInformation, setCurrentActiveButton }}>
+        <HomeContext.Provider value={{ currentActiveButton, userData, getUserData, updatePayment, updateUserData, updateCompanyInformation, setCurrentActiveButton }}>
             {props.children}
         </HomeContext.Provider>
     )

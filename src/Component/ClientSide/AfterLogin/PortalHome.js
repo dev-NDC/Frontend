@@ -23,9 +23,8 @@ import CreateNewOrderState from "../../../Context/ClientSide/AfterLogin/CreateNe
 const drawerWidth = 240;
 
 const API_URL = process.env.REACT_APP_API_URL;
-
 function PortalHome() {
-  const { currentActiveButton } = useContext(HomeContext);
+  const { currentActiveButton, getUserData } = useContext(HomeContext);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -37,7 +36,7 @@ function PortalHome() {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       axios.get(`${API_URL}/validateUser/verify`)
         .then(response => {
-
+          getUserData();
         })
         .catch(error => {
           toast.error("Please login again")
@@ -58,7 +57,7 @@ function PortalHome() {
       case 2:
         return <Company />;
       case 3:
-        return <Driver/>;
+        return <Driver />;
       case 4:
         return <CreateNewOrderState><SecheduleTest /></CreateNewOrderState>
       case 5:
@@ -66,7 +65,7 @@ function PortalHome() {
       case 6:
         return <Membership />
       case 7:
-        return <RandomDriver/>
+        return <RandomDriver />
       case 8:
         return <Payment />
       case 9:

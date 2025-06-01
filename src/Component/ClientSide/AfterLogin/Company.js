@@ -68,7 +68,7 @@ const CompanyDetails = () => {
             Company Information
           </Typography>
           <Grid container spacing={2}>
-            {Object.entries(companyInfoData).map(([key, value]) => (
+            {Object.entries(companyInfoData)?.map(([key, value]) => (
               <Grid item xs={12} sm={6} key={key}>
                 <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>
                   {key.replace(/([A-Z])/g, " $1").trim()}:
@@ -96,7 +96,7 @@ const CompanyDetails = () => {
           </Typography>
           <Divider sx={{ mb: 3 }} />
           <Grid container spacing={2}>
-            {Object.entries(tempCompanyInfoData).map(([key, value]) => (
+            {Object.entries(tempCompanyInfoData)?.map(([key, value]) => (
               <Grid item xs={12} sm={6} key={key}>
                 <TextField
                   fullWidth

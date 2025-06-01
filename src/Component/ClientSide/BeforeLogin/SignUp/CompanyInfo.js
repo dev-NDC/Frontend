@@ -1,15 +1,26 @@
 import React, { useContext, useState } from "react";
-import { TextField, Button, Box, Typography, Grid, MenuItem } from "@mui/material";
+import {
+    TextField, Button, Box, Typography, Grid, MenuItem, CircularProgress
+} from "@mui/material";
 import SignupContext from "../../../../Context/ClientSide/SignUp/SignupContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 function CompanyInfo() {
-    const { currentPosition, maxPosition, companyInfoData, setCompanyInfoData, setCurrentPosition, setMaxPosition } = useContext(SignupContext);
+    const {
+        currentPosition, maxPosition,
+        companyInfoData, setCompanyInfoData,
+        setCurrentPosition, setMaxPosition
+    } = useContext(SignupContext);
 
     const [emailError, setEmailError] = useState(false);
     const [contactNumberError, setContactNumberError] = useState(false);
     const [usdotError, setUsdotError] = useState(false);
     const [employeesError, setEmployeesError] = useState(false);
     const [zipError, setZipError] = useState(false);
+
+    const [usdotLookup, setUsdotLookup] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,7 +32,7 @@ function CompanyInfo() {
         }
 
         if (["contactNumber", "usdot", "employees", "zip"].includes(name)) {
-            if (/^\d*$/.test(value)) {  // Allows only digits
+            if (/^\d*$/.test(value)) {
                 setCompanyInfoData({ ...companyInfoData, [name]: value });
                 if (name === "contactNumber") setContactNumberError(false);
                 if (name === "usdot") setUsdotError(false);
@@ -38,11 +49,7 @@ function CompanyInfo() {
 
     const isFormValid =
         Object.values(companyInfoData).every(value => value.trim() !== "") &&
-        !emailError &&
-        !contactNumberError &&
-        !usdotError &&
-        !employeesError &&
-        !zipError;
+        !emailError && !contactNumberError && !usdotError && !employeesError && !zipError;
 
     const handleNext = () => {
         if (currentPosition === maxPosition) {
@@ -51,9 +58,63 @@ function CompanyInfo() {
         setCurrentPosition(currentPosition + 1);
     };
 
+    const fetchUSDOTData = async () => {
+        if (!usdotLookup.trim()) return;
+        setLoading(true);
+        try {
+            const response = await axios.get(`https://data.transportation.gov/resource/az4n-8mr2.json?dot_number=${usdotLookup}`);
+            console.log(response);
+            const data = response.data[0];
+            if (data) {
+                setCompanyInfoData(prev => ({
+                    ...prev,
+                    companyName: data.legal_name || "",
+                    usdot: data.dot_number || usdotLookup,
+                    contactNumber: data.phone || "",
+                    companyEmail: data.email_address || "",
+                    safetyAgencyName: data.company_officer_1 || "",
+                    employees: data.driver_total || "",
+                    address: data.phy_street || "",
+                    city: data.phy_city || "",
+                    state: data.phy_state || "",
+                    zip: data.phy_zip || "",
+                    suite: "", // optional
+                    driverCount:data.total_drivers || ""
+                }));
+            } else {
+
+                toast.error("No company found for this USDOT number.");
+            }
+        } catch (error) {
+            console.error("USDOT API error:", error);
+            alert("Error fetching company data.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <Box sx={{ width: "100%", maxWidth: 800, mx: "auto", p: 3 }}>
-            <Typography variant="h6" fontWeight="bold">Company Information</Typography>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                <Typography variant="h6" fontWeight="bold">Company Information</Typography>
+                <Box display="flex" alignItems="center" gap={1}>
+                    <TextField
+                        label="Fill info with USDOT#"
+                        size="small"
+                        value={usdotLookup}
+                        onChange={(e) => setUsdotLookup(e.target.value)}
+                        disabled={loading}
+                    />
+                    <Button
+                        variant="contained"
+                        onClick={fetchUSDOTData}
+                        disabled={loading || !usdotLookup.trim()}
+                        sx={{ minWidth: 80 }}
+                    >
+                        {loading ? <CircularProgress size={24} color="inherit" /> : "Done"}
+                    </Button>
+                </Box>
+            </Box>
 
             <Grid container spacing={2} mt={1}>
                 <Grid item xs={12} md={6}>
@@ -118,8 +179,8 @@ function CompanyInfo() {
                 <Grid item xs={12} md={6}>
                     <TextField
                         label="No. of Employees/Drivers"
-                        name="employees"
-                        value={companyInfoData.employees}
+                        name="driverCount"
+                        value={companyInfoData.driverCount}
                         onChange={handleChange}
                         placeholder="e.g., 23"
                         fullWidth
@@ -132,6 +193,7 @@ function CompanyInfo() {
                     <Typography variant="body2" fontWeight="bold">Address *</Typography>
                     <TextField
                         name="address"
+                        label="Address"
                         value={companyInfoData.address}
                         onChange={handleChange}
                         placeholder="Street Address"
@@ -142,6 +204,7 @@ function CompanyInfo() {
                 <Grid item xs={12}>
                     <TextField
                         name="suite"
+                        label="Suite"
                         value={companyInfoData.suite}
                         onChange={handleChange}
                         placeholder="Suite/Apt/Unit#"
@@ -151,6 +214,7 @@ function CompanyInfo() {
                 <Grid item xs={12} md={6}>
                     <TextField
                         name="city"
+                        label="City"
                         value={companyInfoData.city}
                         onChange={handleChange}
                         placeholder="City"
@@ -181,6 +245,7 @@ function CompanyInfo() {
                 <Grid item xs={12}>
                     <TextField
                         name="zip"
+                        label="Zip"
                         value={companyInfoData.zip}
                         onChange={handleChange}
                         placeholder="Postal / Zip Code"

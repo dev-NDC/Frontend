@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 
 import LoginContext from "./LoginContext";
+import handleApiError from "../../handleAPIError";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const LoginState = (props) => {
@@ -58,17 +59,12 @@ const LoginState = (props) => {
                 }
             }
         } catch (error) {
-            if (error.message === "Network Error") {
-                toast.error(error.message);
-            } else {
-                toast.error(error.response.data.message)
-            }
-
+            handleApiError(error, "Login failed. Please check your credentials.");
         }
     }
 
     return (
-        <LoginContext.Provider value={{ email, password,rememberMe, setRememberMe, loginSubmit, setPassword, setEmail }}>
+        <LoginContext.Provider value={{ email, password, rememberMe, setRememberMe, loginSubmit, setPassword, setEmail }}>
             {props.children}
         </LoginContext.Provider>
     )

@@ -3,7 +3,7 @@ import axios from "axios";
 import SignupContext from "./SignupContext"
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
-
+import handleApiError from "../../handleAPIError";
 
 const SignupState = (props) => {
     let navigate = useNavigate();
@@ -33,6 +33,7 @@ const SignupState = (props) => {
         city: "",
         state: "",
         zip: "",
+        driverCount:""
     });
 
     const [paymentData, setPaymentData] = useState({
@@ -70,14 +71,13 @@ const SignupState = (props) => {
             };
             await axios.post(`${API_URL}/loginAndSignUp/signup`, fullData, {
                 headers: {
-                    "Content-Type": "application/json", // Use "multipart/form-data" if uploading files
+                    "Content-Type": "application/json",
                 },
             });
             toast.success("Account created successfully");
             navigate("/login")
         } catch (error) {
-            toast.error("Server error, Please try again later");
-            console.error("Signup Error:", error.response?.data || error.message);
+            handleApiError(error, "Failed to signup.");
         }
     }
 

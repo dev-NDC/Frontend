@@ -10,11 +10,12 @@ import Navbar from "./Navbar";
 import Welcome from "./Welcome";
 import ViewCustomer from "./Customer/ViewCustomer";
 import ViewCustomerDetails from "./Customer/ViewUserDetails";
-import ViewAgency  from "./Agency/ViewAgency";
+import ViewAgency from "./Agency/ViewAgency";
 import ViewAgencyDetails from "./Agency/ViewAgencyDetails";
 import ViewAdmin from "./Admin/ViewAdmin";
 import Random from "./Random/Random"
 import CreateNewOrder from "./CreateNewOrder/CreateNewOrder";
+import Result from "./Result/Result";
 
 import AdminContext from "../../Context/Admin/AdminContext";
 import CustomerState from "../../Context/Admin/Customer/CustomerState"
@@ -64,19 +65,21 @@ function AdminHome() {
                 return <Welcome />;
             case 2:
                 return <CustomerState><ViewCustomer /></CustomerState>
-            case 3:  
+            case 3:
                 return <AgencyState><ViewAgency /></AgencyState>
             case 4:
                 return <AdminState><ViewAdmin /></AdminState>
             case 5:
-                return  <CustomerState><ViewCustomerDetails /></CustomerState> 
+                return <CustomerState><ViewCustomerDetails /></CustomerState>
             case 6:
                 return <AgencyState><ViewAgencyDetails /></AgencyState>
             case 7:
                 return <RandomState><Random /></RandomState>
             case 9:
                 return <CreateNewAdmin><CreateNewOrder /></CreateNewAdmin>;
-            default:
+            case 10:
+                return <Result/>
+            default:    
                 return <Welcome />; // Default component
         }
     }
