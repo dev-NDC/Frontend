@@ -33,7 +33,6 @@ const SignupState = (props) => {
         city: "",
         state: "",
         zip: "",
-        driverCount:""
     });
 
     const [paymentData, setPaymentData] = useState({

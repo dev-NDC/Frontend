@@ -87,6 +87,7 @@ const CreateNewOrderState = (props) => {
                     }
                 })
                 .catch((error) => {
+                    console.log(error.response)
                     setSiteInformationLoading(false);
                     console.error("Error fetching user details:", error);
                 });
