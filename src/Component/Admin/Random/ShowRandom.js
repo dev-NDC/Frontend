@@ -12,13 +12,21 @@ import ExportRandom from './ExportRandom';
 import { toast } from 'react-toastify';
 
 function ShowRandom() {
-  const { randomUserDetails, deleteRandomEntry, fetchRandomData, updateRandomStatus, yearFilter, setYearFilter, quarterFilter, setQuarterFilter } = useContext(RandomContext);
+  const {
+    randomUserDetails,
+    deleteRandomEntry,
+    fetchRandomData,
+    updateRandomStatus,
+    yearFilter,
+    setYearFilter,
+    quarterFilter,
+    setQuarterFilter
+  } = useContext(RandomContext);
+
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleteOpen, setDeleteOpen] = useState(false);
-
-  // 🔧 Edit status modal state
   const [editOpen, setEditOpen] = useState(false);
   const [statusValue, setStatusValue] = useState('');
 
@@ -56,7 +64,7 @@ function ShowRandom() {
   };
 
   const handleEdit = () => {
-    setStatusValue(selectedItem?.status || 'pending');
+    setStatusValue(selectedItem?.status || 'Pending');
     setEditOpen(true);
     handleMenuClose();
   };
@@ -66,7 +74,7 @@ function ShowRandom() {
       const data = {
         selectedItem,
         status: statusValue
-      }
+      };
       await updateRandomStatus(data);
       setEditOpen(false);
       setSelectedItem(null);
@@ -123,7 +131,7 @@ function ShowRandom() {
                 ))}
               </Select>
             </FormControl>
-            <ExportRandom/>
+            <ExportRandom />
             <AddRandom />
           </Box>
         </Box>
@@ -155,14 +163,27 @@ function ShowRandom() {
                     <TableCell>{item.year}</TableCell>
                     <TableCell>{item.quarter}</TableCell>
                     <TableCell>{item.testType}</TableCell>
-                    <TableCell>{item.status || "Pending"}</TableCell>
+                    <TableCell
+                      style={{
+                        color:
+                          item.status === "Completed"
+                            ? "green"
+                            : item.status === "Pending"
+                            ? "#b58900"
+                            : item.status === "Scheduled"
+                            ? "orange"
+                            : "black",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.status || "Pending"}
+                    </TableCell>
                     <TableCell>
                       <IconButton onClick={(e) => handleMenuOpen(e, item)}>
                         <MoreVertIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
-
                 ))
               ) : (
                 <TableRow>
@@ -177,12 +198,8 @@ function ShowRandom() {
       </TableContainer>
 
       {/* Action Menu */}
-      <Menu
-        anchorEl={menuAnchorEl}
-        open={Boolean(menuAnchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleEdit}>Edit</MenuItem> {/* ✅ EDIT OPTION */}
+      <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={handleMenuClose}>
+        <MenuItem onClick={handleEdit}>Edit</MenuItem>
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
 
@@ -208,7 +225,7 @@ function ShowRandom() {
         </DialogActions>
       </Dialog>
 
-      {/* ✅ Edit Status Modal */}
+      {/* Edit Status Modal */}
       <Dialog open={editOpen} onClose={() => setEditOpen(false)} maxWidth="xs" fullWidth>
         <DialogTitle>Edit Status</DialogTitle>
         <DialogContent dividers>
@@ -227,18 +244,24 @@ function ShowRandom() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleEditConfirm} style={{
-                    backgroundColor: "#002D72",         // Navy Blue
-                    color: "#fff",                      // White text
-                    borderRadius: "6px",
-                    padding: "10px 20px",
-                    fontWeight: "bold",
-                    textTransform: "none",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",                         // spacing between icon and text
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-                }}>Save</Button>
+          <Button
+            variant="contained"
+            onClick={handleEditConfirm}
+            style={{
+              backgroundColor: "#002D72",
+              color: "#fff",
+              borderRadius: "6px",
+              padding: "10px 20px",
+              fontWeight: "bold",
+              textTransform: "none",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+            }}
+          >
+            Save
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

@@ -15,7 +15,12 @@ import {
   FormControl,
   Chip,
   OutlinedInput,
-  Button, // Added Button component
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import {
   Business as BusinessIcon,
@@ -33,6 +38,9 @@ const CompanyDetails = () => {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState(null);
   const [unhandledCompanies, setUnhandledCompanies] = useState([]);
+
+  // NEW STATE for controlling dialog open/close
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   useEffect(() => {
     if (agencyDetails) {
@@ -71,8 +79,8 @@ const CompanyDetails = () => {
   const handleHandledCompaniesChange = (event) => {
     const selectedIds = event.target.value;
     const updatedCompanies = selectedIds.map((id) => {
-      const fromHandled = formData.handledCompanies.find(c => c.userId === id);
-      const fromUnhandled = unhandledCompanies.find(c => c.userId === id);
+      const fromHandled = formData.handledCompanies.find((c) => c.userId === id);
+      const fromUnhandled = unhandledCompanies.find((c) => c.userId === id);
       return fromHandled || fromUnhandled || { userId: id, companyName: "Unknown" };
     });
 
@@ -100,14 +108,37 @@ const CompanyDetails = () => {
     setEditMode(false);
   };
 
+  // Instead of directly deleting, open the confirmation dialog
+  const handleDeleteClick = () => {
+    setOpenDeleteDialog(true);
+  };
+
+  // User confirms deletion
+  const handleConfirmDelete = async () => {
+    try {
+      await axios.delete(`${API_URL}/admin/deleteAgency/${formData._id}`);
+      alert("Agency deleted successfully.");
+      window.location.reload(); // or redirect if needed
+    } catch (error) {
+      console.error("Failed to delete agency", error);
+      alert("Failed to delete agency.");
+    } finally {
+      setOpenDeleteDialog(false);
+    }
+  };
+
+  // User cancels deletion
+  const handleCancelDelete = () => {
+    setOpenDeleteDialog(false);
+  };
+
   if (!formData) {
     return <Typography>Loading agency details...</Typography>;
   }
 
-  // Combine both handled and unhandled companies for easy lookup
   const allCompaniesMap = {};
-  unhandledCompanies.forEach(c => (allCompaniesMap[c.userId] = c));
-  formData.handledCompanies.forEach(c => (allCompaniesMap[c.userId] = c));
+  unhandledCompanies.forEach((c) => (allCompaniesMap[c.userId] = c));
+  formData.handledCompanies.forEach((c) => (allCompaniesMap[c.userId] = c));
 
   return (
     <Box sx={{ maxWidth: 800, margin: "30px auto", padding: "20px" }}>
@@ -117,20 +148,27 @@ const CompanyDetails = () => {
             Agency Overview
           </Typography>
           {!editMode ? (
-            <Button variant="contained" color="primary" onClick={handleEditToggle} style={{
-              backgroundColor: "#002D72",         // Navy Blue
-              color: "#fff",                      // White text
-              borderRadius: "6px",
-              padding: "10px 20px",
-              fontWeight: "bold",
-              textTransform: "none",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",                         // spacing between icon and text
-              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-            }}>
-              Edit
-            </Button>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleEditToggle}
+                style={{
+                  backgroundColor: "#002D72",
+                  color: "#fff",
+                  borderRadius: "6px",
+                  padding: "10px 20px",
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                }}
+              >
+                Edit
+              </Button>
+              <Button variant="outlined" color="error" onClick={handleDeleteClick}>
+                Delete
+              </Button>
+            </Box>
           ) : (
             <>
               <Button variant="contained" color="success" onClick={handleSave} sx={{ marginRight: 2 }}>
@@ -142,6 +180,7 @@ const CompanyDetails = () => {
             </>
           )}
         </Box>
+
         <Divider sx={{ marginBottom: 2, marginTop: 2 }} />
 
         <Box sx={{ marginBottom: 2 }}>
@@ -226,6 +265,24 @@ const CompanyDetails = () => {
             </Select>
           </FormControl>
         )}
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this agency? This action cannot be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelDelete} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmDelete} color="error" variant="contained">
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Card>
     </Box>
   );

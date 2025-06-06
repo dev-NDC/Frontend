@@ -1,117 +1,131 @@
-import React,{useContext} from 'react';
+import React, { useContext } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import { useNavigate } from "react-router-dom";
+import { motion } from 'framer-motion';
 
 import SignupContext from '../../../Context/ClientSide/SignUp/SignupContext';
 
 export default function Pricing() {
-    const {setSelectedPlan} = useContext(SignupContext)
+    const { setSelectedPlan } = useContext(SignupContext);
     const navigate = useNavigate();
-    const handlePlan1 = ()=>{
-        setSelectedPlan(1);
-        navigate("/signup")
-    }
-    const handlePlan2 = ()=>{
-        setSelectedPlan(2);
-        navigate("/signup")
-    }
-    const handlePlan3 = ()=>{
-        setSelectedPlan(3);
-        navigate("/signup")
-    }
+
+    const handlePlan = (planId) => {
+        setSelectedPlan(planId);
+        navigate("/signup");
+    };
+
     return (
         <>
-            <div style={{ marginTop: '90px' }}>
-                <div className='container' style={{ paddingTop: '30px' }}>
-                    <p className='text-center'>PRICING</p>
-                    <p className='text-center' style={{ fontSize: '32px', fontWeight: '700', marginBottom: '0px' }} >DRUG TESTING PLANS</p>
-                    <p className='text-center'>Pay by the month or the year, and cancel at any time.</p>
-                    <div className='row d-flex align-items-stretch' style={{ marginTop: '60px' }}>
-                        {/* First Plan */}
-                        <div className='col-md-4 d-flex' style={{marginTop:'15px'}}>
-                            <div className="card flex-fill" style={{ backgroundColor: "rgb(202, 197, 197)" }}>
-                                <div className="card-body d-flex flex-column">
-                                    <div className='text-center'>
-                                        <p style={{ fontSize: '44px', fontWeight: '900' }}>NON-DOT Account</p>
-                                        <p>$99</p>
-                                        <p>Every Year</p>
-                                        <p>Occupation Health Service Plan</p>
+            <div style={{ marginTop: '70px', maxWidth: '1140px', marginLeft: 'auto', marginRight: 'auto' }}>
+                {/* Heading Box */}
+                <motion.div
+                    initial={{ opacity: 0, y: -30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                >
+                    <div style={{
+                        backgroundColor: "#f8f9fa",
+                        padding: "25px 20px",
+                        borderRadius: "16px",
+                        boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+                        marginBottom: "30px",
+                        border: "2px solid #e0e0e0"
+                    }}>
+                        <p className='text-center' style={{ color: "#007bff", fontWeight: 700, letterSpacing: '1px', marginBottom: "5px" }}>PRICING</p>
+                        <p className='text-center' style={{ fontSize: '26px', fontWeight: '800', marginBottom: '5px', color: '#212529' }}>DRUG TESTING PLANS</p>
+                        <p className='text-center' style={{ fontSize: '14px', color: '#6c757d', marginBottom: 0 }}>
+                            Pay by the month or the year, and cancel at any time.
+                        </p>
+                    </div>
+                </motion.div>
+
+                {/* Pricing Cards */}
+                <div className='row d-flex align-items-stretch justify-content-center'>
+                    {[
+                        {
+                            title: 'NON-DOT Account',
+                            price: '$99',
+                            subtitle: 'Occupation Health Service Plan',
+                            bg: 'rgb(202, 197, 197)',
+                            features: [
+                                'Drug Account Only',
+                                '$75 Per Drug Test',
+                                '$65 Per Alcohol Test',
+                                'Online 24/7 Access',
+                                'Access to 20,000 labs Nationwide',
+                            ]
+                        },
+                        {
+                            title: '1 Year Random Enrollment',
+                            price: '$150',
+                            subtitle: 'DOT Random Drug & Alcohol Testing Program',
+                            bg: 'rgb(212, 225, 226)',
+                            features: [
+                                'DOT Random Enrollment',
+                                'Random Enrollment Certificate',
+                                'Access to 50,000 + Labs Nationwide',
+                                'DOT Drug Test $79',
+                                'Alcohol Test $65',
+                                'Dedicated Account Manager',
+                                'DOT Safety Audit Support',
+                                '24/7 Online Access'
+                            ]
+                        },
+                        {
+                            title: '3 Year Random Enrollment',
+                            price: '$275',
+                            subtitle: 'Perfect for Trucking Companies',
+                            bg: 'rgb(238, 221, 188)',
+                            features: [
+                                'DOT Random Enrollment',
+                                'Instant Random Enrollment Certificate',
+                                'Access to 50,000+ Labs Nationwide',
+                                'Drug Test $75',
+                                'Alcohol Test $65',
+                                'Dedicated Account Manager',
+                                'Audit Support',
+                                'Unlimited Drivers/Employees',
+                                'One-Time Setup - No renewal cost'
+                            ]
+                        }
+                    ].map((plan, index) => (
+                        <motion.div
+                            key={index}
+                            className='col-md-4 d-flex'
+                            style={{ marginTop: '15px', maxWidth: '330px' }}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.4, delay: index * 0.2 }}
+                        >
+                            <div className="card flex-fill" style={{ backgroundColor: plan.bg, borderRadius: '14px', height: '100%' }}>
+                                <div className="card-body d-flex flex-column p-3" style={{ minHeight: '430px' }}>
+                                    <div className='text-center mb-2'>
+                                        <p style={{ fontSize: '20px', fontWeight: '700', marginBottom: '4px' }}>{plan.title}</p>
+                                        <p style={{ fontSize: '20px', fontWeight: '600', marginBottom: '2px' }}>{plan.price}</p>
+                                        <p style={{ fontSize: '13px', marginBottom: '4px' }}>Every Year</p>
+                                        <p style={{ fontSize: '13px', color: '#444' }}>{plan.subtitle}</p>
                                         <hr style={{ color: "white", height: '2px' }} />
                                     </div>
                                     <div className="flex-grow-1">
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Drug Account Only</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />$75 Per Drug Test</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />$65 Per Alcohol Test</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Online 24/7 Access</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Access to 20,000 labs Nationwide</p>
+                                        {plan.features.map((item, i) => (
+                                            <p key={i} style={{ fontSize: '13px', margin: '4px 0' }}>
+                                                <CheckIcon style={{ marginRight: '6px', fontSize: '16px' }} />
+                                                {item}
+                                            </p>
+                                        ))}
                                     </div>
                                     <button
                                         type="button"
                                         className="btn custom-btn mt-auto"
-                                        onClick={handlePlan1}>
+                                        onClick={() => handlePlan(index + 1)}
+                                    >
                                         Select Plan
                                     </button>
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Second Plan */}
-                        <div className='col-md-4 d-flex' style={{marginTop:'15px'}}>
-                            <div className="card flex-fill" style={{ backgroundColor: "rgb(212, 225, 226)" }}>
-                                <div className="card-body d-flex flex-column">
-                                    <div className='text-center'>
-                                        <p style={{ fontSize: '44px', fontWeight: '900' }}>1 Year Random Enrollment</p>
-                                        <p>$150</p>
-                                        <p>Every Year</p>
-                                        <p>DOT Random Drug & Alcohol Testing Program</p>
-                                        <hr style={{ color: "white", height: '2px' }} />
-                                    </div>
-                                    <div className="flex-grow-1">
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />DOT Random Enrollment</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Random Enrollment Certificate</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Access to 50,000 + Labs Nationwide</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />DOT Drug Test $79</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Alcohol Test $65</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Dedicated Account Manager</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />DOT Safety Audit Support</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />24/7 Online Access</p>
-                                    </div>
-                                    <button type="button" className="btn custom-btn mt-auto" onClick={handlePlan2}>
-                                        Select Plan
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Third Plan */}
-                        <div className='col-md-4 d-flex' style={{marginTop:'15px'}}>
-                            <div className="card flex-fill" style={{ backgroundColor: "rgb(238, 221, 188)" }}>
-                                <div className="card-body d-flex flex-column">
-                                    <div className='text-center'>
-                                        <p style={{ fontSize: '44px', fontWeight: '900' }}>3 Year Random Enrollment</p>
-                                        <p>$275</p>
-                                        <p>Every Year</p>
-                                        <p>Perfect for Trucking Companies</p>
-                                        <hr style={{ color: "white", height: '2px' }} />
-                                    </div>
-                                    <div className="flex-grow-1">
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />DOT Random Enrollment</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Instant Random Enrollment Certificate</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Access to 50,000+ Labs Nationwide</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Drug Test $75</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Alcohol Test $65</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Dedicated Account Manager</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Audit Support</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />Unlimited Drivers/Employees</p>
-                                        <p><CheckIcon style={{ marginRight: '7px' }} />One-Time Setup - No renewal cost</p>
-                                    </div>
-                                    <button type="button" className="btn custom-btn mt-auto" onClick={handlePlan3}>
-                                        Select Plan
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        </motion.div>
+                    ))}
                 </div>
             </div>
 
@@ -123,6 +137,10 @@ export default function Pricing() {
                         color: #007bff;
                         border: 2px solid #007bff;
                         transition: background-color 0.3s, color 0.3s;
+                        font-weight: 600;
+                        border-radius: 8px;
+                        padding: 8px;
+                        font-size: 14px;
                     }
 
                     .custom-btn:hover {
@@ -130,7 +148,6 @@ export default function Pricing() {
                         color: white;
                     }
 
-                    /* Ensure all cards have equal height */
                     .card {
                         display: flex;
                         flex-direction: column;
@@ -145,9 +162,6 @@ export default function Pricing() {
 
                     .flex-grow-1 {
                         flex-grow: 1;
-                    }
-                    p{
-                        font-size: 16px;
                     }
                 `}
             </style>

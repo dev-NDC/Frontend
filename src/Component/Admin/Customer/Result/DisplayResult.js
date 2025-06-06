@@ -36,9 +36,7 @@ function DisplayResult() {
 
     const handleOpen = (type, result) => {
         setSelectedResult(result);
-        setEditData({
-            status: result.status,
-        });
+        setEditData({ status: result.status });
         if (previewUrl) URL.revokeObjectURL(previewUrl);
         setPreviewUrl(null);
         setOpenModal(type);
@@ -63,12 +61,11 @@ function DisplayResult() {
             <h2>Test Result</h2>
             <p><strong>Name:</strong> ${result.driverName}</p>
             <p><strong>License Number:</strong> ${result.licenseNumber}</p>
-            <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString()}</p>
+            <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString("en-US")}</p>
             <p><strong>Test Type:</strong> ${result.testType}</p>
             <img id="resultImage" src="" style="width:100%; margin-top:10px; border-radius:10px;" />
         `;
 
-        // Base64 image src
         const imageUrl = `data:${result.mimeType};base64,${result.file}`;
         container.querySelector("#resultImage").src = imageUrl;
 
@@ -87,19 +84,17 @@ function DisplayResult() {
         document.body.removeChild(container);
     };
 
-
     const handleUpdate = async () => {
         const formData = new FormData();
         formData.append("currentId", currentId);
         formData.append("resultId", selectedResult._id);
         formData.append("updatedData", JSON.stringify(editData));
 
-        // If previewUrl exists, that means a new file was selected
         if (previewUrl && document.querySelector("input[type='file']").files[0]) {
             formData.append("file", document.querySelector("input[type='file']").files[0]);
         }
 
-        await updateResult(formData); // This should call your API with FormData
+        await updateResult(formData);
         getSingleUserData(currentId);
         handleClose();
     };
@@ -133,6 +128,21 @@ function DisplayResult() {
         }
     };
 
+    const getStatusTextColor = (status) => {
+        switch (status) {
+            case "Positive":
+                return "#4caf50"; // Green
+            case "Pending":
+                return "#fbc02d"; // Yellow
+            case "Negative":
+                return "#f44336"; // Red
+            case "In Progress":
+                return "#ff9800"; // Orange
+            default:
+                return "#000"; // Default black
+        }
+    };
+
     if (loading) return <CircularProgress />;
 
     return (
@@ -156,9 +166,11 @@ function DisplayResult() {
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>{result.driverName}</TableCell>
                             <TableCell>{result.licenseNumber}</TableCell>
-                            <TableCell>{new Date(result.date).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(result.date).toLocaleDateString("en-US")}</TableCell>
                             <TableCell>{result.testType}</TableCell>
-                            <TableCell>{result.status}</TableCell>
+                            <TableCell style={{ color: getStatusTextColor(result.status), fontWeight: "bold" }}>
+                                {result.status}
+                            </TableCell>
                             <TableCell>{result.caseNumber}</TableCell>
                             <TableCell align="right">
                                 <IconButton onClick={() => handleOpen("view", result)}><Visibility /></IconButton>
@@ -177,7 +189,7 @@ function DisplayResult() {
                 <DialogContent>
                     <Typography gutterBottom><strong>Name:</strong> {selectedResult?.driverName}</Typography>
                     <Typography gutterBottom><strong>License Number:</strong> {selectedResult?.licenseNumber}</Typography>
-                    <Typography gutterBottom><strong>Date:</strong> {new Date(selectedResult?.date).toLocaleDateString()}</Typography>
+                    <Typography gutterBottom><strong>Date:</strong> {new Date(selectedResult?.date).toLocaleDateString("en-US")}</Typography>
                     <Typography gutterBottom><strong>Test Type:</strong> {selectedResult?.testType}</Typography>
 
                     {selectedResult?.file && (
@@ -197,8 +209,6 @@ function DisplayResult() {
             <Dialog open={openModal === "edit"} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Edit Result</DialogTitle>
                 <DialogContent>
-
-                    {/* Status Dropdown */}
                     <TextField
                         select
                         label="Status"
@@ -211,28 +221,18 @@ function DisplayResult() {
                         <MenuItem value="Pending">Pending</MenuItem>
                         <MenuItem value="Positive">Positive</MenuItem>
                         <MenuItem value="Negative">Negative</MenuItem>
+                        <MenuItem value="In Progress">In Progress</MenuItem>
                     </TextField>
 
-                    {/* Upload Image */}
                     <Button variant="contained" component="label" sx={{ mt: 2 }}>
                         Upload Image
-                        <input
-                            type="file"
-                            hidden
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                        />
+                        <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
                     </Button>
 
-                    {/* Image Preview */}
                     <div style={{ marginTop: "1rem" }}>
                         <Typography variant="subtitle2">Image Preview:</Typography>
                         {previewUrl ? (
-                            <img
-                                src={previewUrl}
-                                alt="New Preview"
-                                style={{ width: "100%", borderRadius: 8 }}
-                            />
+                            <img src={previewUrl} alt="New Preview" style={{ width: "100%", borderRadius: 8 }} />
                         ) : selectedResult?.file ? (
                             <img
                                 src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
@@ -243,7 +243,6 @@ function DisplayResult() {
                             <Typography color="text.secondary">No image available.</Typography>
                         )}
                     </div>
-
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>

@@ -1,11 +1,10 @@
 import React, { useState, useContext, useEffect } from "react";
 import {
   Box, Card, CardContent, Typography, IconButton,
-  Modal, TextField, Button, Grid, Divider, useMediaQuery, CircularProgress
+  Modal, TextField, Button, Grid, Divider, useMediaQuery, CircularProgress,
+  MenuItem, Select, InputLabel, FormControl, InputAdornment
 } from "@mui/material";
-import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
-
-import EditIcon from "@mui/icons-material/Edit";
+import { Visibility, VisibilityOff, Edit as EditIcon } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
 
@@ -14,7 +13,10 @@ const PaymentInformation = () => {
   const [open, setOpen] = useState(false);
   const [paymentInfo, setPaymentInfo] = useState({});
   const [tempPaymentInfo, setTempPaymentInfo] = useState({});
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true);
+
+  const [showCard, setShowCard] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -23,7 +25,7 @@ const PaymentInformation = () => {
     if (userDetails?.paymentData) {
       setPaymentInfo(userDetails.paymentData);
       setTempPaymentInfo(userDetails.paymentData);
-      setLoading(false); // Data is now loaded
+      setLoading(false);
     }
   }, [userDetails]);
 
@@ -45,7 +47,12 @@ const PaymentInformation = () => {
     setOpen(false);
   };
 
-  // Show a loading spinner until the data is available
+  const renderMasked = (value, show) => {
+    if (!value) return "N/A";
+    if (show) return value;
+    return "*".repeat(value.length - 4) + value.slice(-4);
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
@@ -74,18 +81,36 @@ const PaymentInformation = () => {
               { label: "Account Number", key: "accountNumber", color: "#7B4F24" },
               { label: "Routing Number", key: "routingNumber", color: "#7B4F24" },
               { label: "Account Name", key: "accountName", color: "#7B4F24" },
-              { label: "Account Type", key: "accountType", color: "#7B4F24" } // 👈 add this line
+              { label: "Account Type", key: "accountType", color: "#7B4F24" }
             ].map(({ label, key, color }) => (
               <Grid item xs={12} sm={6} key={key}>
                 <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: color || "text.secondary" }}>
                   {label}:
                 </Typography>
-                <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
-                  {paymentInfo[key] || "N/A"}
-                </Typography>
+                <Box display="flex" alignItems="center">
+                  <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700, mr: 1 }}>
+                    {(key === "creditCardNumber")
+                      ? renderMasked(paymentInfo[key], showCard)
+                      : (key === "accountNumber")
+                      ? renderMasked(paymentInfo[key], showAccount)
+                      : paymentInfo[key] || "N/A"}
+                  </Typography>
+                  {(key === "creditCardNumber" || key === "accountNumber") && (
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        key === "creditCardNumber"
+                          ? setShowCard(!showCard)
+                          : setShowAccount(!showAccount);
+                      }}
+                    >
+                      {((key === "creditCardNumber" && showCard) ||
+                        (key === "accountNumber" && showAccount)) ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                    </IconButton>
+                  )}
+                </Box>
               </Grid>
             ))}
-
           </Grid>
         </CardContent>
       </Card>
@@ -122,6 +147,34 @@ const PaymentInformation = () => {
                     value={value || ""}
                     onChange={handleChange}
                     variant="outlined"
+                    type={["creditCardNumber", "accountNumber"].includes(key)
+                      ? (key === "creditCardNumber" && showCard) || (key === "accountNumber" && showAccount)
+                        ? "text"
+                        : "password"
+                      : "text"}
+                    InputProps={
+                      ["creditCardNumber", "accountNumber"].includes(key)
+                        ? {
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  onClick={() =>
+                                    key === "creditCardNumber"
+                                      ? setShowCard(!showCard)
+                                      : setShowAccount(!showAccount)
+                                  }
+                                  edge="end"
+                                >
+                                  {(key === "creditCardNumber" && showCard) ||
+                                  (key === "accountNumber" && showAccount)
+                                    ? <VisibilityOff />
+                                    : <Visibility />}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }
+                        : undefined
+                    }
                   />
                 )}
               </Grid>

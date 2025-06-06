@@ -1,38 +1,44 @@
 import React from "react";
-import { Container, Grid, Typography, Link } from "@mui/material";
+import {  Grid, Typography, Link, Box } from "@mui/material";
 import { Facebook, Twitter, LinkedIn, Instagram } from "@mui/icons-material";
+import { Link as RouterLink } from "react-router-dom";
 
 function Footer() {
     return (
-        <div style={{ marginTop:'50px',padding:"30px 0px", borderTop: "1px solid #ddd" }}>
-            <Container maxWidth="lg">
-                <Grid container justifyContent="space-between" alignItems="center">
-                    <Grid item>
+        <Box component="footer" sx={{ width: "100%", backgroundColor: "#f9f9f9", borderTop: "1px solid #ddd", mt: 6, py: 3 }}>
+            
+                <Grid  justifyContent="space-between" alignItems="center" spacing={2}>
+                    {/* Navigation Links */}
+                    <Grid item xs={12} md={4}>
                         <Typography variant="body2" color="textSecondary">
-                            <Link href="/" color="inherit" underline="none" sx={{ mr: 2 }}>
-                                home
+                            <Link component={RouterLink} to="/" color="inherit" underline="none" sx={{ mr: 2 }}>
+                                Home
                             </Link>
-                            <Link href="/pricing" color="inherit" underline="none" sx={{ mr: 2 }}>
+                            <Link component={RouterLink} to="/pricing" color="inherit" underline="none" sx={{ mr: 2 }}>
                                 Pricing
                             </Link>
-                            <Link href="/about" color="inherit" underline="none">
-                                About us
+                            <Link component={RouterLink} to="/about" color="inherit" underline="none">
+                                About Us
                             </Link>
                         </Typography>
                     </Grid>
-                    <Grid item>
+
+                    {/* Copyright and Legal */}
+                    <Grid item xs={12} md={4} sx={{ textAlign: { xs: "left", md: "center" } }}>
                         <Typography variant="body2" color="textSecondary">
                             &copy; Nationwide Drug Centers
                             <span style={{ margin: "0 10px" }}>|</span>
-                            <Link href="#" color="inherit" underline="none" sx={{ mr: 2 }}>
+                            <Link component={RouterLink} to="/termsAndConditions" color="inherit" underline="none" sx={{ mr: 2 }}>
                                 Terms of Use
                             </Link>
-                            <Link href="#" color="inherit" underline="none">
+                            <Link component={RouterLink} to="/privacy" color="inherit" underline="none">
                                 Privacy Policy
                             </Link>
                         </Typography>
                     </Grid>
-                    <Grid item>
+
+                    {/* Social Icons */}
+                    <Grid item xs={12} md={4} sx={{ textAlign: { xs: "left", md: "right" } }}>
                         <Link href="#" color="inherit" sx={{ mx: 1 }}>
                             <Facebook fontSize="small" />
                         </Link>
@@ -47,8 +53,8 @@ function Footer() {
                         </Link>
                     </Grid>
                 </Grid>
-            </Container>
-        </div>
+            
+        </Box>
     );
 }
 

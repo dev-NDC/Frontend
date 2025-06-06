@@ -39,7 +39,7 @@ function DeletedDriver() {
         <TableContainer component={Paper} sx={{ mt: 3, p: 2, borderRadius: 2, boxShadow: 3, overflowX: "auto" }}>
             <Table>
                 <TableHead>
-                    <TableRow sx={{ backgroundColor: "red" }}>
+                    <TableRow sx={{ backgroundColor: "grey" }}>
                         <TableCell sx={{ color: "white", fontWeight: "bold" }}>Sr</TableCell>
                         <TableCell sx={{ color: "white", fontWeight: "bold" }}>Name</TableCell>
                         {!isMobile && <TableCell sx={{ color: "white", fontWeight: "bold" }}>Email</TableCell>}

@@ -19,6 +19,17 @@ const MembershipInformation = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // Format date as MM/DD/YYYY
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "N/A";
+    const date = new Date(dateStr);
+    if (isNaN(date)) return "N/A";
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+  };
+
   useEffect(() => {
     if (userDetails?.Membership) {
       const mem = userDetails.Membership;
@@ -84,18 +95,28 @@ const MembershipInformation = () => {
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2">Join Date:</Typography>
               <Typography variant="body1" sx={{ fontWeight: 700 }}>
-                {membershipInfo.planStartDate ? new Date(membershipInfo.planStartDate).toLocaleDateString() : "N/A"}
+                {formatDate(membershipInfo.planStartDate)}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2">Expiry Date:</Typography>
               <Typography variant="body1" sx={{ fontWeight: 700 }}>
-                {membershipInfo.planEndDate ? new Date(membershipInfo.planEndDate).toLocaleDateString() : "N/A"}
+                {formatDate(membershipInfo.planEndDate)}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2">Status:</Typography>
-              <Typography variant="body1" sx={{ fontWeight: 700, color: membershipInfo.planStatus === "Active" ? "green" : "red" }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 700,
+                  color:
+                    membershipInfo.planStatus === "Active" ? "green" :
+                    membershipInfo.planStatus === "Pending" ? "yellow" :
+                    membershipInfo.planStatus === "Inactive" ? "red" :
+                    "black"
+                }}
+              >
                 {membershipInfo.planStatus || "N/A"}
               </Typography>
             </Grid>
@@ -150,6 +171,7 @@ const MembershipInformation = () => {
                 <Select name="planStatus" value={tempMembershipInfo.planStatus || ""} onChange={handleChange} label="Status">
                   <MenuItem value="Active">Active</MenuItem>
                   <MenuItem value="Inactive">Inactive</MenuItem>
+                  <MenuItem value="Pending">Pending</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -176,7 +198,7 @@ const MembershipInformation = () => {
                 <Select
                   multiple
                   name="package"
-                  label="Packages" // Add this line
+                  label="Packages"
                   value={tempMembershipInfo.package || []}
                   onChange={(e) =>
                     setTempMembershipInfo({
@@ -195,7 +217,6 @@ const MembershipInformation = () => {
                   <MenuItem value="DOTDEMO">DOTDEMO</MenuItem>
                 </Select>
               </FormControl>
-
             </Grid>
 
             {/* Selected Reasons Chips */}
@@ -214,7 +235,7 @@ const MembershipInformation = () => {
                 <Select
                   multiple
                   name="order_reason"
-                  label="Reason Names" 
+                  label="Reason Names"
                   value={tempMembershipInfo.order_reason || []}
                   onChange={(e) =>
                     setTempMembershipInfo({
@@ -243,7 +264,6 @@ const MembershipInformation = () => {
                   <MenuItem value="OTHER">OTHER</MenuItem>
                 </Select>
               </FormControl>
-
             </Grid>
           </Grid>
           <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>

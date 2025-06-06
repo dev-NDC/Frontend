@@ -24,6 +24,16 @@ function DisplayCertificate() {
         expirationDate: ""
     });
 
+    // Helper function to format date as MM/DD/YYYY
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "";
+        const d = new Date(dateStr);
+        const month = String(d.getMonth() + 1).padStart(2, "0"); // months are 0-based
+        const day = String(d.getDate()).padStart(2, "0");
+        const year = d.getFullYear();
+        return `${month}/${day}/${year}`;
+    };
+
     useEffect(() => {
         if (userDetails?.certificates) {
             setCertificates(userDetails.certificates);
@@ -57,8 +67,8 @@ function DisplayCertificate() {
         container.innerHTML = `
             <h2>Certificate</h2>
             <p><strong>Description:</strong> ${cert.description}</p>
-            <p><strong>Issue Date:</strong> ${new Date(cert.issueDate).toLocaleDateString()}</p>
-            <p><strong>Expiration Date:</strong> ${new Date(cert.expirationDate).toLocaleDateString()}</p>
+            <p><strong>Issue Date:</strong> ${formatDate(cert.issueDate)}</p>
+            <p><strong>Expiration Date:</strong> ${formatDate(cert.expirationDate)}</p>
             <img id="certImage" src="" style="width:100%; margin-top:10px; border-radius:10px;" />
         `;
 
@@ -120,8 +130,8 @@ function DisplayCertificate() {
                             <TableRow key={cert._id || index}>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{cert.description}</TableCell>
-                                <TableCell>{new Date(cert.issueDate).toLocaleDateString()}</TableCell>
-                                <TableCell>{new Date(cert.expirationDate).toLocaleDateString()}</TableCell>
+                                <TableCell>{formatDate(cert.issueDate)}</TableCell>
+                                <TableCell>{formatDate(cert.expirationDate)}</TableCell>
                                 <TableCell align="right">
                                     <IconButton onClick={() => handleOpen("view", cert)}><Visibility /></IconButton>
                                     <IconButton onClick={() => handleDownload(cert)}><Download /></IconButton>
@@ -140,8 +150,8 @@ function DisplayCertificate() {
                 <DialogTitle>Certificate Details</DialogTitle>
                 <DialogContent>
                     <Typography gutterBottom><strong>Description:</strong> {selectedCert?.description}</Typography>
-                    <Typography gutterBottom><strong>Issue Date:</strong> {new Date(selectedCert?.issueDate).toLocaleDateString()}</Typography>
-                    <Typography gutterBottom><strong>Expiration Date:</strong> {new Date(selectedCert?.expirationDate).toLocaleDateString()}</Typography>
+                    <Typography gutterBottom><strong>Issue Date:</strong> {formatDate(selectedCert?.issueDate)}</Typography>
+                    <Typography gutterBottom><strong>Expiration Date:</strong> {formatDate(selectedCert?.expirationDate)}</Typography>
 
                     {selectedCert?.certificateFile?.data && (
                         <img

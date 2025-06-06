@@ -101,7 +101,7 @@ function ActiveDriver() {
                                 <TableCell>{driver.first_name} {driver.last_name}</TableCell>
                                 {!isMobile && <TableCell>{driver.email}</TableCell>}
                                 {!isTablet && <TableCell>{driver.government_id}</TableCell>}
-                                {!isTablet && <TableCell>{new Date(driver.dob).toLocaleDateString()}</TableCell>}
+                                {!isTablet && <TableCell>{new Date(driver.dob).toLocaleDateString('en-US')}</TableCell>}
                                 {!isTablet && <TableCell>{driver.phone}</TableCell>}
                                 {!isTablet && <TableCell>{driver.createdBy}</TableCell>}
                                 <TableCell>
@@ -156,9 +156,9 @@ function ActiveDriver() {
                         <Typography variant="h6" gutterBottom>{selectedDriver?.first_name} {selectedDriver?.last_name}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
                         <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.licenseNumber}</Typography>
-                        <Typography variant="body1"><strong>DOB:</strong> {new Date(selectedDriver?.dob).toLocaleDateString()}</Typography>
+                        <Typography variant="body1"><strong>DOB:</strong> {new Date(selectedDriver?.dob).toLocaleDateString('en-US')}</Typography>
                         <Typography variant="body1"><strong>Phone No:</strong> {selectedDriver?.phone}</Typography>
-                        <Typography variant="body1"><strong>Creation Date:</strong> {new Date(selectedDriver?.creationDate).toLocaleDateString()}</Typography>
+                        <Typography variant="body1"><strong>Creation Date:</strong> {new Date(selectedDriver?.creationDate).toLocaleDateString('en-US')}</Typography>
                         <Typography variant="body1"><strong>Created By:</strong> {selectedDriver?.createdBy}</Typography>
                     </Box>
                 </DialogContent>

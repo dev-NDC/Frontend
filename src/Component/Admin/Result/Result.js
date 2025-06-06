@@ -9,7 +9,6 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import axios from "axios";
 
-
 const API_URL = process.env.REACT_APP_API_URL;
 
 function DisplayResult() {
@@ -22,7 +21,7 @@ function DisplayResult() {
         const fetchResults = async () => {
             try {
                 const res = await axios.get(`${API_URL}/admin/getAllResult`);
-                console.log(res.data.data)
+                console.log(res.data.data);
                 setResults(res.data.data || []);
             } catch (err) {
                 console.error("Error fetching results:", err);
@@ -54,7 +53,7 @@ function DisplayResult() {
             <h2>Test Result</h2>
             <p><strong>Name:</strong> ${result.driverName}</p>
             <p><strong>License Number:</strong> ${result.licenseNumber}</p>
-            <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString()}</p>
+            <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString('en-US')}</p>
             <p><strong>Test Type:</strong> ${result.testType}</p>
             <img id="resultImage" src="" style="width:100%; margin-top:10px; border-radius:10px;" />
         `;
@@ -102,9 +101,24 @@ function DisplayResult() {
                             <TableCell>{result.companyName}</TableCell>
                             <TableCell>{result.driverName}</TableCell>
                             <TableCell>{result.licenseNumber}</TableCell>
-                            <TableCell>{new Date(result.testDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(result.testDate).toLocaleDateString('en-US')}</TableCell>
                             <TableCell>{result.testType}</TableCell>
-                            <TableCell>{result.status}</TableCell>
+                            <TableCell>
+                                <Typography
+                                    style={{
+                                        color:
+                                            result.status === "Positive"
+                                                ? "red"
+                                                : result.status === "Negative"
+                                                ? "green"
+                                                
+                                                : "Orange",
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    {result.status}
+                                </Typography>
+                            </TableCell>
                             <TableCell>{result.caseNumber}</TableCell>
                             <TableCell align="right">
                                 <IconButton onClick={() => handleView(result)}><Visibility /></IconButton>
@@ -121,7 +135,9 @@ function DisplayResult() {
                 <DialogContent>
                     <Typography gutterBottom><strong>Name:</strong> {selectedResult?.driverName}</Typography>
                     <Typography gutterBottom><strong>License Number:</strong> {selectedResult?.licenseNumber}</Typography>
-                    <Typography gutterBottom><strong>Date:</strong> {new Date(selectedResult?.date).toLocaleDateString()}</Typography>
+                    <Typography gutterBottom><strong>Company Name:</strong> {selectedResult?.companyName}</Typography>
+                    
+                    <Typography gutterBottom><strong>Date:</strong> {selectedResult?.date ? new Date(selectedResult.date).toLocaleDateString('en-US') : ''}</Typography>
                     <Typography gutterBottom><strong>Test Type:</strong> {selectedResult?.testType}</Typography>
 
                     {selectedResult?.file && (
