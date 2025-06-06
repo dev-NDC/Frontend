@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Box, TextField, Button, Typography, Paper } from '@mui/material';
+import { Container, Box, TextField, Button, Typography, Paper, CircularProgress, } from '@mui/material';
 
 import axios from 'axios';
 import { toast } from "react-toastify";
@@ -11,7 +11,7 @@ function ForgetPassword() {
     const [email, setEmail] = useState('');
     const [confirmEmail, setConfirmEmail] = useState('');
     const [error, setError] = useState('');
-
+    const [isResponseArrive, setIsResponseArrive] = useState(true);
     const validateEmailFormat = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -31,15 +31,17 @@ function ForgetPassword() {
         }
 
         setError('');
-
+        setIsResponseArrive(false);
         try {
             const response = await axios.post(`${API_URL}/loginAndSignUp/forgotPassword`, { email });
             toast.success(response.data.message || `Reset link sent to ${email}`);
             setEmail('');
             setConfirmEmail('');
+            setIsResponseArrive(true)
         } catch (error) {
             console.error("Error sending reset email:", error);
             toast.error(error.response?.data?.message || "Something went wrong. Please try again.");
+            setIsResponseArrive(true)
         }
     };
 
@@ -84,10 +86,13 @@ function ForgetPassword() {
                             variant="contained"
                             color="primary"
                             fullWidth
+                            disabled={!isResponseArrive}
+                            startIcon={!isResponseArrive && <CircularProgress size={20} color="inherit" />}
                             sx={{ mt: 1, borderRadius: 2 }}
                         >
-                            Send Reset Link
+                            {!isResponseArrive ? "Sending..." : "Send Reset Link"}
                         </Button>
+
                     </form>
                 </Paper>
             </Container>
