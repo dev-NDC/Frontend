@@ -5,8 +5,6 @@ import {
     Typography, CircularProgress
 } from "@mui/material";
 import { Visibility, Download } from "@mui/icons-material";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -21,7 +19,6 @@ function DisplayResult() {
         const fetchResults = async () => {
             try {
                 const res = await axios.get(`${API_URL}/admin/getAllResult`);
-                console.log(res.data.data);
                 setResults(res.data.data || []);
             } catch (err) {
                 console.error("Error fetching results:", err);
@@ -42,38 +39,28 @@ function DisplayResult() {
         setSelectedResult(null);
     };
 
-    const handleDownload = async (result) => {
-        const container = document.createElement("div");
-        container.style.position = "fixed";
-        container.style.top = "-9999px";
-        container.style.width = "600px";
-        container.style.padding = "20px";
-        container.style.backgroundColor = "white";
-        container.innerHTML = `
-            <h2>Test Result</h2>
-            <p><strong>Name:</strong> ${result.driverName}</p>
-            <p><strong>License Number:</strong> ${result.licenseNumber}</p>
-            <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString('en-US')}</p>
-            <p><strong>Test Type:</strong> ${result.testType}</p>
-            <img id="resultImage" src="" style="width:100%; margin-top:10px; border-radius:10px;" />
-        `;
+    const handleDownload = (result) => {
+        try {
+            const base64Data = result.resultImage?.split(',')[1];
+            if (!base64Data) {
+                alert("No PDF found to download.");
+                return;
+            }
 
-        const imageUrl = `data:${result.mimeType};base64,${result.file}`;
-        container.querySelector("#resultImage").src = imageUrl;
+            const byteArray = Uint8Array.from(atob(base64Data), (char) =>
+                char.charCodeAt(0)
+            );
 
-        document.body.appendChild(container);
-
-        const canvas = await html2canvas(container, { scale: 2 });
-        const imgData = canvas.toDataURL("image/png");
-
-        const pdf = new jsPDF("p", "mm", "a4");
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${result.driverName || "result"}.pdf`);
-
-        document.body.removeChild(container);
+            const blob = new Blob([byteArray], { type: "application/pdf" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `${result.driverName || "result"}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Error downloading PDF:", error);
+        }
     };
 
     if (loading) return <CircularProgress />;
@@ -109,10 +96,9 @@ function DisplayResult() {
                                         color:
                                             result.status === "Positive"
                                                 ? "red"
-                                                : result.status === "Negative"
-                                                ? "green"
-                                                
-                                                : "Orange",
+                                                : result.status?.toLowerCase() === "negative"
+                                                    ? "green"
+                                                    : "orange",
                                         fontWeight: "bold",
                                     }}
                                 >
@@ -136,15 +122,20 @@ function DisplayResult() {
                     <Typography gutterBottom><strong>Name:</strong> {selectedResult?.driverName}</Typography>
                     <Typography gutterBottom><strong>License Number:</strong> {selectedResult?.licenseNumber}</Typography>
                     <Typography gutterBottom><strong>Company Name:</strong> {selectedResult?.companyName}</Typography>
-                    
-                    <Typography gutterBottom><strong>Date:</strong> {selectedResult?.date ? new Date(selectedResult.date).toLocaleDateString('en-US') : ''}</Typography>
+                    <Typography gutterBottom>
+                        <strong>Date:</strong> {selectedResult?.testDate
+                            ? new Date(selectedResult.testDate).toLocaleDateString('en-US')
+                            : ''}
+                    </Typography>
                     <Typography gutterBottom><strong>Test Type:</strong> {selectedResult?.testType}</Typography>
 
-                    {selectedResult?.file && (
-                        <img
-                            src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
-                            alt="Result"
-                            style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
+                    {selectedResult?.resultImage?.startsWith("data:application/pdf") && (
+                        <iframe
+                            src={selectedResult.resultImage}
+                            title="PDF Preview"
+                            width="100%"
+                            height="500px"
+                            style={{ borderRadius: 8, marginTop: '1rem' }}
                         />
                     )}
                 </DialogContent>
