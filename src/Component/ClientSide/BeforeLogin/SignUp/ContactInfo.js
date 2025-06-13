@@ -1,21 +1,37 @@
 import React, { useContext, useState } from "react";
 import { TextField, Button, Box, Typography, Grid } from "@mui/material";
 import SignupContext from "../../../../Context/ClientSide/SignUp/SignupContext";
+import { getPasswordStrengthHints } from "./PasswordStrengthHelper";
 
 function ContactInfo() {
-    const { currentPosition, maxPosition, contactInfoData, setContactInfoData, setCurrentPosition, setMaxPosition } = useContext(SignupContext);
-    
+    const {
+        currentPosition,
+        maxPosition,
+        contactInfoData,
+        setContactInfoData,
+        setCurrentPosition,
+        setMaxPosition
+    } = useContext(SignupContext);
+
     const [passwordError, setPasswordError] = useState(false);
     const [confirmPasswordError, setConfirmPasswordError] = useState(false);
     const [emailError, setEmailError] = useState(false);
     const [phoneError, setPhoneError] = useState(false);
+    const [passwordHints, setPasswordHints] = useState([]);
+
+    const isStrongPassword = (password) => {
+        const hints = getPasswordStrengthHints(password);
+        setPasswordHints(hints);
+        return hints.length === 0;
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setContactInfoData({ ...contactInfoData, [name]: value });
 
         if (name === "password") {
-            setPasswordError(value.length < 6);
+            const isStrong = isStrongPassword(value);
+            setPasswordError(!isStrong);
         }
 
         if (name === "confirmPassword") {
@@ -28,7 +44,7 @@ function ContactInfo() {
         }
 
         if (name === "phone") {
-            if (/^\d*$/.test(value)) { // Allows only digits
+            if (/^\d*$/.test(value)) {
                 setContactInfoData({ ...contactInfoData, phone: value });
                 setPhoneError(false);
             } else {
@@ -37,7 +53,7 @@ function ContactInfo() {
         }
     };
 
-    const isFormValid = 
+    const isFormValid =
         Object.values(contactInfoData).every(value => value.trim() !== "") &&
         !passwordError &&
         !confirmPasswordError &&
@@ -115,8 +131,22 @@ function ContactInfo() {
                         fullWidth
                         required
                         error={passwordError}
-                        helperText={passwordError ? "Password must be at least 6 characters" : ""}
+                        helperText={passwordError ? "Password does not meet strength requirements" : ""}
                     />
+                    {passwordHints.length > 0 && (
+                        <Box sx={{ mt: 1 }}>
+                            <Typography variant="body2" color="textSecondary" fontWeight="bold">
+                                Suggestions to make a strong password:
+                            </Typography>
+                            <ul style={{ paddingLeft: "18px", margin: 0 }}>
+                                {passwordHints.map((hint, index) => (
+                                    <li key={index} style={{ fontSize: "0.85rem", color: "#666" }}>
+                                        {hint}
+                                    </li>
+                                ))}
+                            </ul>
+                        </Box>
+                    )}
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <TextField
@@ -132,14 +162,14 @@ function ContactInfo() {
                     />
                 </Grid>
                 <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Button 
-                        variant="contained" 
-                        onClick={handleNext} 
-                        style={{ 
-                            backgroundColor: isFormValid ? "#003366" : "#E0E0E0", 
-                            color: isFormValid ? "#FFFFFF" : "#A0A0A0", 
+                    <Button
+                        variant="contained"
+                        onClick={handleNext}
+                        style={{
+                            backgroundColor: isFormValid ? "#003366" : "#E0E0E0",
+                            color: isFormValid ? "#FFFFFF" : "#A0A0A0",
                             cursor: isFormValid ? "pointer" : "not-allowed"
-                        }} 
+                        }}
                         disabled={!isFormValid}
                     >
                         Next

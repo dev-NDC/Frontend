@@ -9,6 +9,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
 import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
 
+// Reusable Label + Value UI block
+const LabelValue = ({ label, value }) => (
+  <>
+    <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>{label}</Typography>
+    <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#003366' }}>{value || "N/A"}</Typography>
+  </>
+);
+
 const MembershipInformation = () => {
   const { userDetails, updateMembershipInformation } = useContext(CustomerContext);
   const [open, setOpen] = useState(false);
@@ -19,7 +27,6 @@ const MembershipInformation = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Format date as MM/DD/YYYY
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
     const date = new Date(dateStr);
@@ -89,61 +96,82 @@ const MembershipInformation = () => {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2">Current Plan:</Typography>
-              <Typography variant="body1" sx={{ fontWeight: 700 }}>{membershipInfo.selectedPlan || "N/A"}</Typography>
+              <LabelValue label="Current Plan:" value={membershipInfo.selectedPlan} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2">Join Date:</Typography>
-              <Typography variant="body1" sx={{ fontWeight: 700 }}>
-                {formatDate(membershipInfo.planStartDate)}
-              </Typography>
+              <LabelValue label="Join Date:" value={formatDate(membershipInfo.planStartDate)} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2">Expiry Date:</Typography>
-              <Typography variant="body1" sx={{ fontWeight: 700 }}>
-                {formatDate(membershipInfo.planEndDate)}
-              </Typography>
+              <LabelValue label="Expiry Date:" value={formatDate(membershipInfo.planEndDate)} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2">Status:</Typography>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>Status:</Typography>
               <Typography
                 variant="body1"
                 sx={{
-                  fontWeight: 700,
+                  fontWeight: 'bold',
                   color:
                     membershipInfo.planStatus === "Active" ? "green" :
-                    membershipInfo.planStatus === "Pending" ? "yellow" :
+                    membershipInfo.planStatus === "Pending" ? "orange" :
                     membershipInfo.planStatus === "Inactive" ? "red" :
-                    "black"
+                    "#003366"
                 }}
               >
                 {membershipInfo.planStatus || "N/A"}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2">OrgId:</Typography>
-              <Typography variant="body1" sx={{ fontWeight: 700 }}>{membershipInfo.orgId || "N/A"}</Typography>
+              <LabelValue label="OrgId:" value={membershipInfo.orgId} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2">Location Code:</Typography>
-              <Typography variant="body1" sx={{ fontWeight: 700 }}>{membershipInfo.locationCode || "N/A"}</Typography>
+              <LabelValue label="Location Code:" value={membershipInfo.locationCode} />
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="subtitle2">Packages:</Typography>
-              <Typography variant="body1" sx={{ fontWeight: 700 }}>
-                {membershipInfo.package?.length
-                  ? membershipInfo.package.map((pkg) => pkg.package_name).join(", ")
-                  : "N/A"}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="subtitle2">Reason Names:</Typography>
-              <Typography variant="body1" sx={{ fontWeight: 700 }}>
-                {membershipInfo.order_reason?.length
-                  ? membershipInfo.order_reason.map((reason) => reason.order_reason_name).join(", ")
-                  : "N/A"}
-              </Typography>
-            </Grid>
+  <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>Packages:</Typography>
+  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
+    {membershipInfo.package?.length > 0 ? (
+      membershipInfo.package.map((pkg, index) => (
+        <Chip
+          key={index}
+          label={pkg.package_name}
+          variant="outlined"
+          sx={{ borderColor: '#003366', color: '#003366', fontWeight: 'bold' }}
+        />
+      ))
+    ) : (
+      <Typography variant="body2" color="text.secondary">N/A</Typography>
+    )}
+  </Box>
+</Grid>
+
+<Grid item xs={12}>
+  <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>Reason Names:</Typography>
+  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
+    {membershipInfo.order_reason?.length > 0 ? (
+      membershipInfo.order_reason.map((reason, index) => (
+        <Chip
+          key={index}
+          label={reason.order_reason_name}
+          variant="outlined"
+          sx={{ borderColor: '#003366', color: '#003366', fontWeight: 'bold' }}
+        />
+      ))
+    ) : (
+      <Typography variant="body2" color="text.secondary">N/A</Typography>
+    )}
+  </Box>
+</Grid>
+
+            {/* <Grid item xs={12}>
+              <LabelValue
+                label="Reason Names:"
+                value={
+                  membershipInfo.order_reason?.length
+                    ? membershipInfo.order_reason.map((reason) => reason.order_reason_name).join(", ")
+                    : "N/A"
+                }
+              />
+            </Grid> */}
           </Grid>
         </CardContent>
       </Card>
@@ -184,7 +212,7 @@ const MembershipInformation = () => {
 
             {/* Selected Packages Chips */}
             <Grid item xs={12}>
-              <Typography variant="subtitle2">Selected Packages:</Typography>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>Selected Packages:</Typography>
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
                 {tempMembershipInfo.package?.map((item, i) => (
                   <Chip key={i} label={item} onDelete={() => handleRemoveItem("package", item)} />
@@ -200,28 +228,19 @@ const MembershipInformation = () => {
                   name="package"
                   label="Packages"
                   value={tempMembershipInfo.package || []}
-                  onChange={(e) =>
-                    setTempMembershipInfo({
-                      ...tempMembershipInfo,
-                      package: e.target.value,
-                    })
-                  }
+                  onChange={(e) => setTempMembershipInfo({ ...tempMembershipInfo, package: e.target.value })}
                   renderValue={(selected) => selected.join(", ")}
                 >
-                  <MenuItem value="DOT11">DOT11</MenuItem>
-                  <MenuItem value="DOTBATUR">DOTBATUR</MenuItem>
-                  <MenuItem value="NONDOT">NONDOT</MenuItem>
-                  <MenuItem value="DOTPACK">DOTPACK</MenuItem>
-                  <MenuItem value="NONPACK">NONPACK</MenuItem>
-                  <MenuItem value="NDCDEMO">NDCDEMO</MenuItem>
-                  <MenuItem value="DOTDEMO">DOTDEMO</MenuItem>
+                  {["DOT11", "DOTBATUR", "NONDOT", "DOTPACK", "NONPACK", "NDCDEMO", "DOTDEMO"].map(pkg => (
+                    <MenuItem key={pkg} value={pkg}>{pkg}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
 
             {/* Selected Reasons Chips */}
             <Grid item xs={12}>
-              <Typography variant="subtitle2">Selected Reasons:</Typography>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>Selected Reasons:</Typography>
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
                 {tempMembershipInfo.order_reason?.map((item, i) => (
                   <Chip key={i} label={item} onDelete={() => handleRemoveItem("order_reason", item)} />
@@ -237,31 +256,17 @@ const MembershipInformation = () => {
                   name="order_reason"
                   label="Reason Names"
                   value={tempMembershipInfo.order_reason || []}
-                  onChange={(e) =>
-                    setTempMembershipInfo({
-                      ...tempMembershipInfo,
-                      order_reason: e.target.value,
-                    })
-                  }
+                  onChange={(e) => setTempMembershipInfo({ ...tempMembershipInfo, order_reason: e.target.value })}
                   renderValue={(selected) => selected.join(", ")}
                 >
-                  <MenuItem value="PRE-EMPLOYMENT">PRE-EMPLOYMENT</MenuItem>
-                  <MenuItem value="RANDOM">RANDOM</MenuItem>
-                  <MenuItem value="POST-ACCIDENT">POST-ACCIDENT</MenuItem>
-                  <MenuItem value="REASONABLE SUSPICION/CAUSE">REASONABLE SUSPICION/CAUSE</MenuItem>
-                  <MenuItem value="FOLLOW-UP">FOLLOW-UP</MenuItem>
-                  <MenuItem value="PERIODIC">PERIODIC</MenuItem>
-                  <MenuItem value="ANNUAL">ANNUAL</MenuItem>
-                  <MenuItem value="RETURN TO DUTY">RETURN TO DUTY</MenuItem>
-                  <MenuItem value="FITNESS FOR DUTY">FITNESS FOR DUTY</MenuItem>
-                  <MenuItem value="JOB TRANSFER">JOB TRANSFER</MenuItem>
-                  <MenuItem value="PROMOTION">PROMOTION</MenuItem>
-                  <MenuItem value="PRE-SITE ACCESS">PRE-SITE ACCESS</MenuItem>
-                  <MenuItem value="SWEEP">SWEEP</MenuItem>
-                  <MenuItem value="COURT ORDERED">COURT ORDERED</MenuItem>
-                  <MenuItem value="CONTRACTUAL">CONTRACTUAL</MenuItem>
-                  <MenuItem value="PROBATION">PROBATION</MenuItem>
-                  <MenuItem value="OTHER">OTHER</MenuItem>
+                  {[
+                    "PRE-EMPLOYMENT", "RANDOM", "POST-ACCIDENT", "REASONABLE SUSPICION/CAUSE",
+                    "FOLLOW-UP", "PERIODIC", "ANNUAL", "RETURN TO DUTY", "FITNESS FOR DUTY",
+                    "JOB TRANSFER", "PROMOTION", "PRE-SITE ACCESS", "SWEEP", "COURT ORDERED",
+                    "CONTRACTUAL", "PROBATION", "OTHER"
+                  ].map(reason => (
+                    <MenuItem key={reason} value={reason}>{reason}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>

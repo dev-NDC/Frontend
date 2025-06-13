@@ -15,7 +15,16 @@ import { Link } from "react-router-dom";
 import LoginContext from "../../../Context/ClientSide/Login/LoginContext";
 
 function Login() {
-    const { email, password, loginSubmit,rememberMe, setRememberMe, setPassword, setEmail } = useContext(LoginContext);
+    const {
+        email,
+        password,
+        loginSubmit,
+        rememberMe,
+        setRememberMe,
+        setPassword,
+        setEmail
+    } = useContext(LoginContext);
+
     const [emailError, setEmailError] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
@@ -43,8 +52,11 @@ function Login() {
         setShowPassword((prev) => !prev);
     };
 
-    const handleLoginSubmit = () => {
-        loginSubmit();
+    const handleLoginSubmit = (event) => {
+        event.preventDefault(); // Prevent page reload
+        if (isFormValid) {
+            loginSubmit();
+        }
     };
 
     const isFormValid = email && !emailError && password;
@@ -67,55 +79,58 @@ function Login() {
                     <Typography variant="h5" gutterBottom>
                         Log in
                     </Typography>
-                    <TextField
-                        fullWidth
-                        label="Email"
-                        variant="outlined"
-                        margin="normal"
-                        value={email}
-                        onChange={handleEmailChange}
-                        error={emailError}
-                        helperText={emailError ? "Enter a valid email address" : ""}
-                    />
-                    <TextField
-                        fullWidth
-                        label="Password"
-                        type={showPassword ? "text" : "password"}
-                        variant="outlined"
-                        margin="normal"
-                        value={password}
-                        onChange={handlePasswordChange}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={togglePasswordVisibility} edge="end">
-                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                            />
-                        }
-                        label="Remember me"
-                        sx={{ alignSelf: "flex-start", mt: 1 }}
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        sx={{ mt: 2 }}
-                        disabled={!isFormValid}
-                        onClick={handleLoginSubmit}
-                    >
-                        Log in
-                    </Button>
+
+                    <form onSubmit={handleLoginSubmit} style={{ width: '100%' }}>
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            variant="outlined"
+                            margin="normal"
+                            value={email}
+                            onChange={handleEmailChange}
+                            error={emailError}
+                            helperText={emailError ? "Enter a valid email address" : ""}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Password"
+                            type={showPassword ? "text" : "password"}
+                            variant="outlined"
+                            margin="normal"
+                            value={password}
+                            onChange={handlePasswordChange}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={togglePasswordVisibility} edge="end">
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }}
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                />
+                            }
+                            label="Remember me"
+                            sx={{ alignSelf: "flex-start", mt: 1 }}
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            sx={{ mt: 2 }}
+                            disabled={!isFormValid}
+                        >
+                            Log in
+                        </Button>
+                    </form>
+
                     <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%", mt: 1 }}>
                         <Link to="/forgotPassword" style={{ textDecoration: "none" }}>
                             <Typography variant="body2" color="primary" sx={{ cursor: "pointer" }}>

@@ -26,42 +26,66 @@ function Payment() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        // Ensure empty inputs are stored as empty strings
         const updatedValue = value || "";
 
-        setPaymentData({ ...paymentData, [name]: updatedValue });
+        const updatedPaymentData = { ...paymentData, [name]: updatedValue };
+        setPaymentData(updatedPaymentData);
 
-        // Validation rules
+        const isAchSectionFilled =
+            updatedPaymentData.accountNumber.trim() !== "" ||
+            updatedPaymentData.routingNumber.trim() !== "" ||
+            updatedPaymentData.accountName.trim() !== "";
+
         switch (name) {
             case "creditCardNumber":
-                setErrors({ ...errors, creditCardNumber: !/^\d{16}$/.test(updatedValue) });
+                setErrors(prev => ({ ...prev, creditCardNumber: !/^\d{16}$/.test(updatedValue) }));
                 break;
             case "cvv":
-                setErrors({ ...errors, cvv: !/^\d{3}$/.test(updatedValue) });
+                setErrors(prev => ({ ...prev, cvv: !/^\d{3}$/.test(updatedValue) }));
                 break;
             case "billingZip":
-                setErrors({ ...errors, billingZip: !/^\d+$/.test(updatedValue) });
+                setErrors(prev => ({ ...prev, billingZip: !/^\d+$/.test(updatedValue) }));
                 break;
             case "accountNumber":
-                setErrors({ ...errors, accountNumber: !/^\d+$/.test(updatedValue) });
+                setErrors(prev => ({
+                    ...prev,
+                    accountNumber: isAchSectionFilled && !/^\d+$/.test(updatedValue)
+                }));
                 break;
             case "routingNumber":
-                setErrors({ ...errors, routingNumber: !/^\d{9}$/.test(updatedValue) });
+                setErrors(prev => ({
+                    ...prev,
+                    routingNumber: isAchSectionFilled && !/^\d{9}$/.test(updatedValue)
+                }));
                 break;
             case "accountName":
-                setErrors({ ...errors, accountName: typeof updatedValue === "string" && updatedValue.trim() === "" });
+                setErrors(prev => ({
+                    ...prev,
+                    accountName: isAchSectionFilled && updatedValue.trim() === ""
+                }));
                 break;
             default:
                 break;
         }
     };
 
-    // Ensuring valid form submission
+    const isAchSectionFilled =
+        paymentData.accountNumber.trim() !== "" ||
+        paymentData.routingNumber.trim() !== "" ||
+        paymentData.accountName.trim() !== "";
+
     const isFormValid =
-        Object.entries(paymentData).every(([key, value]) =>
-            typeof value === "string" ? value.trim() !== "" : Boolean(value)
-        ) && Object.values(errors).every(error => !error);
+        paymentData.creditCardNumber.trim().length === 16 &&
+        /^\d{3}$/.test(paymentData.cvv) &&
+        paymentData.billingZip.trim() !== "" &&
+        paymentData.expMonth &&
+        paymentData.expYear &&
+        Object.values(errors).every(error => !error) &&
+        (!isAchSectionFilled || (
+            /^\d+$/.test(paymentData.accountNumber) &&
+            /^\d{9}$/.test(paymentData.routingNumber) &&
+            paymentData.accountName.trim() !== ""
+        ));
 
     const handleNext = () => {
         if (currentPosition === maxPosition) {
@@ -75,7 +99,7 @@ function Payment() {
             <Typography variant="h6" fontWeight="bold">Payment Information</Typography>
 
             <Typography variant="subtitle1" fontWeight="bold" mt={2}>Card Details *</Typography>
-            
+
             <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
                     <TextField
@@ -144,7 +168,7 @@ function Payment() {
                 I authorize Nationwide Drug Centers to electronically debit my bank account according to the terms outlined below...
             </Typography>
 
-            <Typography variant="subtitle1" fontWeight="bold" mt={2}>E-Check ACH *</Typography>
+            <Typography variant="subtitle1" fontWeight="bold" mt={2}>E-Check ACH <span style={{ fontWeight: "normal", color: "gray" }}>(optional)</span></Typography>
 
             <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>

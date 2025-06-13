@@ -1,55 +1,64 @@
 import React, { useContext, useState } from "react";
-import {
-    TextField, Button, Box, Typography, Grid, MenuItem, CircularProgress
-} from "@mui/material";
+import { TextField, Button, Box, Typography, Grid } from "@mui/material";
 import SignupContext from "../../../../Context/ClientSide/SignUp/SignupContext";
-import axios from "axios";
-import { toast } from "react-toastify";
+import { getPasswordStrengthHints } from "./PasswordStrengthHelper";
 
-function CompanyInfo() {
+function ContactInfo() {
     const {
-        currentPosition, maxPosition,
-        companyInfoData, setCompanyInfoData,
-        setCurrentPosition, setMaxPosition
+        currentPosition,
+        maxPosition,
+        contactInfoData,
+        setContactInfoData,
+        setCurrentPosition,
+        setMaxPosition
     } = useContext(SignupContext);
 
+    const [passwordError, setPasswordError] = useState(false);
+    const [confirmPasswordError, setConfirmPasswordError] = useState(false);
     const [emailError, setEmailError] = useState(false);
-    const [contactNumberError, setContactNumberError] = useState(false);
-    const [usdotError, setUsdotError] = useState(false);
-    const [employeesError, setEmployeesError] = useState(false);
-    const [zipError, setZipError] = useState(false);
+    const [phoneError, setPhoneError] = useState(false);
+    const [passwordHints, setPasswordHints] = useState([]);
 
-    const [usdotLookup, setUsdotLookup] = useState("");
-    const [loading, setLoading] = useState(false);
+    const isStrongPassword = (password) => {
+        const hints = getPasswordStrengthHints(password);
+        setPasswordHints(hints);
+        return hints.length === 0;
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setCompanyInfoData({ ...companyInfoData, [name]: value });
+        setContactInfoData({ ...contactInfoData, [name]: value });
 
-        if (name === "companyEmail") {
+        if (name === "password") {
+            const isStrong = isStrongPassword(value);
+            setPasswordError(!isStrong);
+        }
+
+        if (name === "confirmPassword") {
+            setConfirmPasswordError(value !== contactInfoData.password);
+        }
+
+        if (name === "email") {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             setEmailError(!emailRegex.test(value));
         }
 
-        if (["contactNumber", "usdot", "employees", "zip"].includes(name)) {
+        if (name === "phone") {
             if (/^\d*$/.test(value)) {
-                setCompanyInfoData({ ...companyInfoData, [name]: value });
-                if (name === "contactNumber") setContactNumberError(false);
-                if (name === "usdot") setUsdotError(false);
-                if (name === "employees") setEmployeesError(false);
-                if (name === "zip") setZipError(false);
+                setContactInfoData({ ...contactInfoData, phone: value });
+                setPhoneError(false);
             } else {
-                if (name === "contactNumber") setContactNumberError(true);
-                if (name === "usdot") setUsdotError(true);
-                if (name === "employees") setEmployeesError(true);
-                if (name === "zip") setZipError(true);
+                setPhoneError(true);
             }
         }
     };
 
     const isFormValid =
-        Object.values(companyInfoData).every(value => value.trim() !== "") &&
-        !emailError && !contactNumberError && !usdotError && !employeesError && !zipError;
+        Object.values(contactInfoData).every(value => value.trim() !== "") &&
+        !passwordError &&
+        !confirmPasswordError &&
+        !emailError &&
+        !phoneError;
 
     const handleNext = () => {
         if (currentPosition === maxPosition) {
@@ -58,69 +67,16 @@ function CompanyInfo() {
         setCurrentPosition(currentPosition + 1);
     };
 
-    const fetchUSDOTData = async () => {
-        if (!usdotLookup.trim()) return;
-        setLoading(true);
-        try {
-            const response = await axios.get(`https://data.transportation.gov/resource/az4n-8mr2.json?dot_number=${usdotLookup}`);
-            console.log(response);
-            const data = response.data[0];
-            if (data) {
-                setCompanyInfoData(prev => ({
-                    ...prev,
-                    companyName: data.legal_name || "",
-                    usdot: data.dot_number || usdotLookup,
-                    contactNumber: data.phone || "",
-                    companyEmail: data.email_address || "",
-                    safetyAgencyName: data.company_officer_1 || "",
-                    employees: data.employees || "",
-                    address: data.phy_street || "",
-                    city: data.phy_city || "",
-                    state: data.phy_state || "",
-                    zip: data.phy_zip || "",
-                    suite: "", // optional
-                }));
-            } else {
-
-                toast.error("No company found for this USDOT number.");
-            }
-        } catch (error) {
-            console.error("USDOT API error:", error);
-            alert("Error fetching company data.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     return (
-        <Box sx={{ width: "100%", maxWidth: 800, mx: "auto", p: 3 }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                <Typography variant="h6" fontWeight="bold">Company Information</Typography>
-                <Box display="flex" alignItems="center" gap={1}>
-                    <TextField
-                        label="Fill info with USDOT#"
-                        size="small"
-                        value={usdotLookup}
-                        onChange={(e) => setUsdotLookup(e.target.value)}
-                        disabled={loading}
-                    />
-                    <Button
-                        variant="contained"
-                        onClick={fetchUSDOTData}
-                        disabled={loading || !usdotLookup.trim()}
-                        sx={{ minWidth: 80 }}
-                    >
-                        {loading ? <CircularProgress size={24} color="inherit" /> : "Done"}
-                    </Button>
-                </Box>
-            </Box>
+        <Box sx={{ width: "100%", mx: "auto" }}>
+            <Typography variant="h6" fontWeight="bold">Contact Information</Typography>
 
             <Grid container spacing={2} mt={1}>
                 <Grid item xs={12} md={6}>
                     <TextField
-                        label="Company Name"
-                        name="companyName"
-                        value={companyInfoData.companyName}
+                        label="First Name"
+                        name="firstName"
+                        value={contactInfoData.firstName}
                         onChange={handleChange}
                         fullWidth
                         required
@@ -128,130 +84,81 @@ function CompanyInfo() {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <TextField
-                        label="USDOT#"
-                        name="usdot"
-                        value={companyInfoData.usdot}
+                        label="Last Name"
+                        name="lastName"
+                        value={contactInfoData.lastName}
                         onChange={handleChange}
-                        placeholder="e.g., 23"
                         fullWidth
                         required
-                        error={usdotError}
-                        helperText={usdotError ? "Only digits are allowed" : ""}
                     />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12}>
                     <TextField
-                        label="Contact Number"
-                        name="contactNumber"
-                        value={companyInfoData.contactNumber}
+                        label="Phone No"
+                        name="phone"
+                        value={contactInfoData.phone}
                         onChange={handleChange}
-                        placeholder="(000) 000-0000"
                         fullWidth
                         required
-                        error={contactNumberError}
-                        helperText={contactNumberError ? "Only digits are allowed" : ""}
+                        error={phoneError}
+                        helperText={phoneError ? "Only digits are allowed" : ""}
                     />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12}>
                     <TextField
-                        label="Company E-mail"
-                        name="companyEmail"
-                        value={companyInfoData.companyEmail}
+                        label="Email"
+                        name="email"
+                        value={contactInfoData.email}
                         onChange={handleChange}
-                        placeholder="example@example.com"
                         fullWidth
                         required
                         error={emailError}
                         helperText={emailError ? "Enter a valid email address" : ""}
                     />
                 </Grid>
-                <Grid item xs={12} md={6}>
-                    <TextField
-                        label="Safety Agency Name"
-                        name="safetyAgencyName"
-                        value={companyInfoData.safetyAgencyName}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                    />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <TextField
-                        label="No. of Employees/Drivers"
-                        name="employees"
-                        value={companyInfoData.employees}
-                        onChange={handleChange}
-                        placeholder="23"
-                        fullWidth
-                        required
-                        error={employeesError}
-                        helperText={employeesError ? "Only digits are allowed" : ""}
-                    />
-                </Grid>
                 <Grid item xs={12}>
-                    <Typography variant="body2" fontWeight="bold">Address *</Typography>
-                    <TextField
-                        name="address"
-                        label="Address"
-                        value={companyInfoData.address}
-                        onChange={handleChange}
-                        placeholder="Street Address"
-                        fullWidth
-                        required
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        name="suite"
-                        label="Suite"
-                        value={companyInfoData.suite}
-                        onChange={handleChange}
-                        placeholder="Suite/Apt/Unit#"
-                        fullWidth
-                    />
+                    <Typography variant="body2" color="textSecondary">
+                        *By providing a telephone number and submitting this form you are consenting to be contacted by SMS text message. Message & data rates may apply. You can reply STOP to opt-out of further messaging.
+                    </Typography>
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <TextField
-                        name="city"
-                        label="City"
-                        value={companyInfoData.city}
+                        label="Password"
+                        type="password"
+                        name="password"
+                        value={contactInfoData.password}
                         onChange={handleChange}
-                        placeholder="City"
                         fullWidth
                         required
+                        error={passwordError}
+                        helperText={passwordError ? "Password does not meet strength requirements" : ""}
                     />
+                    {passwordHints.length > 0 && (
+                        <Box sx={{ mt: 1 }}>
+                            <Typography variant="body2" color="textSecondary" fontWeight="bold">
+                                Suggestions to make a strong password:
+                            </Typography>
+                            <ul style={{ paddingLeft: "18px", margin: 0 }}>
+                                {passwordHints.map((hint, index) => (
+                                    <li key={index} style={{ fontSize: "0.85rem", color: "#666" }}>
+                                        {hint}
+                                    </li>
+                                ))}
+                            </ul>
+                        </Box>
+                    )}
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <TextField
-                        select
-                        name="state"
-                        label="State / Province"
-                        value={companyInfoData.state}
+                        label="Confirm Password"
+                        type="password"
+                        name="confirmPassword"
+                        value={contactInfoData.confirmPassword}
                         onChange={handleChange}
                         fullWidth
                         required
-                        SelectProps={{
-                            MenuProps: menuProps,
-                        }}
-                    >
-                        {US_STATES.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        name="zip"
-                        label="Zip"
-                        value={companyInfoData.zip}
-                        onChange={handleChange}
-                        placeholder="Postal / Zip Code"
-                        fullWidth
-                        required
-                        error={zipError}
-                        helperText={zipError ? "Only digits are allowed" : ""}
+                        error={confirmPasswordError}
+                        helperText={confirmPasswordError ? "Passwords do not match" : ""}
                     />
                 </Grid>
                 <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -273,66 +180,4 @@ function CompanyInfo() {
     );
 }
 
-export default CompanyInfo;
-
-
-const US_STATES = [
-    { label: "Alabama", value: "AL" },
-    { label: "Alaska", value: "AK" },
-    { label: "Arizona", value: "AZ" },
-    { label: "Arkansas", value: "AR" },
-    { label: "California", value: "CA" },
-    { label: "Colorado", value: "CO" },
-    { label: "Connecticut", value: "CT" },
-    { label: "Delaware", value: "DE" },
-    { label: "Florida", value: "FL" },
-    { label: "Georgia", value: "GA" },
-    { label: "Hawaii", value: "HI" },
-    { label: "Idaho", value: "ID" },
-    { label: "Illinois", value: "IL" },
-    { label: "Indiana", value: "IN" },
-    { label: "Iowa", value: "IA" },
-    { label: "Kansas", value: "KS" },
-    { label: "Kentucky", value: "KY" },
-    { label: "Louisiana", value: "LA" },
-    { label: "Maine", value: "ME" },
-    { label: "Maryland", value: "MD" },
-    { label: "Massachusetts", value: "MA" },
-    { label: "Michigan", value: "MI" },
-    { label: "Minnesota", value: "MN" },
-    { label: "Mississippi", value: "MS" },
-    { label: "Missouri", value: "MO" },
-    { label: "Montana", value: "MT" },
-    { label: "Nebraska", value: "NE" },
-    { label: "Nevada", value: "NV" },
-    { label: "New Hampshire", value: "NH" },
-    { label: "New Jersey", value: "NJ" },
-    { label: "New Mexico", value: "NM" },
-    { label: "New York", value: "NY" },
-    { label: "North Carolina", value: "NC" },
-    { label: "North Dakota", value: "ND" },
-    { label: "Ohio", value: "OH" },
-    { label: "Oklahoma", value: "OK" },
-    { label: "Oregon", value: "OR" },
-    { label: "Pennsylvania", value: "PA" },
-    { label: "Rhode Island", value: "RI" },
-    { label: "South Carolina", value: "SC" },
-    { label: "South Dakota", value: "SD" },
-    { label: "Tennessee", value: "TN" },
-    { label: "Texas", value: "TX" },
-    { label: "Utah", value: "UT" },
-    { label: "Vermont", value: "VT" },
-    { label: "Virginia", value: "VA" },
-    { label: "Washington", value: "WA" },
-    { label: "West Virginia", value: "WV" },
-    { label: "Wisconsin", value: "WI" },
-    { label: "Wyoming", value: "WY" },
-];
-
-const menuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: 200, // limit dropdown height to 200px
-        },
-    },
-};
+export default ContactInfo;
