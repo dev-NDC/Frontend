@@ -12,6 +12,7 @@ import Error404Page from './Component/Error404Page';
 import HomeState from './Context/ClientSide/AfterLogin/Home/HomeState';
 import AdminState from './Context/Admin/AdminState';
 import AgencyState from './Context/Agency/AgencyState';
+import SignupState from './Context/ClientSide/SignUp/SignupState';
 
 function App() {
 
@@ -20,7 +21,7 @@ function App() {
       <ToastContainer position="top-right" autoClose={3000} />
       <Router>
         <Routes>
-          <Route path="/*" element={<Home />} />
+          <Route path="/*" element={<SignupState><Home /></SignupState>} />
           <Route path="/portal" element={<HomeState><PortalHome/></HomeState>}/>
           <Route path="/admin" element={<AdminState><AdminHome/> </AdminState>}/>
           <Route path="/agency" element={<AgencyState><AgencyHome/> </AgencyState>}/>

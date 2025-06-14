@@ -16,7 +16,9 @@ export default function Pricing() {
 
     return (
         <>
-            <div style={{ marginTop: '70px', maxWidth: '1140px', marginLeft: 'auto', marginRight: 'auto' }}>
+
+            {/* Pricing Section */}
+            <div style={{ marginTop: '120px', maxWidth: '1140px', marginLeft: 'auto', marginRight: 'auto' , minHeight: `calc(100vh - 240px)`}}>
                 {/* Heading Box */}
                 <motion.div
                     initial={{ opacity: 0, y: -30 }}
@@ -128,6 +130,7 @@ export default function Pricing() {
                     ))}
                 </div>
             </div>
+
 
             <style>
                 {`

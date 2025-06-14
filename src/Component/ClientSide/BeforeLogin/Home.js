@@ -12,10 +12,8 @@ import SignUp from "./SignUp/Signup";
 import ForgotPassword from "./ForgotPassword";
 import ResetPassword from "./ResetPassword";
 import Error404Page from "../../Error404Page";
-import Privacy from "./Privacy";  
-import TermsAndConditions from "./TermAndCondition"; 
-
-import SignupState from "../../../Context/ClientSide/SignUp/SignupState";
+import Privacy from "./Privacy";
+import TermsAndConditions from "./TermAndCondition";
 import LoginState from "../../../Context/ClientSide/Login/LoginState";
 
 const pageVariants = {
@@ -55,15 +53,9 @@ function Home() {
   const location = useLocation();
 
   return (
-    <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "0 16px" }}>
-      {/* Animated Navbar */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <Navbar />
-      </motion.div>
+    <div style={{margin: "0 auto", padding: "0 16px" }}>
+      <Navbar />
+
 
       {/* Page Routes with Animation */}
       <AnimatePresence mode="wait">
@@ -80,9 +72,7 @@ function Home() {
             path="/pricing"
             element={
               <AnimatedPage>
-                <SignupState>
-                  <Pricing />
-                </SignupState>
+                <Pricing />
               </AnimatedPage>
             }
           />
@@ -108,9 +98,7 @@ function Home() {
             path="/signup"
             element={
               <AnimatedPage>
-                <SignupState>
-                  <SignUp />
-                </SignupState>
+                <SignUp />
               </AnimatedPage>
             }
           />
@@ -139,7 +127,7 @@ function Home() {
             }
           />
           <Route
-            path="/termsAndConditions" 
+            path="/termsAndConditions"
             element={
               <AnimatedPage>
                 <TermsAndConditions />
@@ -156,15 +144,7 @@ function Home() {
           />
         </Routes>
       </AnimatePresence>
-
-      {/* Animated Footer */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
-      >
-        <Footer />
-      </motion.div>
+      <Footer />
     </div>
   );
 }
