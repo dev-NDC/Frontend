@@ -13,6 +13,7 @@ import StoreIcon from "@mui/icons-material/Store";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import axios from "axios";
+import Cookies from "js-cookie";
 import {
   BarChart,
   Bar,
@@ -66,6 +67,8 @@ const Welcome = () => {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
+        const token = Cookies.get("token");
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         const res = await axios.get(`${API_URL}/admin/getCustomerAndAgencyCount`);
         setCounts(res.data);
       } catch (err) {
@@ -75,6 +78,8 @@ const Welcome = () => {
 
     const fetchUserStats = async () => {
       try {
+        const token = Cookies.get("token");
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         const res = await axios.get(`${API_URL}/admin/getUserCountsLast6Months`);
         const formatted = res.data.data.map((d) => ({
           name: `${d.month} ${d.year}`,
@@ -88,6 +93,8 @@ const Welcome = () => {
 
     const fetchTestScheduleData = async () => {
       try {
+        const token = Cookies.get("token");
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         const res = await axios.get(`${API_URL}/admin/getMonthlyTestScheduleStats`);
         setTestScheduleData(res.data);
       } catch (err) {

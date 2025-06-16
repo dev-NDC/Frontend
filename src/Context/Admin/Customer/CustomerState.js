@@ -21,7 +21,6 @@ const CustomerState = (props) => {
                     setUserDetails(response.data.data);
                     setCurrentCompany(response?.data?.data?.companyInfoData?.companyName)
                     setLoading(false);
-                    console.log(response.data.data)
                 })
                 .catch((error) => {
                     console.error("Error fetching user details:", error);
