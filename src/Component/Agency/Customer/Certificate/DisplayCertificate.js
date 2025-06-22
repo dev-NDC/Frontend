@@ -10,6 +10,17 @@ import { Edit, Delete, Visibility, Download } from "@mui/icons-material";
 import CustomerContext from "../../../../Context/Agency/Customer/CustomerContext";
 import CertificateContext from "../../../../Context/Agency/Customer/Certificate/CertificateContext";
 
+// Format date to MM/DD/YYYY
+const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).format(date);
+};
+
 function DisplayCertificate() {
     const { currentId, userDetails, getSingleUserData } = useContext(CustomerContext);
     const { updateCertificate, deleteCertificate } = useContext(CertificateContext);
@@ -40,7 +51,6 @@ function DisplayCertificate() {
     };
 
     const handleDownload = async (cert) => {
-        // Create container to render HTML temporarily
         const container = document.createElement("div");
         container.style.position = "fixed";
         container.style.top = "-9999px";
@@ -50,19 +60,17 @@ function DisplayCertificate() {
         container.innerHTML = `
             <h2>Certificate</h2>
             <p><strong>Description:</strong> ${cert.description}</p>
-            <p><strong>Issue Date:</strong> ${new Date(cert.issueDate).toLocaleDateString()}</p>
-            <p><strong>Expiration Date:</strong> ${new Date(cert.expirationDate).toLocaleDateString()}</p>
+            <p><strong>Issue Date:</strong> ${formatDate(cert.issueDate)}</p>
+            <p><strong>Expiration Date:</strong> ${formatDate(cert.expirationDate)}</p>
             <img id="certImage" src="" style="width:100%; margin-top:10px; border-radius:10px;" />
         `;
 
-        // Create blob for image
         const blob = new Blob([new Uint8Array(cert.certificateFile.data)], { type: cert.mimeType });
         const imageUrl = URL.createObjectURL(blob);
         container.querySelector("#certImage").src = imageUrl;
 
         document.body.appendChild(container);
 
-        // Convert to canvas
         const canvas = await html2canvas(container, { scale: 2 });
         const imgData = canvas.toDataURL("image/png");
 
@@ -73,8 +81,8 @@ function DisplayCertificate() {
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
         pdf.save(`${cert.description || "certificate"}.pdf`);
 
-        document.body.removeChild(container); // cleanup
-        URL.revokeObjectURL(imageUrl); // cleanup
+        document.body.removeChild(container);
+        URL.revokeObjectURL(imageUrl);
     };
 
     const handleUpdate = async () => {
@@ -109,8 +117,8 @@ function DisplayCertificate() {
                             <TableRow key={index}>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{cert.description}</TableCell>
-                                <TableCell>{new Date(cert.issueDate).toLocaleDateString()}</TableCell>
-                                <TableCell>{new Date(cert.expirationDate).toLocaleDateString()}</TableCell>
+                                <TableCell>{formatDate(cert.issueDate)}</TableCell>
+                                <TableCell>{formatDate(cert.expirationDate)}</TableCell>
                                 <TableCell align="right">
                                     <IconButton onClick={() => handleOpen("view", cert)}><Visibility /></IconButton>
                                     <IconButton onClick={() => handleDownload(cert)}><Download /></IconButton>
@@ -127,17 +135,15 @@ function DisplayCertificate() {
                         </TableRow>
                     )}
                 </TableBody>
-
             </Table>
 
-            {/* View Modal */}
             {/* View Modal */}
             <Dialog open={openModal === "view"} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Certificate Details</DialogTitle>
                 <DialogContent>
                     <Typography gutterBottom><strong>Description:</strong> {selectedCert?.description}</Typography>
-                    <Typography gutterBottom><strong>Issue Date:</strong> {new Date(selectedCert?.issueDate).toLocaleDateString()}</Typography>
-                    <Typography gutterBottom><strong>Expiration Date:</strong> {new Date(selectedCert?.expirationDate).toLocaleDateString()}</Typography>
+                    <Typography gutterBottom><strong>Issue Date:</strong> {formatDate(selectedCert?.issueDate)}</Typography>
+                    <Typography gutterBottom><strong>Expiration Date:</strong> {formatDate(selectedCert?.expirationDate)}</Typography>
 
                     {selectedCert?.certificateFile?.data && (
                         <img
@@ -156,7 +162,6 @@ function DisplayCertificate() {
                     <Button onClick={handleClose} color="primary">Close</Button>
                 </DialogActions>
             </Dialog>
-
 
             {/* Edit Modal */}
             <Dialog open={openModal === "edit"} onClose={handleClose}>

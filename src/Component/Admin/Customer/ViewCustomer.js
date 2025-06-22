@@ -81,9 +81,16 @@ function ViewCustomer() {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
+                    <TextField
+                        size="small"
+                        placeholder="Filter by USDOT Code "
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                     <ExportDriver />
                     <ExportCompany />
                 </Box>
+                
             </Box>
 
             <Table>
@@ -92,7 +99,7 @@ function ViewCustomer() {
                         <TableCell sx={{ color: "white", fontWeight: "bold" }}>
                             <TableSortLabel
                                 active={true}
-                                direction={sortOrder}
+                                direction={sortOrder} 
                                 onClick={handleSort}
                                 sx={{
                                     color: "white",

@@ -5,7 +5,6 @@ import {
     DialogActions, Button, Typography, Box, useMediaQuery
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-
 import HomeContext from "../../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 
 function ActiveDriver() {
@@ -33,12 +32,16 @@ function ActiveDriver() {
         setMenuAnchor(null);
     };
 
-
     const handleViewOpen = () => {
         setViewOpen(true);
         handleMenuClose();
     };
 
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "--";
+        const date = new Date(dateStr);
+        return isNaN(date) ? "--" : date.toLocaleDateString("en-US");
+    };
 
     return (
         <TableContainer component={Paper} sx={{ mt: 3, p: 2, borderRadius: 2, boxShadow: 3, overflowX: "auto" }}>
@@ -69,7 +72,7 @@ function ActiveDriver() {
                                 <TableCell>{driver.first_name} {driver.last_name}</TableCell>
                                 {!isMobile && <TableCell>{driver.email}</TableCell>}
                                 {!isTablet && <TableCell>{driver.government_id}</TableCell>}
-                                {!isTablet && <TableCell>{driver.dob}</TableCell>}
+                                {!isTablet && <TableCell>{formatDate(driver.dob)}</TableCell>}
                                 {!isTablet && <TableCell>{driver.phone}</TableCell>}
                                 {!isTablet && <TableCell>{driver.createdBy}</TableCell>}
                                 <TableCell>
@@ -84,7 +87,6 @@ function ActiveDriver() {
                         ))
                     )}
                 </TableBody>
-
             </Table>
 
             {/* View More Details Modal */}
@@ -95,9 +97,9 @@ function ActiveDriver() {
                         <Typography variant="h6" gutterBottom>{selectedDriver?.first_name} {selectedDriver?.last_name}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
                         <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.government_id}</Typography>
-                        <Typography variant="body1"><strong>DOB:</strong> {selectedDriver?.dob}</Typography>
+                        <Typography variant="body1"><strong>DOB:</strong> {formatDate(selectedDriver?.dob)}</Typography>
                         <Typography variant="body1"><strong>Phone No:</strong> {selectedDriver?.phone}</Typography>
-                        <Typography variant="body1"><strong>Creation Date:</strong> {selectedDriver?.creationDate}</Typography>
+                        <Typography variant="body1"><strong>Creation Date:</strong> {formatDate(selectedDriver?.creationDate)}</Typography>
                         <Typography variant="body1"><strong>Created By:</strong> {selectedDriver?.createdBy}</Typography>
                     </Box>
                 </DialogContent>

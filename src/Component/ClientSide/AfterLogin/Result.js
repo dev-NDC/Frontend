@@ -41,6 +41,14 @@ function Result() {
         setSelectedResult(null);
     };
 
+    const getStatusColor = (status) => {
+        if (!status) return "#f8bf2c"; // yellow for undefined/null
+        const normalized = status.toLowerCase();
+        if (normalized === "negative") return "green";
+        if (normalized === "positive") return "red";
+        return "#f8bf2c"; // yellow for all others
+    };
+
     return (
         <div className="container" style={{ marginTop: '100px' }}>
             <Typography variant="h3" align="center" gutterBottom>Test Results</Typography>
@@ -64,9 +72,20 @@ function Result() {
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{result.driverName}</TableCell>
                                 {!isMobile && !isTablet && <TableCell>{result.licenseNumber}</TableCell>}
-                                {!isMobile && !isTablet && <TableCell>{new Date(result.date).toLocaleDateString()}</TableCell>}
+                                {!isMobile && !isTablet && (
+                                    <TableCell>{new Date(result.date).toLocaleDateString("en-US")}</TableCell>
+                                )}
                                 {!isMobile && <TableCell>{result.testType}</TableCell>}
-                                {!isMobile && <TableCell>{result.status}</TableCell>}
+                                {!isMobile && (
+                                    <TableCell
+                                        sx={{
+                                            fontWeight: "bold",
+                                            color: getStatusColor(result.status)
+                                        }}
+                                    >
+                                        {result.status || "N/A"}
+                                    </TableCell>
+                                )}
                                 {!isMobile && <TableCell>{result.caseNumber}</TableCell>}
                                 <TableCell>
                                     <IconButton onClick={(event) => handleMenuOpen(event, result)}>
@@ -87,17 +106,39 @@ function Result() {
                     <DialogContent>
                         <Typography gutterBottom><strong>Name:</strong> {selectedResult?.driverName}</Typography>
                         <Typography gutterBottom><strong>License Number:</strong> {selectedResult?.licenseNumber}</Typography>
-                        <Typography gutterBottom><strong>Date:</strong> {new Date(selectedResult?.date).toLocaleDateString()}</Typography>
+                        <Typography gutterBottom><strong>Date:</strong> {new Date(selectedResult?.date).toLocaleDateString("en-US")}</Typography>
                         <Typography gutterBottom><strong>Test Type:</strong> {selectedResult?.testType}</Typography>
-                        <Typography gutterBottom><strong>Status:</strong> {selectedResult?.status}</Typography>
+                        <Typography gutterBottom>
+                            <strong>Status:</strong>{" "}
+                            <span style={{ color: getStatusColor(selectedResult?.status), fontWeight: "bold" }}>
+                                {selectedResult?.status || "N/A"}
+                            </span>
+                        </Typography>
                         <Typography gutterBottom><strong>Case Number:</strong> {selectedResult?.caseNumber}</Typography>
                         {selectedResult?.file && (
-                            <img
-                                src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
-                                alt="Result"
-                                style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
-                            />
-                        )}
+    <>
+        {selectedResult.mimeType === "application/pdf" ? (
+            <iframe
+                title="PDF Preview"
+                src={`data:application/pdf;base64,${selectedResult.file}`}
+                style={{
+                    width: "100%",
+                    height: "500px",
+                    marginTop: "1rem",
+                    border: "1px solid #ccc",
+                    borderRadius: 8
+                }}
+            />
+        ) : (
+            <img
+                src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
+                alt="Result"
+                style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
+            />
+        )}
+    </>
+)}
+
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleViewClose} color="primary">Close</Button>

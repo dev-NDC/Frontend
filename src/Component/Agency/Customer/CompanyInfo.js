@@ -1,44 +1,81 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Box, Card, CardContent, Typography, IconButton, Modal, TextField, Button, Grid, Divider, useMediaQuery } from "@mui/material";
+import {
+  Box, Card, CardContent, Typography, IconButton, Modal,
+  TextField, Button, Grid, Divider, useMediaQuery, MenuItem, CircularProgress
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
 import CustomerContext from "../../../Context/Agency/Customer/CustomerContext";
-import { CircularProgress } from "@mui/material";  // Import CircularProgress
+
+// All US States
+const stateOptions = [
+    { label: "Alabama", value: "AL" }, { label: "Alaska", value: "AK" },
+    { label: "Arizona", value: "AZ" }, { label: "Arkansas", value: "AR" },
+    { label: "California", value: "CA" }, { label: "Colorado", value: "CO" },
+    { label: "Connecticut", value: "CT" }, { label: "Delaware", value: "DE" },
+    { label: "Florida", value: "FL" }, { label: "Georgia", value: "GA" },
+    { label: "Hawaii", value: "HI" }, { label: "Idaho", value: "ID" },
+    { label: "Illinois", value: "IL" }, { label: "Indiana", value: "IN" },
+    { label: "Iowa", value: "IA" }, { label: "Kansas", value: "KS" },
+    { label: "Kentucky", value: "KY" }, { label: "Louisiana", value: "LA" },
+    { label: "Maine", value: "ME" }, { label: "Maryland", value: "MD" },
+    { label: "Massachusetts", value: "MA" }, { label: "Michigan", value: "MI" },
+    { label: "Minnesota", value: "MN" }, { label: "Mississippi", value: "MS" },
+    { label: "Missouri", value: "MO" }, { label: "Montana", value: "MT" },
+    { label: "Nebraska", value: "NE" }, { label: "Nevada", value: "NV" },
+    { label: "New Hampshire", value: "NH" }, { label: "New Jersey", value: "NJ" },
+    { label: "New Mexico", value: "NM" }, { label: "New York", value: "NY" },
+    { label: "North Carolina", value: "NC" }, { label: "North Dakota", value: "ND" },
+    { label: "Ohio", value: "OH" }, { label: "Oklahoma", value: "OK" },
+    { label: "Oregon", value: "OR" }, { label: "Pennsylvania", value: "PA" },
+    { label: "Rhode Island", value: "RI" }, { label: "South Carolina", value: "SC" },
+    { label: "South Dakota", value: "SD" }, { label: "Tennessee", value: "TN" },
+    { label: "Texas", value: "TX" }, { label: "Utah", value: "UT" },
+    { label: "Vermont", value: "VT" }, { label: "Virginia", value: "VA" },
+    { label: "Washington", value: "WA" }, { label: "West Virginia", value: "WV" },
+    { label: "Wisconsin", value: "WI" }, { label: "Wyoming", value: "WY" },
+];
+
+// Format label with custom USDOT logic
+const formatLabel = (key) => {
+  if (key.toLowerCase() === "usdot") return "USDOT";
+  const label = key.replace(/([A-Z])/g, " $1").trim();
+  const [first, ...rest] = label.split(" ");
+  return [first.charAt(0).toUpperCase() + first.slice(1), ...rest].join(" ");
+};
 
 const CompanyDetails = () => {
   const { userDetails, updateCompanyInformation } = useContext(CustomerContext);
   const [open, setOpen] = useState(false);
   const [companyInfoData, setCompanyInfoData] = useState({});
   const [tempCompanyInfoData, setTempCompanyInfoData] = useState({});
-  const [loading, setLoading] = useState(true); // New loading state
+  const [loading, setLoading] = useState(true);
 
-  // Hooks should be called unconditionally, so they are at the top
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
-    if (userDetails) {
+    if (userDetails?.companyInfoData) {
       setCompanyInfoData(userDetails.companyInfoData);
       setTempCompanyInfoData(userDetails.companyInfoData);
-      setLoading(false); // Set loading to false once data is available
+      setLoading(false);
     }
   }, [userDetails]);
 
-  if (loading) {
-    return <CircularProgress />;  // Show loading indicator while data is being loaded
-  }
+  if (loading) return <CircularProgress />;
 
   const handleOpen = () => {
     setTempCompanyInfoData({ ...companyInfoData });
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
 
   const handleChange = (e) => {
-    setTempCompanyInfoData({ ...tempCompanyInfoData, [e.target.name]: e.target.value });
+    setTempCompanyInfoData({
+      ...tempCompanyInfoData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleUpdate = () => {
@@ -47,25 +84,25 @@ const CompanyDetails = () => {
   };
 
   return (
-    <Box 
-      sx={{ 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
-        marginTop: '100px',
-        px: 2
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: "100px",
+        px: 2,
       }}
     >
-      <Card 
-        sx={{ 
-          width: isMobile ? "100%" : 550, 
-          p: 3, 
-          position: "relative", 
-          borderRadius: 3, 
-          boxShadow: 3 
+      <Card
+        sx={{
+          width: isMobile ? "100%" : 550,
+          p: 3,
+          position: "relative",
+          borderRadius: 3,
+          boxShadow: 3,
         }}
       >
-        <IconButton 
+        <IconButton
           onClick={handleOpen}
           sx={{ position: "absolute", top: 15, right: 15, color: "primary.main" }}
         >
@@ -79,10 +116,12 @@ const CompanyDetails = () => {
             {Object.entries(companyInfoData).map(([key, value]) => (
               <Grid item xs={12} sm={6} key={key}>
                 <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>
-                  {key.replace(/([A-Z])/g, " $1").trim()}:
+                  {formatLabel(key)}:
                 </Typography>
-                <Typography variant="body1" sx={{ color: '#003366', fontWeight: 700 }}>
-                  {value}
+                <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
+                  {key === "state"
+                    ? stateOptions.find((s) => s.value === value)?.label || value
+                    : value}
                 </Typography>
               </Grid>
             ))}
@@ -92,15 +131,17 @@ const CompanyDetails = () => {
 
       {/* Edit Modal */}
       <Modal open={open} onClose={handleClose}>
-        <Box sx={{ 
-          width: isMobile ? "90%" : 500, 
-          bgcolor: "background.paper", 
-          p: 4, 
-          m: "auto", 
-          mt: 10, 
-          borderRadius: 3, 
-          boxShadow: 5 
-        }}>
+        <Box
+          sx={{
+            width: isMobile ? "90%" : 500,
+            bgcolor: "background.paper",
+            p: 4,
+            m: "auto",
+            mt: 10,
+            borderRadius: 3,
+            boxShadow: 5,
+          }}
+        >
           <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", color: "primary.main" }}>
             Edit Company Details
           </Typography>
@@ -108,15 +149,33 @@ const CompanyDetails = () => {
           <Grid container spacing={2}>
             {Object.entries(tempCompanyInfoData).map(([key, value]) => (
               <Grid item xs={12} sm={6} key={key}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  label={key.replace(/([A-Z])/g, " $1").trim()}
-                  name={key}
-                  value={value}
-                  onChange={handleChange}
-                  variant="outlined"
-                />
+                {key === "state" ? (
+                  <TextField
+                    select
+                    fullWidth
+                    size="small"
+                    label={formatLabel(key)}
+                    name="state"
+                    value={value}
+                    onChange={handleChange}
+                  >
+                    {stateOptions.map((state) => (
+                      <MenuItem key={state.value} value={state.value}>
+                        {state.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                ) : (
+                  <TextField
+                    fullWidth
+                    size="small"
+                    label={formatLabel(key)}
+                    name={key}
+                    value={value}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                )}
               </Grid>
             ))}
           </Grid>

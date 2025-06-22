@@ -45,7 +45,7 @@ function DisplayResult() {
         <h2>Test Result</h2>
         <p><strong>Name:</strong> ${result.driverName}</p>
         <p><strong>License Number:</strong> ${result.licenseNumber}</p>
-        <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString()}</p>
+        <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString("en-US")}</p>
         <p><strong>Test Type:</strong> ${result.testType}</p>
         <p><strong>Status:</strong> ${result.status}</p>
         <p><strong>Case Number:</strong> ${result.caseNumber}</p>
@@ -53,21 +53,66 @@ function DisplayResult() {
              style="width:100%; margin-top:10px; border-radius:10px;" />
     `;
 
-        document.body.appendChild(container);
+       document.body.appendChild(container);
 
-        const canvas = await html2canvas(container, { scale: 2 });
-        const imgData = canvas.toDataURL("image/png");
+// Use html2canvas to convert the container to an image
+const canvas = await html2canvas(container, {
+  scale: 2, // increase for better resolution (2 is a good balance)
+  useCORS: true // allow images from other origins if needed
+});
 
-        const pdf = new jsPDF("p", "mm", "a4");
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+const imgData = canvas.toDataURL("image/png");
 
-        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${result.driverName || "result"}.pdf`);
+const pdf = new jsPDF({
+  orientation: "portrait",
+  unit: "mm",
+  format: "a4"
+});
 
-        document.body.removeChild(container);
+const pageWidth = pdf.internal.pageSize.getWidth();
+const pageHeight = pdf.internal.pageSize.getHeight();
+
+// Calculate image dimensions to fit the page
+const imgWidth = pageWidth;
+const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+let position = 0;
+
+// If content height is more than one page, add pages
+if (imgHeight <= pageHeight) {
+  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+} else {
+  // Split content into multiple pages
+  let remainingHeight = imgHeight;
+
+  while (remainingHeight > 0) {
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    remainingHeight -= pageHeight;
+    if (remainingHeight > 0) {
+      pdf.addPage();
+      position = 0;
+    }
+  }
+}
+
+pdf.save(`${result.driverName || "result"}.pdf`);
+
+document.body.removeChild(container);
+
     };
 
+    const getStatusColor = (status) => {
+        if (status?.toLowerCase() === "negative") return "green";
+        if (status?.toLowerCase() === "positive") return "red";
+        return "orange";
+    };
+
+    const formatDate = (date) =>
+        date ? new Date(date).toLocaleDateString("en-US", {
+            month: "2-digit",
+            day: "2-digit",
+            year: "numeric"
+        }) : "N/A";
 
     if (loading) return <CircularProgress />;
 
@@ -93,9 +138,11 @@ function DisplayResult() {
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{result.driverName}</TableCell>
                                 <TableCell>{result.licenseNumber}</TableCell>
-                                <TableCell>{new Date(result.date).toLocaleDateString()}</TableCell>
+                                <TableCell>{formatDate(result.date)}</TableCell>
                                 <TableCell>{result.testType}</TableCell>
-                                <TableCell>{result.status}</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", color: getStatusColor(result.status) }}>
+                                    {result.status}
+                                </TableCell>
                                 <TableCell>{result.caseNumber}</TableCell>
                                 <TableCell align="right">
                                     <IconButton onClick={() => handleOpen("view", result)}><Visibility /></IconButton>
@@ -105,7 +152,7 @@ function DisplayResult() {
                         ))
                     ) : (
                         <TableRow>
-                            <TableCell colSpan={6} align="center">
+                            <TableCell colSpan={8} align="center">
                                 <b>No Result to display</b>
                             </TableCell>
                         </TableRow>
@@ -113,16 +160,17 @@ function DisplayResult() {
                 </TableBody>
             </Table>
 
-
             {/* View Modal */}
             <Dialog open={openModal === "view"} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Result Details</DialogTitle>
                 <DialogContent>
                     <Typography gutterBottom><strong>Name:</strong> {selectedResult?.driverName}</Typography>
                     <Typography gutterBottom><strong>License Number:</strong> {selectedResult?.licenseNumber}</Typography>
-                    <Typography gutterBottom><strong>Date:</strong> {new Date(selectedResult?.date).toLocaleDateString()}</Typography>
+                    <Typography gutterBottom><strong>Date:</strong> {formatDate(selectedResult?.date)}</Typography>
                     <Typography gutterBottom><strong>Test Type:</strong> {selectedResult?.testType}</Typography>
-                    <Typography gutterBottom><strong>Status:</strong> {selectedResult?.status}</Typography>
+                    <Typography gutterBottom sx={{ fontWeight: "bold", color: getStatusColor(selectedResult?.status) }}>
+                        <strong>Status:</strong> {selectedResult?.status}
+                    </Typography>
                     <Typography gutterBottom><strong>Case Number:</strong> {selectedResult?.caseNumber}</Typography>
 
                     {selectedResult?.file && (
@@ -137,7 +185,6 @@ function DisplayResult() {
                     <Button onClick={handleClose} color="primary">Close</Button>
                 </DialogActions>
             </Dialog>
-
         </TableContainer>
     );
 }

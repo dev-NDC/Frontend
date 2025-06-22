@@ -133,9 +133,10 @@ function DisplayInvoice() {
                 <TableCell>{invoice.invoiceNumber}</TableCell>
                 <TableCell>${invoice.amount}</TableCell>
                 <TableCell>{formatDate(invoice.date)}</TableCell>
-                <TableCell style={{ color: getStatusColor(invoice.status) }}>
-                  {invoice.status}
-                </TableCell>
+                <TableCell sx={{ color: getStatusColor(invoice.status), fontWeight: "bold" }}>
+  {invoice.status}
+</TableCell>
+
                 <TableCell align="right">
                   <IconButton onClick={() => handleOpen("view", invoice)}><Visibility /></IconButton>
                   <IconButton onClick={() => handleDownload(invoice)}><Download /></IconButton>

@@ -1,3 +1,4 @@
+// [Unchanged imports]
 import React, { useContext, useEffect, useState } from "react";
 import {
     Dialog, DialogTitle, DialogContent, DialogActions,
@@ -50,8 +51,10 @@ function DisplayInvoice() {
         container.innerHTML = `
             <h2>Invoice</h2>
             <p><strong>Invoice Number:</strong> ${invoice.invoiceNumber}</p>
-            <p><strong>Amount:</strong> ₹${invoice.amount}</p>
-            <p><strong>Date:</strong> ${new Date(invoice.date).toLocaleDateString()}</p>
+            <p><strong>Amount:</strong> $${invoice.amount}</p>
+            <p><strong>Date:</strong> ${new Date(invoice.date).toLocaleDateString("en-US", {
+                month: "2-digit", day: "2-digit", year: "numeric"
+            })}</p>
             <p><strong>Status:</strong> ${invoice.status}</p>
         `;
 
@@ -104,8 +107,22 @@ function DisplayInvoice() {
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{invoice.invoiceNumber}</TableCell>
                                 <TableCell>${invoice.amount}</TableCell>
-                                <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>
-                                <TableCell>{invoice.status}</TableCell>
+                                <TableCell>
+                                    {new Date(invoice.date).toLocaleDateString("en-US", {
+                                        month: "2-digit",
+                                        day: "2-digit",
+                                        year: "numeric"
+                                    })}
+                                </TableCell>
+                                <TableCell sx={{
+                                    fontWeight: "bold",
+                                    color:
+                                        invoice.status === "Paid" ? "#2e7d32" :
+                                        invoice.status === "Unpaid" ? "#d32f2f" :
+                                        "#f57c00"
+                                }}>
+                                    {invoice.status}
+                                </TableCell>
                                 <TableCell align="right">
                                     <IconButton onClick={() => handleOpen("view", invoice)}><Visibility /></IconButton>
                                     <IconButton onClick={() => handleDownload(invoice)}><Download /></IconButton>
@@ -124,15 +141,26 @@ function DisplayInvoice() {
                 </TableBody>
             </Table>
 
-
             {/* View Modal */}
             <Dialog open={openModal === "view"} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Invoice Details</DialogTitle>
                 <DialogContent>
                     <Typography><strong>Invoice Number:</strong> {selectedInvoice?.invoiceNumber}</Typography>
                     <Typography><strong>Amount:</strong> ${selectedInvoice?.amount}</Typography>
-                    <Typography><strong>Date:</strong> {new Date(selectedInvoice?.date).toLocaleDateString()}</Typography>
-                    <Typography><strong>Status:</strong> {selectedInvoice?.status}</Typography>
+                    <Typography><strong>Date:</strong> {
+                        selectedInvoice?.date ? new Date(selectedInvoice.date).toLocaleDateString("en-US", {
+                            month: "2-digit", day: "2-digit", year: "numeric"
+                        }) : "N/A"
+                    }</Typography>
+                    <Typography sx={{
+                        fontWeight: "bold",
+                        color:
+                            selectedInvoice?.status === "Paid" ? "#2e7d32" :
+                            selectedInvoice?.status === "Unpaid" ? "#d32f2f" :
+                            "#f57c00"
+                    }}>
+                        <strong>Status:</strong> {selectedInvoice?.status}
+                    </Typography>
 
                     {selectedInvoice?.file?.data && (
                         <iframe

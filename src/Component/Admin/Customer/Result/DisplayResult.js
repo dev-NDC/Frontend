@@ -131,15 +131,15 @@ function DisplayResult() {
     const getStatusTextColor = (status) => {
         switch (status) {
             case "Positive":
-                return "#f44336"; // Green
+                return "#f44336"; 
             case "Pending":
-                return "#ff9800"; // orange
+                return "#ff9800"; 
             case "Negative":
-                return " #4caf50 "; // Red
+                return " #4caf50 "; 
             case "In Progress":
-                return "#ff9800"; // Orange
+                return "#ff9800"; 
             default:
-                return "#000"; // Default black
+                return "#000"; 
         }
     };
 

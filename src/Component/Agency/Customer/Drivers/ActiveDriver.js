@@ -9,6 +9,17 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CustomerContext from "../../../../Context/Agency/Customer/CustomerContext";
 import DriverContext from "../../../../Context/Agency/Customer/Driver/DriverContext";
 
+// Utility function to format date as MM/DD/YYYY
+const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).format(date);
+};
+
 function ActiveDriver() {
     const { userDetails, currentId, getSingleUserData } = useContext(CustomerContext);
     const { updateDriver, deleteDriver } = useContext(DriverContext);
@@ -92,7 +103,7 @@ function ActiveDriver() {
                                 <TableCell>{driver.first_name} {driver.last_name}</TableCell>
                                 {!isMobile && <TableCell>{driver.email}</TableCell>}
                                 {!isTablet && <TableCell>{driver.government_id}</TableCell>}
-                                {!isTablet && <TableCell>{driver.dob}</TableCell>}
+                                {!isTablet && <TableCell>{formatDate(driver.dob)}</TableCell>}
                                 {!isTablet && <TableCell>{driver.phone}</TableCell>}
                                 <TableCell>
                                     <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
@@ -114,7 +125,6 @@ function ActiveDriver() {
                         </TableRow>
                     )}
                 </TableBody>
-
             </Table>
 
             {/* Edit Modal */}
@@ -153,9 +163,9 @@ function ActiveDriver() {
                         <Typography variant="h6" gutterBottom>{selectedDriver?.first_name} {selectedDriver?.last_name}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
                         <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.government_id}</Typography>
-                        <Typography variant="body1"><strong>DOB:</strong> {selectedDriver?.dob}</Typography>
+                        <Typography variant="body1"><strong>DOB:</strong> {formatDate(selectedDriver?.dob)}</Typography>
                         <Typography variant="body1"><strong>Phone No:</strong> {selectedDriver?.phone}</Typography>
-                        <Typography variant="body1"><strong>Creation Date:</strong> {selectedDriver?.creationDate}</Typography>
+                        <Typography variant="body1"><strong>Creation Date:</strong> {formatDate(selectedDriver?.creationDate)}</Typography>
                         <Typography variant="body1"><strong>Created By:</strong> {selectedDriver?.createdBy}</Typography>
                     </Box>
                 </DialogContent>

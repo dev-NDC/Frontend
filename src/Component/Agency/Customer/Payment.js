@@ -4,6 +4,8 @@ import {
   Modal, TextField, Button, Grid, Divider, useMediaQuery, CircularProgress
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useTheme } from "@mui/material/styles";
 import CustomerContext from "../../../Context/Agency/Customer/CustomerContext";
 
@@ -12,7 +14,9 @@ const PaymentInformation = () => {
   const [open, setOpen] = useState(false);
   const [paymentInfo, setPaymentInfo] = useState({});
   const [tempPaymentInfo, setTempPaymentInfo] = useState({});
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true);
+  const [showAccountNumber, setShowAccountNumber] = useState(false);
+  const [showCreditCardNumber, setShowCreditCardNumber] = useState(false);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -21,7 +25,7 @@ const PaymentInformation = () => {
     if (userDetails?.paymentData) {
       setPaymentInfo(userDetails.paymentData);
       setTempPaymentInfo(userDetails.paymentData);
-      setLoading(false); // Data is now loaded
+      setLoading(false);
     }
   }, [userDetails]);
 
@@ -43,7 +47,13 @@ const PaymentInformation = () => {
     setOpen(false);
   };
 
-  // Show a loading spinner until the data is available
+  const maskValue = (value, visible) => {
+    if (!value) return "N/A";
+    if (visible) return value;
+    const len = value.length;
+    return "*".repeat(len - 4) + value.slice(-4);
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
@@ -64,22 +74,29 @@ const PaymentInformation = () => {
           </Typography>
           <Grid container spacing={2}>
             {[
-              { label: "Credit Card Number", key: "creditCardNumber" },
+              { label: "Credit Card Number", key: "creditCardNumber", sensitive: true, toggle: showCreditCardNumber, setToggle: setShowCreditCardNumber },
               { label: "3-Digit CVV", key: "cvv" },
               { label: "Expiry Date Month", key: "expMonth" },
               { label: "Expiry Date Year", key: "expYear" },
               { label: "Billing Zip Code", key: "billingZip" },
-              { label: "Account Number", key: "accountNumber", color: "#7B4F24" },
+              { label: "Account Number", key: "accountNumber", color: "#7B4F24", sensitive: true, toggle: showAccountNumber, setToggle: setShowAccountNumber },
               { label: "Routing Number", key: "routingNumber", color: "#7B4F24" },
               { label: "Account Name", key: "accountName", color: "#7B4F24" }
-            ].map(({ label, key, color }) => (
+            ].map(({ label, key, color, sensitive, toggle, setToggle }) => (
               <Grid item xs={12} sm={6} key={key}>
                 <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: color || "text.secondary" }}>
                   {label}:
                 </Typography>
-                <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
-                  {paymentInfo[key] || "N/A"}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700, flexGrow: 1 }}>
+                    {sensitive ? maskValue(paymentInfo[key], toggle) : paymentInfo[key] || "N/A"}
+                  </Typography>
+                  {sensitive && (
+                    <IconButton onClick={() => setToggle(prev => !prev)} size="small">
+                      {toggle ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                    </IconButton>
+                  )}
+                </Box>
               </Grid>
             ))}
           </Grid>

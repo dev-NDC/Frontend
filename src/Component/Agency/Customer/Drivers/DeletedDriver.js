@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Menu, MenuItem, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, useMediaQuery } from "@mui/material";
+import {
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton,
+    Menu, MenuItem, Paper, Dialog, DialogTitle, DialogContent, DialogActions,
+    Button, Typography, Box, useMediaQuery
+} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-
 import CustomerContext from "../../../../Context/Agency/Customer/CustomerContext";
-
 
 function DeletedDriver() {
     const { userDetails } = useContext(CustomerContext);
@@ -35,11 +37,21 @@ function DeletedDriver() {
         handleMenuClose();
     };
 
+    const formatDate = (dateString) => {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        });
+    };
+
     return (
         <TableContainer component={Paper} sx={{ mt: 3, p: 2, borderRadius: 2, boxShadow: 3, overflowX: "auto" }}>
             <Table>
                 <TableHead>
-                    <TableRow sx={{ backgroundColor: "red" }}>
+                    <TableRow sx={{ backgroundColor: "grey" }}>
                         <TableCell sx={{ color: "white", fontWeight: "bold" }}>Sr</TableCell>
                         <TableCell sx={{ color: "white", fontWeight: "bold" }}>Name</TableCell>
                         {!isMobile && <TableCell sx={{ color: "white", fontWeight: "bold" }}>Email</TableCell>}
@@ -58,9 +70,9 @@ function DeletedDriver() {
                                 <TableCell>{driver.first_name} {driver.last_name}</TableCell>
                                 {!isMobile && <TableCell>{driver.email}</TableCell>}
                                 {!isTablet && <TableCell>{driver?.government_id}</TableCell>}
-                                {!isTablet && <TableCell>{driver.dob}</TableCell>}
+                                {!isTablet && <TableCell>{formatDate(driver.dob)}</TableCell>}
                                 {!isTablet && <TableCell>{driver.phone}</TableCell>}
-                                {!isMobile && <TableCell>{new Date(driver.deletionDate).toLocaleDateString()}</TableCell>}
+                                {!isMobile && <TableCell>{formatDate(driver.deletionDate)}</TableCell>}
                                 <TableCell>
                                     <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
                                         <MoreVertIcon />
@@ -79,7 +91,6 @@ function DeletedDriver() {
                         </TableRow>
                     )}
                 </TableBody>
-
             </Table>
 
             {/* View More Details Modal */}
@@ -90,11 +101,11 @@ function DeletedDriver() {
                         <Typography variant="h6" gutterBottom>{selectedDriver?.first_name} {selectedDriver?.last_name}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
                         <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.government_id}</Typography>
-                        <Typography variant="body1"><strong>DOB:</strong> {selectedDriver?.dob}</Typography>
+                        <Typography variant="body1"><strong>DOB:</strong> {formatDate(selectedDriver?.dob)}</Typography>
                         <Typography variant="body1"><strong>Phone No:</strong> {selectedDriver?.phone}</Typography>
-                        <Typography variant="body1"><strong>Creation Date:</strong> {selectedDriver?.creationDate}</Typography>
+                        <Typography variant="body1"><strong>Creation Date:</strong> {formatDate(selectedDriver?.creationDate)}</Typography>
                         <Typography variant="body1"><strong>Created By:</strong> {selectedDriver?.createdBy}</Typography>
-                        <Typography variant="body1"><strong>Deletion Date:</strong> {selectedDriver?.deletionDate}</Typography>
+                        <Typography variant="body1"><strong>Deletion Date:</strong> {formatDate(selectedDriver?.deletionDate)}</Typography>
                     </Box>
                 </DialogContent>
                 <DialogActions>
