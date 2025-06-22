@@ -44,17 +44,15 @@ function DisplayDocument() {
     };
 
     const handleDownload = (doc) => {
-        const blob = new Blob([new Uint8Array(doc.documentFile.data)], {
-            type: doc.mimeType
-        });
+        if (!doc?.documentFile) return;
         const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
+        link.href = `data:${doc.mimeType};base64,${doc.documentFile}`;
         link.download = doc.description || "document";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
     };
+
 
     const handleUpdate = async () => {
         await editDocument(currentId, selectedDoc._id, editData);
@@ -78,7 +76,6 @@ function DisplayDocument() {
                         <TableCell style={{ color: "white" }}>Sr</TableCell>
                         <TableCell style={{ color: "white" }}>Description</TableCell>
                         <TableCell style={{ color: "white" }}>Upload Date</TableCell>
-                        <TableCell style={{ color: "white" }}>Uploaded By</TableCell>
                         <TableCell style={{ color: "white" }} align="right">Actions</TableCell>
                     </TableRow>
                 </TableHead>
@@ -88,7 +85,6 @@ function DisplayDocument() {
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>{doc.description}</TableCell>
                             <TableCell>{new Date(doc.date).toLocaleDateString()}</TableCell>
-                            <TableCell>{doc.uploadedBy.name}</TableCell>
                             <TableCell align="right">
                                 <IconButton onClick={() => handleOpen("view", doc)}><Visibility /></IconButton>
                                 <IconButton onClick={() => handleDownload(doc)}><Download /></IconButton>
@@ -106,18 +102,18 @@ function DisplayDocument() {
                 <DialogContent>
                     <Typography gutterBottom><strong>Description:</strong> {selectedDoc?.description}</Typography>
                     <Typography gutterBottom><strong>Upload Date:</strong> {new Date(selectedDoc?.date).toLocaleDateString()}</Typography>
-                    <Typography gutterBottom><strong>Uploaded by:</strong> {selectedDoc?.uploadedBy.name}</Typography>
 
                     {selectedDoc?.mimeType?.startsWith("image/") ? (
                         <img
-                            src={URL.createObjectURL(
-                                new Blob(
-                                    [new Uint8Array(selectedDoc.documentFile.data)],
-                                    { type: selectedDoc.mimeType }
-                                )
-                            )}
+                            src={`data:${selectedDoc.mimeType};base64,${selectedDoc.documentFile}`}
                             alt="Document"
                             style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
+                        />
+                    ) : selectedDoc?.mimeType === "application/pdf" ? (
+                        <iframe
+                            src={`data:application/pdf;base64,${selectedDoc.documentFile}`}
+                            title="PDF Preview"
+                            style={{ width: "100%", height: "500px", marginTop: "1rem", borderRadius: 8 }}
                         />
                     ) : (
                         <Typography sx={{ mt: 2 }}>
@@ -129,6 +125,7 @@ function DisplayDocument() {
                     <Button onClick={handleClose}>Close</Button>
                 </DialogActions>
             </Dialog>
+
 
             {/* Edit Modal */}
             <Dialog open={openModal === "edit"} onClose={handleClose}>

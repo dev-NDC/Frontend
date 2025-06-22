@@ -4,8 +4,6 @@ import {
     IconButton, Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Typography, TextField, CircularProgress
 } from "@mui/material";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import { Edit, Delete, Visibility, Download } from "@mui/icons-material";
 import CustomerContext from "../../../../Context/Admin/Customer/CustomerContext";
 import CertificateContext from "../../../../Context/Admin/Customer/Certificate/CertificateContext";
@@ -58,39 +56,29 @@ function DisplayCertificate() {
     };
 
     const handleDownload = async (cert) => {
-        const container = document.createElement("div");
-        container.style.position = "fixed";
-        container.style.top = "-9999px";
-        container.style.width = "600px";
-        container.style.padding = "20px";
-        container.style.backgroundColor = "white";
-        container.innerHTML = `
-            <h2>Certificate</h2>
-            <p><strong>Description:</strong> ${cert.description}</p>
-            <p><strong>Issue Date:</strong> ${formatDate(cert.issueDate)}</p>
-            <p><strong>Expiration Date:</strong> ${formatDate(cert.expirationDate)}</p>
-            <img id="certImage" src="" style="width:100%; margin-top:10px; border-radius:10px;" />
-        `;
+        try {
+            const base64 = cert.certificateFile; // base64 string
+            if (!base64) {
+                alert("No certificate file found");
+                return;
+            }
 
-        const blob = new Blob([new Uint8Array(cert.certificateFile.data)], { type: cert.mimeType });
-        const imageUrl = URL.createObjectURL(blob);
-        container.querySelector("#certImage").src = imageUrl;
+            const byteArray = Uint8Array.from(atob(base64), char => char.charCodeAt(0));
+            const blob = new Blob([byteArray], { type: cert.mimeType || "application/pdf" });
+            const url = URL.createObjectURL(blob);
 
-        document.body.appendChild(container);
-
-        const canvas = await html2canvas(container, { scale: 2 });
-        const imgData = canvas.toDataURL("image/png");
-
-        const pdf = new jsPDF("p", "mm", "a4");
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${cert.description || "certificate"}.pdf`);
-
-        document.body.removeChild(container);
-        URL.revokeObjectURL(imageUrl);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${cert.description || "certificate"}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Download error:", error);
+        }
     };
+
 
     const handleUpdate = async () => {
         await updateCertificate(currentId, selectedCert._id, editData);
@@ -153,16 +141,11 @@ function DisplayCertificate() {
                     <Typography gutterBottom><strong>Issue Date:</strong> {formatDate(selectedCert?.issueDate)}</Typography>
                     <Typography gutterBottom><strong>Expiration Date:</strong> {formatDate(selectedCert?.expirationDate)}</Typography>
 
-                    {selectedCert?.certificateFile?.data && (
-                        <img
-                            src={URL.createObjectURL(
-                                new Blob(
-                                    [new Uint8Array(selectedCert.certificateFile.data)],
-                                    { type: selectedCert.mimeType || "image/png" }
-                                )
-                            )}
-                            alt="Certificate"
-                            style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
+                    {selectedCert?.certificateFile && (
+                        <iframe
+                            src={`data:${selectedCert.mimeType || "application/pdf"};base64,${selectedCert.certificateFile}`}
+                            title="Certificate PDF"
+                            style={{ width: "100%", height: "500px", marginTop: "1rem", borderRadius: 8 }}
                         />
                     )}
                 </DialogContent>
@@ -170,6 +153,7 @@ function DisplayCertificate() {
                     <Button onClick={handleClose} color="primary">Close</Button>
                 </DialogActions>
             </Dialog>
+
 
             {/* Edit Modal */}
             <Dialog open={openModal === "edit"} onClose={handleClose}>
