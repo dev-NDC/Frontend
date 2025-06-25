@@ -32,9 +32,9 @@ const PaymentInformation = () => {
     setOpen(false);
   };
 
-  const handleChange = (e) => {
-    setTempPaymentInfo({ ...tempPaymentInfo, [e.target.name]: e.target.value });
-  };
+  // const handleChange = (e) => {
+  //   setTempPaymentInfo({ ...tempPaymentInfo, [e.target.name]: e.target.value });
+  // };
 
   const handleUpdate = async () => {
     await updatePayment(tempPaymentInfo);
@@ -166,18 +166,33 @@ const PaymentInformation = () => {
           <Divider sx={{ mb: 3 }} />
           <Grid container spacing={2}>
             {Object.entries(tempPaymentInfo).map(([key, value]) => (
-              <Grid item xs={12} sm={6} key={key}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  label={key.replace(/([A-Z])/g, " $1").trim()}
-                  name={key}
-                  value={value}
-                  onChange={handleChange}
-                  variant="outlined"
-                />
-              </Grid>
-            ))}
+  <Grid item xs={12} sm={6} key={key}>
+    <TextField
+      fullWidth
+      size="small"
+      label={key.replace(/([A-Z])/g, " $1").trim()}
+      name={key}
+      value={value}
+      onChange={(e) => {
+        const val = e.target.value;
+        if (key === "accountName" || key === "accountType") {
+          setTempPaymentInfo((prev) => ({ ...prev, [key]: val }));
+        } else {
+          if (/^\d*$/.test(val)) {
+            setTempPaymentInfo((prev) => ({ ...prev, [key]: val }));
+          }
+        }
+      }}
+      variant="outlined"
+      inputProps={
+        key !== "accountName" && key !== "accountType"
+          ? { inputMode: "numeric", pattern: "[0-9]*" }
+          : {}
+      }
+    />
+  </Grid>
+))}
+
           </Grid>
           <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>
             <Button onClick={handleClose} variant="outlined">Cancel</Button>

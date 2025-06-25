@@ -38,9 +38,9 @@ const CompanyDetails = () => {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState(null);
   const [unhandledCompanies, setUnhandledCompanies] = useState([]);
-
-  // NEW STATE for controlling dialog open/close
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [contactNumberError, setContactNumberError] = useState(false);
 
   useEffect(() => {
     if (agencyDetails) {
@@ -91,6 +91,11 @@ const CompanyDetails = () => {
   };
 
   const handleSave = () => {
+    if (formData.agencyContactNumber.length !== 10) {
+      setContactNumberError(true);
+      return;
+    }
+
     updateAgencyInformation(formData);
     setEditMode(false);
   };
@@ -105,20 +110,19 @@ const CompanyDetails = () => {
         _id: agencyDetails.id,
       });
     }
+    setContactNumberError(false);
     setEditMode(false);
   };
 
-  // Instead of directly deleting, open the confirmation dialog
   const handleDeleteClick = () => {
     setOpenDeleteDialog(true);
   };
 
-  // User confirms deletion
   const handleConfirmDelete = async () => {
     try {
       await axios.delete(`${API_URL}/admin/deleteAgency/${formData._id}`);
       alert("Agency deleted successfully.");
-      window.location.reload(); // or redirect if needed
+      window.location.reload();
     } catch (error) {
       console.error("Failed to delete agency", error);
       alert("Failed to delete agency.");
@@ -127,7 +131,6 @@ const CompanyDetails = () => {
     }
   };
 
-  // User cancels deletion
   const handleCancelDelete = () => {
     setOpenDeleteDialog(false);
   };
@@ -204,7 +207,28 @@ const CompanyDetails = () => {
                 fullWidth
                 label="Contact Number"
                 value={formData.agencyContactNumber}
-                onChange={handleChange("agencyContactNumber")}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d{0,10}$/.test(value)) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      agencyContactNumber: value,
+                    }));
+                    setContactNumberError(value.length > 0 && value.length !== 10);
+                  }
+                }}
+                error={contactNumberError}
+                helperText={
+                  contactNumberError
+                    ? "Contact number must be exactly 10 digits."
+                    : " "
+                }
+                inputProps={{
+                  maxLength: 10,
+                  inputMode: "numeric",
+                  pattern: "[0-9]*",
+                }}
+                sx={{ marginBottom: 2 }}
               />
             </>
           ) : (
@@ -230,15 +254,30 @@ const CompanyDetails = () => {
         </Typography>
         <Divider sx={{ marginBottom: 2 }} />
 
+        {!editMode && formData.handledCompanies.length > 0 && (
+          <TextField
+            label="Search Company"
+            variant="outlined"
+            fullWidth
+            sx={{ mb: 2 }}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        )}
+
         <List>
-          {formData.handledCompanies.map((company, index) => (
-            <ListItem key={index} disablePadding>
-              <ListItemIcon>
-                <BusinessIcon />
-              </ListItemIcon>
-              <ListItemText primary={company.companyName || "Unnamed Company"} />
-            </ListItem>
-          ))}
+          {formData.handledCompanies
+            .filter((company) =>
+              company.companyName?.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .map((company, index) => (
+              <ListItem key={index} disablePadding>
+                <ListItemIcon>
+                  <BusinessIcon />
+                </ListItemIcon>
+                <ListItemText primary={company.companyName || "Unnamed Company"} />
+              </ListItem>
+            ))}
         </List>
 
         {editMode && (
@@ -266,7 +305,6 @@ const CompanyDetails = () => {
           </FormControl>
         )}
 
-        {/* Delete Confirmation Dialog */}
         <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
           <DialogTitle>Confirm Delete</DialogTitle>
           <DialogContent>

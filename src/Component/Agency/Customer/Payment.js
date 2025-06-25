@@ -39,7 +39,15 @@ const PaymentInformation = () => {
   };
 
   const handleChange = (e) => {
-    setTempPaymentInfo({ ...tempPaymentInfo, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Allow only digits except for accountName and accountType
+    if (name !== "accountName" && name !== "accountType") {
+      const digitsOnly = value.replace(/\D/g, "");
+      setTempPaymentInfo(prev => ({ ...prev, [name]: digitsOnly }));
+    } else {
+      setTempPaymentInfo(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleUpdate = async () => {
@@ -81,7 +89,8 @@ const PaymentInformation = () => {
               { label: "Billing Zip Code", key: "billingZip" },
               { label: "Account Number", key: "accountNumber", color: "#7B4F24", sensitive: true, toggle: showAccountNumber, setToggle: setShowAccountNumber },
               { label: "Routing Number", key: "routingNumber", color: "#7B4F24" },
-              { label: "Account Name", key: "accountName", color: "#7B4F24" }
+              { label: "Account Name", key: "accountName", color: "#7B4F24" },
+              { label: "Account Type", key: "accountType", color: "#7B4F24" }
             ].map(({ label, key, color, sensitive, toggle, setToggle }) => (
               <Grid item xs={12} sm={6} key={key}>
                 <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: color || "text.secondary" }}>
@@ -119,6 +128,9 @@ const PaymentInformation = () => {
                   value={value || ""}
                   onChange={handleChange}
                   variant="outlined"
+                  inputProps={{
+                    inputMode: key !== "accountName" && key !== "accountType" ? "numeric" : "text"
+                  }}
                 />
               </Grid>
             ))}

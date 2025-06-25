@@ -99,7 +99,6 @@ const CompanyDetails = () => {
       [e.target.name]: e.target.value,
     });
   };
-
   const handleUpdate = () => {
     updateCompanyInformation(tempCompanyInfoData);
     setOpen(false);
@@ -181,6 +180,66 @@ const CompanyDetails = () => {
                     value={value}
                     onChange={handleChange}
                     variant="outlined"
+                    type={
+                      ["usdot", "zip", "suite", "employees"].includes(key.toLowerCase())
+                        ? "number"
+                        : key.toLowerCase() === "email"
+                        ? "email"
+                        : key.toLowerCase().includes("contact")
+                        ? "tel"
+                        : "text"
+                    }
+                    inputProps={{
+                      ...(key.toLowerCase() === "email" && {
+                        pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$",
+                      }),
+                      ...(key.toLowerCase().includes("contact") && {
+  maxLength: 10,
+  inputMode: "numeric",
+  pattern: "[0-9]{10}",
+  onInput: (e) => {
+    e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10);
+  },
+}),
+
+                      ...(["usdot", "zip", "suite", "employees"].includes(key.toLowerCase()) && {
+                        inputMode: "numeric",
+                      }),
+                    }}
+                    InputProps={{
+                      sx: {
+                        "& input[type=number]": {
+                          MozAppearance: "textfield",
+                        },
+                        "& input[type=number]::-webkit-outer-spin-button": {
+                          WebkitAppearance: "none",
+                          margin: 0,
+                        },
+                        "& input[type=number]::-webkit-inner-spin-button": {
+                          WebkitAppearance: "none",
+                          margin: 0,
+                        },
+                      },
+                    }}
+                    error={
+                      (key.toLowerCase() === "email" &&
+                        value &&
+                        !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)) ||
+                      (key.toLowerCase().includes("contact") &&
+                        value &&
+                        !/^\d{10}$/.test(value))
+                    }
+                    helperText={
+                      key.toLowerCase() === "email" &&
+                      value &&
+                      !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)
+                        ? "Invalid email format"
+                        : key.toLowerCase().includes("contact") &&
+                          value &&
+                          !/^\d{10}$/.test(value)
+                        ? "Must be a 10-digit number"
+                        : ""
+                    }
                   />
                 )}
               </Grid>

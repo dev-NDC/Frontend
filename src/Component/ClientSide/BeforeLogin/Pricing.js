@@ -16,9 +16,8 @@ export default function Pricing() {
 
     return (
         <>
-
             {/* Pricing Section */}
-            <div style={{ marginTop: '120px', maxWidth: '1140px', marginLeft: 'auto', marginRight: 'auto' , minHeight: `calc(100vh - 240px)`}}>
+            <div style={{ marginTop: '120px', maxWidth: '1140px', marginLeft: 'auto', marginRight: 'auto', minHeight: `calc(100vh - 240px)` }}>
                 {/* Heading Box */}
                 <motion.div
                     initial={{ opacity: 0, y: -30 }}
@@ -42,7 +41,7 @@ export default function Pricing() {
                 </motion.div>
 
                 {/* Pricing Cards */}
-                <div className='row d-flex align-items-stretch justify-content-center'>
+                <div className='row gx-4 gy-4 d-flex align-items-stretch justify-content-center'>
                     {[
                         {
                             title: 'NON-DOT Account',
@@ -93,15 +92,15 @@ export default function Pricing() {
                     ].map((plan, index) => (
                         <motion.div
                             key={index}
-                            className='col-md-4 d-flex'
-                            style={{ marginTop: '15px', maxWidth: '330px' }}
+                            className='col-lg-4 col-md-6 d-flex'
+                            style={{ marginTop: '15px', maxWidth: '380px' }}
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.4, delay: index * 0.2 }}
                         >
                             <div className="card flex-fill" style={{ backgroundColor: plan.bg, borderRadius: '14px', height: '100%' }}>
-                                <div className="card-body d-flex flex-column p-3" style={{ minHeight: '430px' }}>
+                                <div className="card-body d-flex flex-column p-3" style={{ minHeight: '520px' }}>
                                     <div className='text-center mb-2'>
                                         <p style={{ fontSize: '20px', fontWeight: '700', marginBottom: '4px' }}>{plan.title}</p>
                                         <p style={{ fontSize: '20px', fontWeight: '600', marginBottom: '2px' }}>{plan.price}</p>
@@ -130,7 +129,6 @@ export default function Pricing() {
                     ))}
                 </div>
             </div>
-
 
             <style>
                 {`

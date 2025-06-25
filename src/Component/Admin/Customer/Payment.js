@@ -140,42 +140,54 @@ const PaymentInformation = () => {
                   </FormControl>
                 ) : (
                   <TextField
-                    fullWidth
-                    size="small"
-                    label={key.replace(/([A-Z])/g, " $1").trim()}
-                    name={key}
-                    value={value || ""}
-                    onChange={handleChange}
-                    variant="outlined"
-                    type={["creditCardNumber", "accountNumber"].includes(key)
-                      ? (key === "creditCardNumber" && showCard) || (key === "accountNumber" && showAccount)
-                        ? "text"
-                        : "password"
-                      : "text"}
-                    InputProps={
-                      ["creditCardNumber", "accountNumber"].includes(key)
-                        ? {
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <IconButton
-                                  onClick={() =>
-                                    key === "creditCardNumber"
-                                      ? setShowCard(!showCard)
-                                      : setShowAccount(!showAccount)
-                                  }
-                                  edge="end"
-                                >
-                                  {(key === "creditCardNumber" && showCard) ||
-                                  (key === "accountNumber" && showAccount)
-                                    ? <VisibilityOff />
-                                    : <Visibility />}
-                                </IconButton>
-                              </InputAdornment>
-                            ),
-                          }
-                        : undefined
-                    }
-                  />
+  fullWidth
+  size="small"
+  label={key.replace(/([A-Z])/g, " $1").trim()}
+  name={key}
+  value={value || ""}
+  onChange={(e) => {
+    const newValue = e.target.value;
+    // Allow only digits if the key is not accountName or accountType
+    if (["accountName", "accountType"].includes(key) || /^\d*$/.test(newValue)) {
+      setTempPaymentInfo({ ...tempPaymentInfo, [key]: newValue });
+    }
+  }}
+  variant="outlined"
+  type={["creditCardNumber", "accountNumber"].includes(key)
+    ? (key === "creditCardNumber" && showCard) || (key === "accountNumber" && showAccount)
+      ? "text"
+      : "password"
+    : "text"}
+  inputProps={
+    ["accountName", "accountType"].includes(key)
+      ? {}
+      : { inputMode: "numeric", pattern: "[0-9]*" }
+  }
+  InputProps={
+    ["creditCardNumber", "accountNumber"].includes(key)
+      ? {
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={() =>
+                  key === "creditCardNumber"
+                    ? setShowCard(!showCard)
+                    : setShowAccount(!showAccount)
+                }
+                edge="end"
+              >
+                {(key === "creditCardNumber" && showCard) ||
+                (key === "accountNumber" && showAccount)
+                  ? <VisibilityOff />
+                  : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }
+      : undefined
+  }
+/>
+
                 )}
               </Grid>
             ))}

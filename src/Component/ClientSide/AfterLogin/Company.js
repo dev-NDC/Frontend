@@ -7,41 +7,33 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
 import HomeContext from "../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 
-// List of US states for the dropdown
 const usStates = [
-  { label: "Alabama", value: "AL" }, { label: "Alaska", value: "AK" },
-  { label: "Arizona", value: "AZ" }, { label: "Arkansas", value: "AR" },
-  { label: "California", value: "CA" }, { label: "Colorado", value: "CO" },
-  { label: "Connecticut", value: "CT" }, { label: "Delaware", value: "DE" },
-  { label: "Florida", value: "FL" }, { label: "Georgia", value: "GA" },
-  { label: "Hawaii", value: "HI" }, { label: "Idaho", value: "ID" },
-  { label: "Illinois", value: "IL" }, { label: "Indiana", value: "IN" },
-  { label: "Iowa", value: "IA" }, { label: "Kansas", value: "KS" },
-  { label: "Kentucky", value: "KY" }, { label: "Louisiana", value: "LA" },
-  { label: "Maine", value: "ME" }, { label: "Maryland", value: "MD" },
-  { label: "Massachusetts", value: "MA" }, { label: "Michigan", value: "MI" },
-  { label: "Minnesota", value: "MN" }, { label: "Mississippi", value: "MS" },
-  { label: "Missouri", value: "MO" }, { label: "Montana", value: "MT" },
-  { label: "Nebraska", value: "NE" }, { label: "Nevada", value: "NV" },
-  { label: "New Hampshire", value: "NH" }, { label: "New Jersey", value: "NJ" },
-  { label: "New Mexico", value: "NM" }, { label: "New York", value: "NY" },
-  { label: "North Carolina", value: "NC" }, { label: "North Dakota", value: "ND" },
-  { label: "Ohio", value: "OH" }, { label: "Oklahoma", value: "OK" },
-  { label: "Oregon", value: "OR" }, { label: "Pennsylvania", value: "PA" },
-  { label: "Rhode Island", value: "RI" }, { label: "South Carolina", value: "SC" },
-  { label: "South Dakota", value: "SD" }, { label: "Tennessee", value: "TN" },
-  { label: "Texas", value: "TX" }, { label: "Utah", value: "UT" },
-  { label: "Vermont", value: "VT" }, { label: "Virginia", value: "VA" },
-  { label: "Washington", value: "WA" }, { label: "West Virginia", value: "WV" },
-  { label: "Wisconsin", value: "WI" }, { label: "Wyoming", value: "WY" }
+  { label: "Alabama" }, { label: "Alaska" }, { label: "Arizona" },
+  { label: "Arkansas" }, { label: "California" }, { label: "Colorado" },
+  { label: "Connecticut" }, { label: "Delaware" }, { label: "Florida" },
+  { label: "Georgia" }, { label: "Hawaii" }, { label: "Idaho" },
+  { label: "Illinois" }, { label: "Indiana" }, { label: "Iowa" },
+  { label: "Kansas" }, { label: "Kentucky" }, { label: "Louisiana" },
+  { label: "Maine" }, { label: "Maryland" }, { label: "Massachusetts" },
+  { label: "Michigan" }, { label: "Minnesota" }, { label: "Mississippi" },
+  { label: "Missouri" }, { label: "Montana" }, { label: "Nebraska" },
+  { label: "Nevada" }, { label: "New Hampshire" }, { label: "New Jersey" },
+  { label: "New Mexico" }, { label: "New York" }, { label: "North Carolina" },
+  { label: "North Dakota" }, { label: "Ohio" }, { label: "Oklahoma" },
+  { label: "Oregon" }, { label: "Pennsylvania" }, { label: "Rhode Island" },
+  { label: "South Carolina" }, { label: "South Dakota" }, { label: "Tennessee" },
+  { label: "Texas" }, { label: "Utah" }, { label: "Vermont" },
+  { label: "Virginia" }, { label: "Washington" }, { label: "West Virginia" },
+  { label: "Wisconsin" }, { label: "Wyoming" }
 ];
 
-// Key formatting map
 const labelMap = {
   companyName: "Company Name",
   contactNumber: "Contact Number",
-  usdot: "USDOT ",
-  Zip: "ZIP CODE",
+  usdot: "USDOT",
+  zip: "ZIP",
+  suite: "Suite",
+  employees: "Employees",
   address: "Address",
   city: "City",
   state: "State",
@@ -51,14 +43,11 @@ const labelMap = {
   website: "Website"
 };
 
-const formatLabel = (key) => {
-  if (labelMap[key]) return labelMap[key];
-  return key
-    .replace(/([A-Z])/g, " $1")
-    .replace(/_/g, " ")
-    .trim()
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-};
+const formatLabel = (key) =>
+  labelMap[key] || key.replace(/([A-Z])/g, " $1").replace(/_/g, " ").trim().replace(/\b\w/g, c => c.toUpperCase());
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const digitOnlyFields = ["contactNumber", "zip", "usdot", "employees", "suite"];
 
 const CompanyDetails = () => {
   const { userData, updateCompanyInformation } = useContext(HomeContext);
@@ -66,52 +55,62 @@ const CompanyDetails = () => {
   const [companyInfoData, setCompanyInfoData] = useState(userData.companyInfoData);
   const [tempCompanyInfoData, setTempCompanyInfoData] = useState({ ...companyInfoData });
 
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
     setCompanyInfoData(userData.companyInfoData);
   }, [userData]);
 
   const handleOpen = () => {
     setTempCompanyInfoData({ ...companyInfoData });
+    setErrors({});
     setOpen(true);
   };
 
   const handleClose = () => setOpen(false);
 
   const handleChange = (e) => {
-    setTempCompanyInfoData({ ...tempCompanyInfoData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let newErrors = { ...errors };
+
+    if (digitOnlyFields.includes(name)) {
+      if (!/^\d*$/.test(value)) return;
+    }
+
+    if (name === "contactNumber") {
+      if (value.length !== 10) {
+        newErrors.contactNumber = "Contact number must be 10 digits";
+      } else {
+        delete newErrors.contactNumber;
+      }
+    }
+
+    if (name === "email") {
+      if (value && !emailRegex.test(value)) {
+        newErrors.email = "Invalid email format";
+      } else {
+        delete newErrors.email;
+      }
+    }
+
+    setTempCompanyInfoData({ ...tempCompanyInfoData, [name]: value });
+    setErrors(newErrors);
   };
 
   const handleUpdate = () => {
-    updateCompanyInformation(tempCompanyInfoData);
-    setOpen(false);
+    if (Object.keys(errors).length === 0) {
+      updateCompanyInformation(tempCompanyInfoData);
+      setOpen(false);
+    }
   };
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: "100px",
-        px: 2
-      }}
-    >
-      <Card
-        sx={{
-          width: isMobile ? "100%" : 550,
-          p: 3,
-          position: "relative",
-          borderRadius: 3,
-          boxShadow: 3
-        }}
-      >
-        <IconButton
-          onClick={handleOpen}
-          sx={{ position: "absolute", top: 15, right: 15, color: "primary.main" }}
-        >
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "100px", px: 2 }}>
+      <Card sx={{ width: isMobile ? "100%" : 550, p: 3, position: "relative", borderRadius: 3, boxShadow: 3 }}>
+        <IconButton onClick={handleOpen} sx={{ position: "absolute", top: 15, right: 15, color: "primary.main" }}>
           <EditIcon />
         </IconButton>
         <CardContent>
@@ -162,7 +161,6 @@ const CompanyDetails = () => {
                     name={key}
                     value={value}
                     onChange={handleChange}
-                    variant="outlined"
                   >
                     {usStates.map((state) => (
                       <MenuItem key={state.label} value={state.label}>
@@ -179,6 +177,17 @@ const CompanyDetails = () => {
                     value={value}
                     onChange={handleChange}
                     variant="outlined"
+                    type={
+                      key === "email" ? "email" :
+                      digitOnlyFields.includes(key) ? "tel" : "text"
+                    }
+                    inputProps={
+                      digitOnlyFields.includes(key)
+                        ? { inputMode: "numeric", pattern: "[0-9]*" }
+                        : {}
+                    }
+                    error={Boolean(errors[key])}
+                    helperText={errors[key] || ""}
                   />
                 )}
               </Grid>
@@ -186,7 +195,9 @@ const CompanyDetails = () => {
           </Grid>
           <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>
             <Button onClick={handleClose} variant="outlined">Cancel</Button>
-            <Button onClick={handleUpdate} variant="contained">Update</Button>
+            <Button onClick={handleUpdate} variant="contained" disabled={Object.keys(errors).length > 0}>
+              Update
+            </Button>
           </Box>
         </Box>
       </Modal>

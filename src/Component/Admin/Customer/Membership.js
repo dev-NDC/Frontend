@@ -191,7 +191,20 @@ const MembershipInformation = () => {
               <TextField name="planStartDate" type="date" fullWidth size="small" label="Join Date" value={tempMembershipInfo.planStartDate || ""} onChange={handleChange} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField name="planEndDate" type="date" fullWidth size="small" label="Expiry Date" value={tempMembershipInfo.planEndDate || ""} onChange={handleChange} InputLabelProps={{ shrink: true }} />
+             <TextField
+  name="planEndDate"
+  type="date"
+  fullWidth
+  size="small"
+  label="Expiry Date"
+  value={tempMembershipInfo.planEndDate || ""}
+  onChange={handleChange}
+  InputLabelProps={{ shrink: true }}
+  inputProps={{
+    min: tempMembershipInfo.planStartDate || undefined,
+  }}
+/>
+
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth size="small">
