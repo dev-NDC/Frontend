@@ -70,13 +70,13 @@ function Membership() {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <LabelValue label="Current Plan:" value={membershipInfo.selectedPlan} />
+              <LabelValue label="Current Plan:" value={membershipInfo.planName} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <LabelValue label="Join Date:" value={formatDate(membershipInfo.planStartDate)} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <LabelValue label="Expiry Date:" value={formatDate(membershipInfo.planEndDate)} />
+              <LabelValue label="Renewal Date:" value={formatDate(membershipInfo.planEndDate)} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>Status:</Typography>
@@ -155,42 +155,52 @@ function Membership() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {certificate.map((cert, index) => (
-                <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{cert.description}</TableCell>
-                  {!isMobile && (
-                    <TableCell>
-                      {cert.issueDate
-                        ? new Date(cert.issueDate).toLocaleDateString("en-US")
-                        : "N/A"}
-                    </TableCell>
-                  )}
-                  {!isMobile && (
-                    <TableCell>
-                      {cert.expirationDate
-                        ? new Date(cert.expirationDate).toLocaleDateString("en-US")
-                        : "N/A"}
-                    </TableCell>
-                  )}
-                  {!isMobile && (
-                    <TableCell align="right">
-                      <IconButton onClick={(e) => handleMenuClick(e, index)}>
-                        <MoreVert />
-                      </IconButton>
-                      <Menu
-                        anchorEl={anchorEl}
-                        open={menuIndex === index}
-                        onClose={handleMenuClose}
-                      >
-                        <MenuItem onClick={() => handleViewOpen(cert)}>
-                          <Visibility fontSize="small" sx={{ mr: 1 }} /> View Details
-                        </MenuItem>
-                      </Menu>
-                    </TableCell>
-                  )}
+              {certificate.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={isMobile ? 3 : 5} align="center">
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      No certificate to show
+                    </Typography>
+                  </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                certificate.map((cert, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{cert.description}</TableCell>
+                    {!isMobile && (
+                      <TableCell>
+                        {cert.issueDate
+                          ? new Date(cert.issueDate).toLocaleDateString("en-US")
+                          : "N/A"}
+                      </TableCell>
+                    )}
+                    {!isMobile && (
+                      <TableCell>
+                        {cert.expirationDate
+                          ? new Date(cert.expirationDate).toLocaleDateString("en-US")
+                          : "N/A"}
+                      </TableCell>
+                    )}
+                    {!isMobile && (
+                      <TableCell align="right">
+                        <IconButton onClick={(e) => handleMenuClick(e, index)}>
+                          <MoreVert />
+                        </IconButton>
+                        <Menu
+                          anchorEl={anchorEl}
+                          open={menuIndex === index}
+                          onClose={handleMenuClose}
+                        >
+                          <MenuItem onClick={() => handleViewOpen(cert)}>
+                            <Visibility fontSize="small" sx={{ mr: 1 }} /> View Details
+                          </MenuItem>
+                        </Menu>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

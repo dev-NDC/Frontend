@@ -96,7 +96,7 @@ const MembershipInformation = () => {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <LabelValue label="Current Plan:" value={membershipInfo.selectedPlan} />
+              <LabelValue label="Current Plan:" value={membershipInfo.planName} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <LabelValue label="Join Date:" value={formatDate(membershipInfo.planStartDate)} />

@@ -24,6 +24,15 @@ function CompanyInfo() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        if (name === "contactNumber") {
+            // Only allow up to 10 digits and filter out non-digits
+            const digitsOnly = value.replace(/\D/g, "").slice(0, 10);
+            setCompanyInfoData({ ...companyInfoData, contactNumber: digitsOnly });
+            setContactNumberError(digitsOnly.length !== 10);
+            return;
+        }
+
         setCompanyInfoData({ ...companyInfoData, [name]: value });
 
         if (name === "companyEmail") {
@@ -31,15 +40,13 @@ function CompanyInfo() {
             setEmailError(!emailRegex.test(value));
         }
 
-        if (["contactNumber", "usdot", "employees", "zip"].includes(name)) {
+        if (["usdot", "employees", "zip"].includes(name)) {
             if (/^\d*$/.test(value)) {
                 setCompanyInfoData({ ...companyInfoData, [name]: value });
-                if (name === "contactNumber") setContactNumberError(false);
                 if (name === "usdot") setUsdotError(false);
                 if (name === "employees") setEmployeesError(false);
                 if (name === "zip") setZipError(false);
             } else {
-                if (name === "contactNumber") setContactNumberError(true);
                 if (name === "usdot") setUsdotError(true);
                 if (name === "employees") setEmployeesError(true);
                 if (name === "zip") setZipError(true);
@@ -49,7 +56,8 @@ function CompanyInfo() {
 
     const isFormValid =
         Object.values(companyInfoData).every(value => value.trim() !== "") &&
-        !emailError && !contactNumberError && !usdotError && !employeesError && !zipError;
+        !emailError && !contactNumberError && !usdotError && !employeesError && !zipError &&
+        companyInfoData.contactNumber.length === 10;
 
     const handleNext = () => {
         if (currentPosition === maxPosition) {
@@ -137,6 +145,12 @@ function CompanyInfo() {
                         required
                         error={usdotError}
                         helperText={usdotError ? "Only digits are allowed" : ""}
+                        inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                        onKeyPress={(e) => {
+                            if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                            }
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -149,7 +163,18 @@ function CompanyInfo() {
                         fullWidth
                         required
                         error={contactNumberError}
-                        helperText={contactNumberError ? "Only digits are allowed" : ""}
+                        helperText={contactNumberError ? "Only 10 digits are allowed" : ""}
+                        inputProps={{ inputMode: "numeric", pattern: "[0-9]*", maxLength: 10 }}
+                        onKeyPress={(e) => {
+                            // Prevent non-digit input
+                            if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                            }
+                            // Prevent entering more than 10 digits
+                            if (companyInfoData.contactNumber.length >= 10) {
+                                e.preventDefault();
+                            }
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -186,6 +211,12 @@ function CompanyInfo() {
                         required
                         error={employeesError}
                         helperText={employeesError ? "Only digits are allowed" : ""}
+                        inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                        onKeyPress={(e) => {
+                            if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                            }
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -252,6 +283,12 @@ function CompanyInfo() {
                         required
                         error={zipError}
                         helperText={zipError ? "Only digits are allowed" : ""}
+                        inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                        onKeyPress={(e) => {
+                            if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                            }
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>

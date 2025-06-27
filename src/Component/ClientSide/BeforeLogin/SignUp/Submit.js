@@ -108,6 +108,9 @@ function Submit() {
                         required
                         error={errors.date}
                         helperText={errors.date ? "Date cannot be empty or in the future" : ""}
+                        inputProps={{
+                            min: new Date().toISOString().split("T")[0] // Only allow today or future dates
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12}>

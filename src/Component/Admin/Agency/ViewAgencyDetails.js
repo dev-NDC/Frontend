@@ -27,10 +27,12 @@ import {
   Email as EmailIcon,
   Phone as PhoneIcon,
   Apartment as ApartmentIcon,
+  Code,
 } from "@mui/icons-material";
 
 import AgencyContext from "../../../Context/Admin/Agency/AgencyContext";
 import axios from "axios";
+import { toast } from "react-toastify";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const CompanyDetails = () => {
@@ -48,6 +50,7 @@ const CompanyDetails = () => {
         agencyName: agencyDetails.agencyName || "",
         agencyEmail: agencyDetails.agencyEmail || "",
         agencyContactNumber: agencyDetails.agencyContactNumber || "",
+        agencyCode: agencyDetails.agencyCode || "",
         handledCompanies: agencyDetails.handledCompanies || [],
         _id: agencyDetails.id,
       });
@@ -120,12 +123,13 @@ const CompanyDetails = () => {
 
   const handleConfirmDelete = async () => {
     try {
-      await axios.delete(`${API_URL}/admin/deleteAgency/${formData._id}`);
-      alert("Agency deleted successfully.");
-      window.location.reload();
+      await axios.post(`${API_URL}/admin/deleteAgency`, {
+        data: { id: formData._id }
+      });
+      toast.success("Agency deleted successfully.");
     } catch (error) {
       console.error("Failed to delete agency", error);
-      alert("Failed to delete agency.");
+      toast.error("Failed to delete agency.");
     } finally {
       setOpenDeleteDialog(false);
     }
@@ -203,6 +207,7 @@ const CompanyDetails = () => {
                 onChange={handleChange("agencyEmail")}
                 sx={{ marginBottom: 2 }}
               />
+              
               <TextField
                 fullWidth
                 label="Contact Number"
@@ -244,6 +249,10 @@ const CompanyDetails = () => {
               <Typography sx={{ display: "flex", alignItems: "center" }}>
                 <PhoneIcon sx={{ mr: 1 }} />
                 <strong>Contact:</strong>&nbsp;{formData.agencyContactNumber}
+              </Typography>
+              <Typography sx={{ display: "flex", alignItems: "center" }}>
+                <Code sx={{ mr: 1 }} />
+                <strong>Agency Code:</strong>&nbsp;{formData.agencyCode || "N/A"}
               </Typography>
             </>
           )}

@@ -35,28 +35,15 @@ const LoginState = (props) => {
                 localStorage.removeItem("rememberedEmail");
                 localStorage.removeItem("rememberedPassword");
             }
-            if (role.length === 1) {
-                if (role.includes("Admin") || role.includes("SuperAdmin")) {
-                    navigate("/admin");
-                    toast.success("Login successful! Welcome to Admin Dashboard");
-                } else if (role.includes("Agency")) {
-                    navigate("/agency");
-                    toast.success("Login successful! Welcome to Agency Dashboard");
-                } else if (role.includes("User")) {
-                    navigate("/portal");
-                    toast.success("Login successful! Welcome to User Dashboard");
-                }
-            } else {
-                if (role.includes("Admin") || role.includes("SuperAdmin")) {
-                    navigate("/admin");
-                    toast.success("Login successful! Welcome to Admin Dashboard");
-                } else if (role.includes("agency")) {
-                    navigate("/Agency");
-                    toast.success("Login successful! Welcome to Agency Dashboard");
-                } else {
-                    navigate("/portal");
-                    toast.success("Login successful! Welcome to User Dashboard");
-                }
+            if (role === "Admin") {
+                navigate("/admin");
+                toast.success("Login successful! Welcome to Admin Dashboard");
+            } else if (role === "Agency") {
+                navigate("/agency");
+                toast.success("Login successful! Welcome to Agency Dashboard");
+            } else if (role === "User") {
+                navigate("/portal");
+                toast.success("Login successful! Welcome to User Dashboard");
             }
         } catch (error) {
             handleApiError(error, "Login failed. Please check your credentials.");

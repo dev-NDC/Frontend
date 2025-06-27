@@ -24,9 +24,21 @@ function Payment() {
         accountName: false,
     });
 
+    const formatCardNumber = (value) => {
+        // Remove all non-digit characters
+        const digits = value.replace(/\D/g, "");
+        // Add a space after every 4 digits
+        return digits.replace(/(.{4})/g, "$1 ").trim();
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        const updatedValue = value || "";
+        let updatedValue = value || "";
+
+        // Format credit card number with spaces after every 4 digits
+        if (name === "creditCardNumber") {
+            updatedValue = formatCardNumber(updatedValue);
+        }
 
         const updatedPaymentData = { ...paymentData, [name]: updatedValue };
         setPaymentData(updatedPaymentData);
@@ -38,7 +50,11 @@ function Payment() {
 
         switch (name) {
             case "creditCardNumber":
-                setErrors(prev => ({ ...prev, creditCardNumber: !/^\d{16}$/.test(updatedValue) }));
+                // Validate only digits and 16 digits (ignore spaces)
+                setErrors(prev => ({
+                    ...prev,
+                    creditCardNumber: !/^\d{16}$/.test(updatedValue.replace(/\s/g, ""))
+                }));
                 break;
             case "cvv":
                 setErrors(prev => ({ ...prev, cvv: !/^\d{3}$/.test(updatedValue) }));
@@ -74,8 +90,9 @@ function Payment() {
         paymentData.routingNumber.trim() !== "" ||
         paymentData.accountName.trim() !== "";
 
+    // Fix: Remove .trim() for creditCardNumber and use .replace(/\s/g, "") to count only digits
     const isFormValid =
-        paymentData.creditCardNumber.trim().length === 16 &&
+        paymentData.creditCardNumber.replace(/\s/g, "").length === 16 &&
         /^\d{3}$/.test(paymentData.cvv) &&
         paymentData.billingZip.trim() !== "" &&
         paymentData.expMonth &&
@@ -110,6 +127,17 @@ function Payment() {
                         onChange={handleChange}
                         error={errors.creditCardNumber}
                         helperText={errors.creditCardNumber ? "Must be 16 digits" : ""}
+                        inputProps={{
+                            maxLength: 19, // 16 digits + 3 spaces
+                            inputMode: "numeric",
+                            pattern: "[0-9 ]*"
+                        }}
+                        onKeyPress={(e) => {
+                            // Allow only digits and prevent entering more than 19 characters
+                            if (!/[0-9]/.test(e.key) || paymentData.creditCardNumber.replace(/\s/g, "").length >= 16) {
+                                e.preventDefault();
+                            }
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -160,6 +188,15 @@ function Payment() {
                         onChange={handleChange}
                         error={errors.billingZip}
                         helperText={errors.billingZip ? "Only numbers allowed" : ""}
+                        inputProps={{
+                            inputMode: "numeric",
+                            pattern: "[0-9]*"
+                        }}
+                        onKeyPress={(e) => {
+                            if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                            }
+                        }}
                     />
                 </Grid>
             </Grid>
@@ -180,6 +217,15 @@ function Payment() {
                         onChange={handleChange}
                         error={errors.accountNumber}
                         helperText={errors.accountNumber ? "Only numbers allowed" : ""}
+                        inputProps={{
+                            inputMode: "numeric",
+                            pattern: "[0-9]*"
+                        }}
+                        onKeyPress={(e) => {
+                            if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                            }
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -191,6 +237,15 @@ function Payment() {
                         onChange={handleChange}
                         error={errors.routingNumber}
                         helperText={errors.routingNumber ? "Must be exactly 9 digits" : ""}
+                        inputProps={{
+                            inputMode: "numeric",
+                            pattern: "[0-9]*"
+                        }}
+                        onKeyPress={(e) => {
+                            if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                            }
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12}>

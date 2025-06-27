@@ -78,6 +78,7 @@ function ViewAgency() {
                             </TableCell>
                             <TableCell sx={{ color: "white", fontWeight: "bold" }}>Email</TableCell>
                             <TableCell sx={{ color: "white", fontWeight: "bold" }}>Contact Number</TableCell>
+                            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Agency Code</TableCell>
                             <TableCell sx={{ color: "white", fontWeight: "bold" }}>Companies</TableCell>
                             <TableCell sx={{ color: "white", fontWeight: "bold" }}>Action</TableCell>
                         </TableRow>
@@ -88,6 +89,7 @@ function ViewAgency() {
                                 <TableCell>{agency.agencyName}</TableCell>
                                 <TableCell>{agency.agencyEmail}</TableCell>
                                 <TableCell>{agency.agencyContactNumber}</TableCell>
+                                <TableCell>{agency.agencyCode}</TableCell>
                                 <TableCell>{agency.numberOfCompanies}</TableCell>
                                 <TableCell>
                                     <IconButton onClick={() => handleViewDetails(agency)}>

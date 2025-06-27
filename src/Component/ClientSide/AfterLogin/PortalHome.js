@@ -39,7 +39,9 @@ function PortalHome() {
           getUserData();
         })
         .catch(error => {
-          toast.error("Please login again")
+          toast.error("Please login again, session expired");
+          Cookies.remove("token");
+          axios.defaults.headers.common["Authorization"] = "";
           navigate("/login")
         });
     } else {

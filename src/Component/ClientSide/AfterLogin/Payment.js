@@ -9,6 +9,11 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useTheme } from "@mui/material/styles";
 import HomeContext from "../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 
+const formatCardNumber = (value) => {
+  if (!value) return "";
+  return value.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim();
+};
+
 const PaymentInformation = () => {
   const { userData, updatePayment, updateUserData } = useContext(HomeContext);
   const [open, setOpen] = useState(false);
@@ -64,8 +69,8 @@ const PaymentInformation = () => {
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700, mr: 1 }}>
                   {showCardNumber
-                    ? paymentInfo.creditCardNumber
-                    : `************${paymentInfo.creditCardNumber?.slice(-4)}`}
+                    ? formatCardNumber(paymentInfo.creditCardNumber)
+                    : `**** **** **** ${paymentInfo.creditCardNumber?.slice(-4)}`}
                 </Typography>
                 <IconButton onClick={() => setShowCardNumber((prev) => !prev)} size="small">
                   {showCardNumber ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
@@ -166,32 +171,50 @@ const PaymentInformation = () => {
           <Divider sx={{ mb: 3 }} />
           <Grid container spacing={2}>
             {Object.entries(tempPaymentInfo).map(([key, value]) => (
-  <Grid item xs={12} sm={6} key={key}>
-    <TextField
-      fullWidth
-      size="small"
-      label={key.replace(/([A-Z])/g, " $1").trim()}
-      name={key}
-      value={value}
-      onChange={(e) => {
-        const val = e.target.value;
-        if (key === "accountName" || key === "accountType") {
-          setTempPaymentInfo((prev) => ({ ...prev, [key]: val }));
-        } else {
-          if (/^\d*$/.test(val)) {
-            setTempPaymentInfo((prev) => ({ ...prev, [key]: val }));
-          }
-        }
-      }}
-      variant="outlined"
-      inputProps={
-        key !== "accountName" && key !== "accountType"
-          ? { inputMode: "numeric", pattern: "[0-9]*" }
-          : {}
-      }
-    />
-  </Grid>
-))}
+              <Grid item xs={12} sm={6} key={key}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  label={key.replace(/([A-Z])/g, " $1").trim()}
+                  name={key}
+                  value={key === "creditCardNumber" ? formatCardNumber(value) : value}
+                  onChange={(e) => {
+                    let val = e.target.value;
+                    if (key === "creditCardNumber") {
+                      // Only allow digits, format with spaces every 4 digits, max 16 digits
+                      val = formatCardNumber(val).replace(/\s/g, "").slice(0, 16);
+                      val = formatCardNumber(val);
+                      setTempPaymentInfo((prev) => ({ ...prev, [key]: val.replace(/\s/g, "") }));
+                    } else if (key === "routingNumber") {
+                      // Only allow up to 9 digits for routing number, but allow empty
+                      if (/^\d*$/.test(val)) {
+                        val = val.slice(0, 9);
+                        setTempPaymentInfo((prev) => ({ ...prev, [key]: val }));
+                      }
+                    } else if (key === "accountNumber") {
+                      // Allow any value (including empty or non-numeric)
+                      setTempPaymentInfo((prev) => ({ ...prev, [key]: val }));
+                    } else if (key === "accountName" || key === "accountType") {
+                      setTempPaymentInfo((prev) => ({ ...prev, [key]: val }));
+                    } else {
+                      if (/^\d*$/.test(val)) {
+                        setTempPaymentInfo((prev) => ({ ...prev, [key]: val }));
+                      }
+                    }
+                  }}
+                  variant="outlined"
+                  inputProps={
+                    key === "creditCardNumber"
+                      ? { inputMode: "numeric", pattern: "[0-9 ]*", maxLength: 19 }
+                      : key === "routingNumber"
+                      ? { inputMode: "numeric", pattern: "[0-9]*", maxLength: 9 }
+                      : key !== "accountName" && key !== "accountType" && key !== "accountNumber"
+                      ? { inputMode: "numeric", pattern: "[0-9]*" }
+                      : {}
+                  }
+                />
+              </Grid>
+            ))}
 
           </Grid>
           <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>
