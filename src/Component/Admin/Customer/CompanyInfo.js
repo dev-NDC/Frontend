@@ -39,31 +39,56 @@ const formatKeyLabel = (key) => {
 
 // 🇺🇸 US States List
 const states = [
-  { label: "Alabama", value: "AL" }, { label: "Alaska", value: "AK" },
-  { label: "Arizona", value: "AZ" }, { label: "Arkansas", value: "AR" },
-  { label: "California", value: "CA" }, { label: "Colorado", value: "CO" },
-  { label: "Connecticut", value: "CT" }, { label: "Delaware", value: "DE" },
-  { label: "Florida", value: "FL" }, { label: "Georgia", value: "GA" },
-  { label: "Hawaii", value: "HI" }, { label: "Idaho", value: "ID" },
-  { label: "Illinois", value: "IL" }, { label: "Indiana", value: "IN" },
-  { label: "Iowa", value: "IA" }, { label: "Kansas", value: "KS" },
-  { label: "Kentucky", value: "KY" }, { label: "Louisiana", value: "LA" },
-  { label: "Maine", value: "ME" }, { label: "Maryland", value: "MD" },
-  { label: "Massachusetts", value: "MA" }, { label: "Michigan", value: "MI" },
-  { label: "Minnesota", value: "MN" }, { label: "Mississippi", value: "MS" },
-  { label: "Missouri", value: "MO" }, { label: "Montana", value: "MT" },
-  { label: "Nebraska", value: "NE" }, { label: "Nevada", value: "NV" },
-  { label: "New Hampshire", value: "NH" }, { label: "New Jersey", value: "NJ" },
-  { label: "New Mexico", value: "NM" }, { label: "New York", value: "NY" },
-  { label: "North Carolina", value: "NC" }, { label: "North Dakota", value: "ND" },
-  { label: "Ohio", value: "OH" }, { label: "Oklahoma", value: "OK" },
-  { label: "Oregon", value: "OR" }, { label: "Pennsylvania", value: "PA" },
-  { label: "Rhode Island", value: "RI" }, { label: "South Carolina", value: "SC" },
-  { label: "South Dakota", value: "SD" }, { label: "Tennessee", value: "TN" },
-  { label: "Texas", value: "TX" }, { label: "Utah", value: "UT" },
-  { label: "Vermont", value: "VT" }, { label: "Virginia", value: "VA" },
-  { label: "Washington", value: "WA" }, { label: "West Virginia", value: "WV" },
-  { label: "Wisconsin", value: "WI" }, { label: "Wyoming", value: "WY" },
+  { label: "Alabama", value: "AL" },
+  { label: "Alaska", value: "AK" },
+  { label: "Arizona", value: "AZ" },
+  { label: "Arkansas", value: "AR" },
+  { label: "California", value: "CA" },
+  { label: "Colorado", value: "CO" },
+  { label: "Connecticut", value: "CT" },
+  { label: "Delaware", value: "DE" },
+  { label: "Florida", value: "FL" },
+  { label: "Georgia", value: "GA" },
+  { label: "Hawaii", value: "HI" },
+  { label: "Idaho", value: "ID" },
+  { label: "Illinois", value: "IL" },
+  { label: "Indiana", value: "IN" },
+  { label: "Iowa", value: "IA" },
+  { label: "Kansas", value: "KS" },
+  { label: "Kentucky", value: "KY" },
+  { label: "Louisiana", value: "LA" },
+  { label: "Maine", value: "ME" },
+  { label: "Maryland", value: "MD" },
+  { label: "Massachusetts", value: "MA" },
+  { label: "Michigan", value: "MI" },
+  { label: "Minnesota", value: "MN" },
+  { label: "Mississippi", value: "MS" },
+  { label: "Missouri", value: "MO" },
+  { label: "Montana", value: "MT" },
+  { label: "Nebraska", value: "NE" },
+  { label: "Nevada", value: "NV" },
+  { label: "New Hampshire", value: "NH" },
+  { label: "New Jersey", value: "NJ" },
+  { label: "New Mexico", value: "NM" },
+  { label: "New York", value: "NY" },
+  { label: "North Carolina", value: "NC" },
+  { label: "North Dakota", value: "ND" },
+  { label: "Ohio", value: "OH" },
+  { label: "Oklahoma", value: "OK" },
+  { label: "Oregon", value: "OR" },
+  { label: "Pennsylvania", value: "PA" },
+  { label: "Rhode Island", value: "RI" },
+  { label: "South Carolina", value: "SC" },
+  { label: "South Dakota", value: "SD" },
+  { label: "Tennessee", value: "TN" },
+  { label: "Texas", value: "TX" },
+  { label: "Utah", value: "UT" },
+  { label: "Vermont", value: "VT" },
+  { label: "Virginia", value: "VA" },
+  { label: "Washington", value: "WA" },
+  { label: "West Virginia", value: "WV" },
+  { label: "Wisconsin", value: "WI" },
+  { label: "Wyoming", value: "WY" },
 ];
 
 const CompanyDetails = () => {
@@ -105,24 +130,57 @@ const CompanyDetails = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "40px", px: 2 }}>
-      <Card sx={{ width: isMobile ? "100%" : 550, p: 3, position: "relative", borderRadius: 3, boxShadow: 3 }}>
-        <IconButton onClick={handleOpen} sx={{ position: "absolute", top: 15, right: 15, color: "primary.main" }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: "40px",
+        px: 2,
+      }}
+    >
+      <Card
+        sx={{
+          width: isMobile ? "100%" : 550,
+          p: 3,
+          position: "relative",
+          borderRadius: 3,
+          boxShadow: 3,
+        }}
+      >
+        <IconButton
+          onClick={handleOpen}
+          sx={{
+            position: "absolute",
+            top: 15,
+            right: 15,
+            color: "primary.main",
+          }}
+        >
           <EditIcon />
         </IconButton>
 
         <CardContent>
-          <Typography variant="h5" sx={{ mb: 3, fontWeight: "bold", color: "primary.main" }}>
+          <Typography
+            variant="h5"
+            sx={{ mb: 3, fontWeight: "bold", color: "primary.main" }}
+          >
             Company Information
           </Typography>
 
           <Grid container spacing={2}>
             {Object.entries(companyInfoData).map(([key, value]) => (
               <Grid item xs={12} sm={6} key={key}>
-                <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ fontWeight: "bold", color: "text.secondary" }}
+                >
                   {formatKeyLabel(key)}:
                 </Typography>
-                <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
+                <Typography
+                  variant="body1"
+                  sx={{ color: "#003366", fontWeight: 700 }}
+                >
                   {key.toLowerCase() === "usdot"
                     ? String(value).toUpperCase()
                     : toTitleCase(value)}
@@ -146,7 +204,10 @@ const CompanyDetails = () => {
             boxShadow: 5,
           }}
         >
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", color: "primary.main" }}>
+          <Typography
+            variant="h6"
+            sx={{ mb: 2, fontWeight: "bold", color: "primary.main" }}
+          >
             Edit Company Details
           </Typography>
           <Divider sx={{ mb: 3 }} />
@@ -181,7 +242,9 @@ const CompanyDetails = () => {
                     onChange={handleChange}
                     variant="outlined"
                     type={
-                      ["usdot", "zip", "suite", "employees"].includes(key.toLowerCase())
+                      ["usdot", "zip", "suite", "employees"].includes(
+                        key.toLowerCase()
+                      )
                         ? "number"
                         : key.toLowerCase() === "email"
                         ? "email"
@@ -194,15 +257,19 @@ const CompanyDetails = () => {
                         pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$",
                       }),
                       ...(key.toLowerCase().includes("contact") && {
-  maxLength: 10,
-  inputMode: "numeric",
-  pattern: "[0-9]{10}",
-  onInput: (e) => {
-    e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10);
-  },
-}),
+                        maxLength: 10,
+                        inputMode: "numeric",
+                        pattern: "[0-9]{10}",
+                        onInput: (e) => {
+                          e.target.value = e.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 10);
+                        },
+                      }),
 
-                      ...(["usdot", "zip", "suite", "employees"].includes(key.toLowerCase()) && {
+                      ...(["usdot", "zip", "suite", "employees"].includes(
+                        key.toLowerCase()
+                      ) && {
                         inputMode: "numeric",
                       }),
                     }}
@@ -246,7 +313,9 @@ const CompanyDetails = () => {
             ))}
           </Grid>
 
-          <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>
+          <Box
+            sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}
+          >
             <Button onClick={handleClose} variant="outlined">
               Cancel
             </Button>

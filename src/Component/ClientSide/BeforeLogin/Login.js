@@ -40,8 +40,9 @@ function Login() {
     }, [setEmail, setPassword]);
 
     const handleEmailChange = (event) => {
-        setEmail(event.target.value);
-        setEmailError(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(event.target.value));
+        const value = event.target.value;
+        setEmail(value);
+        setEmailError(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value));
     };
 
     const handlePasswordChange = (event) => {
@@ -53,8 +54,12 @@ function Login() {
     };
 
     const handleLoginSubmit = (event) => {
-        event.preventDefault(); // Prevent page reload
-        if (isFormValid) {
+        event.preventDefault();
+
+        const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        setEmailError(!isEmailValid);
+
+        if (isEmailValid && password.trim()) {
             loginSubmit();
         }
     };

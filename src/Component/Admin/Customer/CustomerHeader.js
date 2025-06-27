@@ -8,15 +8,17 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import PaymentIcon from "@mui/icons-material/Payment";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import NoteAltIcon from "@mui/icons-material/NoteAlt"; // Icon for Notes
 
 import CompanyDetails from "./CompanyInfo";
 import PaymentInformation from "./Payment";
-import Driver from "./Drivers/Driver"
+import Driver from "./Drivers/Driver";
 import Certificate from "./Certificate/Certificate";
 import Result from "./Result/Result";
 import Invoice from "./Invoice/Invoice";
 import Document from "./Document/Document";
-import Membership from "./Membership"
+import Membership from "./Membership";
+import Note from "./Notes"; // ✅ Import Note component
 
 import DriverState from "../../../Context/Admin/Customer/Driver/DriverState";
 import CertificateState from "../../../Context/Admin/Customer/Certificate/CertificateState";
@@ -26,27 +28,29 @@ import DocumentState from "../../../Context/Admin/Customer/Document/DocumentStat
 
 import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
 
-
+// ✅ Updated tabData with Notes tab
 const tabData = [
   { label: "Company Info", icon: <BusinessIcon />, component: <CompanyDetails /> },
   { label: "Driver", icon: <DirectionsCarIcon />, component: <DriverState><Driver /></DriverState> },
   { label: "Membership", icon: <CardMembershipIcon />, component: <Membership /> },
   { label: "Certificate", icon: <WorkspacePremiumIcon />, component: <CertificateState><Certificate /></CertificateState> },
-  { label: "Invoice", icon: <ReceiptIcon />, component: <InvoiceState> <Invoice /> </InvoiceState> },
-  { label: "Result", icon: <AssessmentIcon />, component: <ResultState> <Result /> </ResultState> },
+  { label: "Invoice", icon: <ReceiptIcon />, component: <InvoiceState><Invoice /></InvoiceState> },
+  { label: "Result", icon: <AssessmentIcon />, component: <ResultState><Result /></ResultState> },
   { label: "Payment Info", icon: <PaymentIcon />, component: <PaymentInformation /> },
-  { label: "Upload Doc", icon: <UploadFileIcon />, component: <DocumentState> <Document /> </DocumentState> },
+  { label: "Upload Doc", icon: <UploadFileIcon />, component: <DocumentState><Document /></DocumentState> },
+  { label: "Notes", icon: <NoteAltIcon />, component: <Note /> } // ✅ New Notes tab
 ];
 
 function CustomerHeader() {
   const [activeTab, setActiveTab] = useState(0);
-  const { currentCompany } = useContext(CustomerContext)
+  const { currentCompany } = useContext(CustomerContext);
+
   return (
     <Box>
       {/* Navbar */}
       <Tabs
         value={activeTab}
-        onChange={(event, newValue) => setActiveTab(newValue)} // <-- This updates the active tab
+        onChange={(event, newValue) => setActiveTab(newValue)}
         variant="scrollable"
         scrollButtons="auto"
         sx={{ backgroundColor: "#0a0a42", color: "white" }}
@@ -62,13 +66,13 @@ function CustomerHeader() {
         ))}
       </Tabs>
 
-      {/* Render Active Component */}
+      {/* Company Name Banner */}
       <div className="text-center">
         <div
           style={{
-            width:' 100%',
-            backgroundColor: "#d4edda", // light green
-            color: "#155724",           // dark green text
+            width: "100%",
+            backgroundColor: "#d4edda",
+            color: "#155724",
             border: "2px solid #28a745",
             padding: "10px 20px",
             fontWeight: "bold",
@@ -79,7 +83,7 @@ function CustomerHeader() {
         </div>
       </div>
 
-
+      {/* Active Tab Component */}
       <Box sx={{ p: 2 }}>
         {tabData[activeTab].component}
       </Box>

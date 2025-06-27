@@ -1,5 +1,12 @@
 import React, { useContext, useState } from "react";
-import { TextField, Button, Box, Typography, Grid } from "@mui/material";
+import {
+    TextField,
+    Button,
+    Box,
+    Typography,
+    Grid,
+    Tooltip
+} from "@mui/material";
 import SignupContext from "../../../../Context/ClientSide/SignUp/SignupContext";
 import { getPasswordStrengthHints } from "./PasswordStrengthHelper";
 
@@ -27,28 +34,34 @@ function ContactInfo() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setContactInfoData({ ...contactInfoData, [name]: value });
-
-        if (name === "password") {
-            const isStrong = isStrongPassword(value);
-            setPasswordError(!isStrong);
-        }
-
-        if (name === "confirmPassword") {
-            setConfirmPasswordError(value !== contactInfoData.password);
-        }
-
-        if (name === "email") {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            setEmailError(!emailRegex.test(value));
-        }
 
         if (name === "phone") {
-            if (/^\d*$/.test(value)) {
+            if (/^\d{0,10}$/.test(value)) {
                 setContactInfoData({ ...contactInfoData, phone: value });
-                setPhoneError(false);
+                if (value.length === 10) {
+                    setPhoneError(false);
+                    document.getElementsByName("email")[0]?.focus(); // Auto-focus to next
+                } else {
+                    setPhoneError(true);
+                }
             } else {
                 setPhoneError(true);
+            }
+        } else {
+            setContactInfoData({ ...contactInfoData, [name]: value });
+
+            if (name === "password") {
+                const isStrong = isStrongPassword(value);
+                setPasswordError(!isStrong);
+            }
+
+            if (name === "confirmPassword") {
+                setConfirmPasswordError(value !== contactInfoData.password);
+            }
+
+            if (name === "email") {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                setEmailError(!emailRegex.test(value));
             }
         }
     };
@@ -93,16 +106,33 @@ function ContactInfo() {
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField
-                        label="Phone No"
-                        name="phone"
-                        value={contactInfoData.phone}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                        error={phoneError}
-                        helperText={phoneError ? "Only digits are allowed" : ""}
-                    />
+                    <Tooltip title="Only digits allowed. We'll use this to contact you if needed.">
+                        <TextField
+                            label="Phone No"
+                            name="phone"
+                            value={contactInfoData.phone}
+                            onChange={handleChange}
+                            onKeyPress={(e) => {
+                                if (!/[0-9]/.test(e.key)) {
+                                    e.preventDefault(); // Block non-numeric
+                                }
+                            }}
+                            onPaste={(e) => {
+                                const paste = e.clipboardData.getData("text");
+                                if (/\D/.test(paste)) {
+                                    e.preventDefault(); // Block letters on paste
+                                }
+                            }}
+                            fullWidth
+                            required
+                            error={phoneError}
+                            helperText={
+                                phoneError
+                                    ? "Phone must be 10 digits and contain only numbers"
+                                    : ""
+                            }
+                        />
+                    </Tooltip>
                 </Grid>
                 <Grid item xs={12}>
                     <TextField
@@ -131,7 +161,9 @@ function ContactInfo() {
                         fullWidth
                         required
                         error={passwordError}
-                        helperText={passwordError ? "Password does not meet strength requirements" : ""}
+                        helperText={
+                            passwordError ? "Password does not meet strength requirements" : ""
+                        }
                     />
                     {passwordHints.length > 0 && (
                         <Box sx={{ mt: 1 }}>
