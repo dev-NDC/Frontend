@@ -51,13 +51,21 @@ function CompanyInfo() {
                 if (name === "employees") setEmployeesError(true);
                 if (name === "zip") setZipError(true);
             }
+        } else {
+            setCompanyInfoData({ ...companyInfoData, [name]: value });
+
+            if (name === "companyEmail") {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                setEmailError(!emailRegex.test(value));
+            }
         }
     };
 
     const isFormValid =
-        Object.values(companyInfoData).every(value => value.trim() !== "") &&
-        !emailError && !contactNumberError && !usdotError && !employeesError && !zipError &&
-        companyInfoData.contactNumber.length === 10;
+        Object.entries(companyInfoData)
+            .filter(([key]) => key !== "suite") // suite is optional
+            .every(([, value]) => value.trim() !== "") &&
+        !emailError && !contactNumberError && !usdotError && !employeesError && !zipError;
 
     const handleNext = () => {
         if (currentPosition === maxPosition) {
@@ -71,7 +79,6 @@ function CompanyInfo() {
         setLoading(true);
         try {
             const response = await axios.get(`https://data.transportation.gov/resource/az4n-8mr2.json?dot_number=${usdotLookup}`);
-            console.log(response);
             const data = response.data[0];
             if (data) {
                 setCompanyInfoData(prev => ({
@@ -89,7 +96,6 @@ function CompanyInfo() {
                     suite: "", // optional
                 }));
             } else {
-
                 toast.error("No company found for this USDOT number.");
             }
         } catch (error) {
@@ -159,7 +165,7 @@ function CompanyInfo() {
                         name="contactNumber"
                         value={companyInfoData.contactNumber}
                         onChange={handleChange}
-                        placeholder="(000) 000-0000"
+                        placeholder="10-digit phone number"
                         fullWidth
                         required
                         error={contactNumberError}
@@ -234,7 +240,7 @@ function CompanyInfo() {
                 <Grid item xs={12}>
                     <TextField
                         name="suite"
-                        label="Suite"
+                        label="Suite (Optional)"
                         value={companyInfoData.suite}
                         onChange={handleChange}
                         placeholder="Suite/Apt/Unit#"
@@ -261,9 +267,7 @@ function CompanyInfo() {
                         onChange={handleChange}
                         fullWidth
                         required
-                        SelectProps={{
-                            MenuProps: menuProps,
-                        }}
+                        SelectProps={{ MenuProps: menuProps }}
                     >
                         {US_STATES.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
@@ -312,64 +316,30 @@ function CompanyInfo() {
 
 export default CompanyInfo;
 
-
 const US_STATES = [
-    { label: "Alabama", value: "AL" },
-    { label: "Alaska", value: "AK" },
-    { label: "Arizona", value: "AZ" },
-    { label: "Arkansas", value: "AR" },
-    { label: "California", value: "CA" },
-    { label: "Colorado", value: "CO" },
-    { label: "Connecticut", value: "CT" },
-    { label: "Delaware", value: "DE" },
-    { label: "Florida", value: "FL" },
-    { label: "Georgia", value: "GA" },
-    { label: "Hawaii", value: "HI" },
-    { label: "Idaho", value: "ID" },
-    { label: "Illinois", value: "IL" },
-    { label: "Indiana", value: "IN" },
-    { label: "Iowa", value: "IA" },
-    { label: "Kansas", value: "KS" },
-    { label: "Kentucky", value: "KY" },
-    { label: "Louisiana", value: "LA" },
-    { label: "Maine", value: "ME" },
-    { label: "Maryland", value: "MD" },
-    { label: "Massachusetts", value: "MA" },
-    { label: "Michigan", value: "MI" },
-    { label: "Minnesota", value: "MN" },
-    { label: "Mississippi", value: "MS" },
-    { label: "Missouri", value: "MO" },
-    { label: "Montana", value: "MT" },
-    { label: "Nebraska", value: "NE" },
-    { label: "Nevada", value: "NV" },
-    { label: "New Hampshire", value: "NH" },
-    { label: "New Jersey", value: "NJ" },
-    { label: "New Mexico", value: "NM" },
-    { label: "New York", value: "NY" },
-    { label: "North Carolina", value: "NC" },
-    { label: "North Dakota", value: "ND" },
-    { label: "Ohio", value: "OH" },
-    { label: "Oklahoma", value: "OK" },
-    { label: "Oregon", value: "OR" },
-    { label: "Pennsylvania", value: "PA" },
-    { label: "Rhode Island", value: "RI" },
-    { label: "South Carolina", value: "SC" },
-    { label: "South Dakota", value: "SD" },
-    { label: "Tennessee", value: "TN" },
-    { label: "Texas", value: "TX" },
-    { label: "Utah", value: "UT" },
-    { label: "Vermont", value: "VT" },
-    { label: "Virginia", value: "VA" },
-    { label: "Washington", value: "WA" },
-    { label: "West Virginia", value: "WV" },
-    { label: "Wisconsin", value: "WI" },
-    { label: "Wyoming", value: "WY" },
+    { label: "Alabama", value: "AL" }, { label: "Alaska", value: "AK" }, { label: "Arizona", value: "AZ" },
+    { label: "Arkansas", value: "AR" }, { label: "California", value: "CA" }, { label: "Colorado", value: "CO" },
+    { label: "Connecticut", value: "CT" }, { label: "Delaware", value: "DE" }, { label: "Florida", value: "FL" },
+    { label: "Georgia", value: "GA" }, { label: "Hawaii", value: "HI" }, { label: "Idaho", value: "ID" },
+    { label: "Illinois", value: "IL" }, { label: "Indiana", value: "IN" }, { label: "Iowa", value: "IA" },
+    { label: "Kansas", value: "KS" }, { label: "Kentucky", value: "KY" }, { label: "Louisiana", value: "LA" },
+    { label: "Maine", value: "ME" }, { label: "Maryland", value: "MD" }, { label: "Massachusetts", value: "MA" },
+    { label: "Michigan", value: "MI" }, { label: "Minnesota", value: "MN" }, { label: "Mississippi", value: "MS" },
+    { label: "Missouri", value: "MO" }, { label: "Montana", value: "MT" }, { label: "Nebraska", value: "NE" },
+    { label: "Nevada", value: "NV" }, { label: "New Hampshire", value: "NH" }, { label: "New Jersey", value: "NJ" },
+    { label: "New Mexico", value: "NM" }, { label: "New York", value: "NY" }, { label: "North Carolina", value: "NC" },
+    { label: "North Dakota", value: "ND" }, { label: "Ohio", value: "OH" }, { label: "Oklahoma", value: "OK" },
+    { label: "Oregon", value: "OR" }, { label: "Pennsylvania", value: "PA" }, { label: "Rhode Island", value: "RI" },
+    { label: "South Carolina", value: "SC" }, { label: "South Dakota", value: "SD" }, { label: "Tennessee", value: "TN" },
+    { label: "Texas", value: "TX" }, { label: "Utah", value: "UT" }, { label: "Vermont", value: "VT" },
+    { label: "Virginia", value: "VA" }, { label: "Washington", value: "WA" }, { label: "West Virginia", value: "WV" },
+    { label: "Wisconsin", value: "WI" }, { label: "Wyoming", value: "WY" },
 ];
 
 const menuProps = {
     PaperProps: {
         style: {
-            maxHeight: 200, // limit dropdown height to 200px
+            maxHeight: 200,
         },
     },
 };
