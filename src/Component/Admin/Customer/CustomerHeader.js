@@ -18,13 +18,14 @@ import Result from "./Result/Result";
 import Invoice from "./Invoice/Invoice";
 import Document from "./Document/Document";
 import Membership from "./Membership";
-import Note from "./Notes"; // ✅ Import Note component
+import Note from "./Notes"; 
 
 import DriverState from "../../../Context/Admin/Customer/Driver/DriverState";
 import CertificateState from "../../../Context/Admin/Customer/Certificate/CertificateState";
 import InvoiceState from "../../../Context/Admin/Customer/Invoice/InvoiceState";
 import ResultState from "../../../Context/Admin/Customer/Result/ResultState";
 import DocumentState from "../../../Context/Admin/Customer/Document/DocumentState";
+import NoteState from "../../../Context/Admin/Customer/Notes/NoteState"; 
 
 import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
 
@@ -38,7 +39,7 @@ const tabData = [
   { label: "Result", icon: <AssessmentIcon />, component: <ResultState><Result /></ResultState> },
   { label: "Payment Info", icon: <PaymentIcon />, component: <PaymentInformation /> },
   { label: "Upload Doc", icon: <UploadFileIcon />, component: <DocumentState><Document /></DocumentState> },
-  { label: "Notes", icon: <NoteAltIcon />, component: <Note /> } // ✅ New Notes tab
+  { label: "Notes", icon: <NoteAltIcon />, component: <NoteState><Note /> </NoteState>}
 ];
 
 function CustomerHeader() {

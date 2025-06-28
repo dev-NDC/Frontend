@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -7,7 +7,8 @@ import {
   IconButton,
   Paper,
   Grid,
-  Tooltip
+  Tooltip,
+  CircularProgress
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -15,34 +16,53 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
 
+import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
+import NoteContext from "../../../Context/Admin/Customer/Notes/NoteContext";
+
 const Notes = () => {
+  const { getSingleUserData, currentId, userDetails } = React.useContext(CustomerContext);
+  const { addNote, editNote, deleteNote } = React.useContext(NoteContext);
+
   const [notes, setNotes] = useState([]);
   const [input, setInput] = useState("");
   const [editIndex, setEditIndex] = useState(null);
   const [editText, setEditText] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const handleAddNote = () => {
+  useEffect(() => {
+    if (userDetails?.notes) {
+      setNotes(userDetails.notes);
+      // sort notes by date in descending order
+      setNotes((prevNotes) =>
+        [...prevNotes].sort((a, b) => new Date(b.timestamp) - new
+          Date(a.timestamp))
+      );
+
+      setLoading(false);
+    }
+  }, [userDetails]);
+
+  const handleAddNote = async () => {
     if (input.trim()) {
-      setNotes([...notes, input.trim()]);
+      await addNote(currentId, input.trim());
+      await getSingleUserData(currentId);
       setInput("");
     }
   };
 
-  const handleDeleteNote = (index) => {
-    const updated = [...notes];
-    updated.splice(index, 1);
-    setNotes(updated);
+  const handleDeleteNote = async(index) => {
+    await deleteNote(currentId, index);
+    await getSingleUserData(currentId);
   };
 
   const handleEdit = (index) => {
     setEditIndex(index);
-    setEditText(notes[index]);
+    setEditText(notes[index].text);
   };
 
-  const handleSaveEdit = () => {
-    const updated = [...notes];
-    updated[editIndex] = editText.trim();
-    setNotes(updated);
+  const handleSaveEdit = async() => {
+    await editNote(currentId, notes[editIndex]._id, editText.trim());
+    await getSingleUserData(currentId);
     setEditIndex(null);
     setEditText("");
   };
@@ -51,6 +71,15 @@ const Notes = () => {
     setEditIndex(null);
     setEditText("");
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
 
   return (
     <Box sx={{ maxWidth: 700, mx: "auto", mt: 4 }}>
@@ -138,7 +167,7 @@ const Notes = () => {
                         wordBreak: "break-word"
                       }}
                     >
-                      {note}
+                      {note.text}
                     </Typography>
                     <Box sx={{ position: "absolute", top: 8, right: 8 }}>
                       <Tooltip title="Edit">
@@ -147,7 +176,7 @@ const Notes = () => {
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete">
-                        <IconButton onClick={() => handleDeleteNote(index)}>
+                        <IconButton onClick={() => handleDeleteNote(note._id)}>
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>

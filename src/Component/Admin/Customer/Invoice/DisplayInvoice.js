@@ -8,8 +8,6 @@ import {
 import { Edit, Delete, Visibility, Download } from "@mui/icons-material";
 import CustomerContext from "../../../../Context/Admin/Customer/CustomerContext";
 import InvoiceContext from "../../../../Context/Admin/Customer/Invoice/InvoiceContext";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
 function DisplayInvoice() {
   const { currentId, userDetails, getSingleUserData } = useContext(CustomerContext);
@@ -40,45 +38,27 @@ function DisplayInvoice() {
     setEditData({});
   };
 
-  const handleDownload = async (invoice) => {
-    const container = document.createElement("div");
-    container.style.position = "fixed";
-    container.style.top = "-9999px";
-    container.style.width = "600px";
-    container.style.padding = "20px";
-    container.style.backgroundColor = "white";
-    container.innerHTML = `
-      <h2>Invoice</h2>
-      <p><strong>Invoice Number:</strong> ${invoice.invoiceNumber}</p>
-      <p><strong>Amount:</strong> $${invoice.amount}</p>
-      <p><strong>Date:</strong> ${formatDate(invoice.date)}</p>
-      <p><strong>Status:</strong> ${invoice.status}</p>
-    `;
+  const handleDownload = (invoice) => {
+    console.log("Downloading invoice:", invoice);
+    if (!invoice?.file || !invoice?.mimeType) return;
 
-    document.body.appendChild(container);
-
-    const canvas = await html2canvas(container, { scale: 2 });
-    const imgData = canvas.toDataURL("image/png");
-
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${invoice.invoiceNumber || "invoice"}.pdf`);
-
-    document.body.removeChild(container);
+    const link = document.createElement("a");
+    link.href = `data:${invoice.mimeType};base64,${invoice.file}`;
+    link.download = invoice.invoiceNumber || "invoice.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleUpdate = async () => {
     await updateInvoice(currentId, selectedInvoice._id, editData);
-    getSingleUserData(currentId);
+    await getSingleUserData(currentId);
     handleClose();
   };
 
   const handleDelete = async () => {
     await deleteInvoice(currentId, selectedInvoice._id);
-    getSingleUserData(currentId);
+    await getSingleUserData(currentId);
     handleClose();
   };
 
@@ -93,14 +73,10 @@ function DisplayInvoice() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Paid":
-        return "green";
-      case "Unpaid":
-        return "red";
-      case "Pending":
-        return "orange";
-      default:
-        return "inherit";
+      case "Paid": return "green";
+      case "Unpaid": return "red";
+      case "Pending": return "orange";
+      default: return "inherit";
     }
   };
 
@@ -128,15 +104,14 @@ function DisplayInvoice() {
             </TableRow>
           ) : (
             invoices.map((invoice, index) => (
-              <TableRow key={index}>
+              <TableRow key={invoice._id || index}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{invoice.invoiceNumber}</TableCell>
                 <TableCell>${invoice.amount}</TableCell>
                 <TableCell>{formatDate(invoice.date)}</TableCell>
                 <TableCell sx={{ color: getStatusColor(invoice.status), fontWeight: "bold" }}>
-  {invoice.status}
-</TableCell>
-
+                  {invoice.status}
+                </TableCell>
                 <TableCell align="right">
                   <IconButton onClick={() => handleOpen("view", invoice)}><Visibility /></IconButton>
                   <IconButton onClick={() => handleDownload(invoice)}><Download /></IconButton>
@@ -160,17 +135,24 @@ function DisplayInvoice() {
             <strong>Status:</strong> {selectedInvoice?.status}
           </Typography>
 
-          {selectedInvoice?.file?.data && (
-            <iframe
-              src={URL.createObjectURL(
-                new Blob([new Uint8Array(selectedInvoice.file.data)], { type: selectedInvoice.mimeType })
-              )}
-              title="Invoice File"
-              width="100%"
-              height="400px"
-              style={{ marginTop: "1rem", borderRadius: 8 }}
+          {selectedInvoice?.mimeType?.startsWith("image/") ? (
+            <img
+              src={`data:${selectedInvoice.mimeType};base64,${selectedInvoice.file?.data}`}
+              alt="Invoice"
+              style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
             />
+          ) : selectedInvoice?.mimeType === "application/pdf" ? (
+            <iframe
+              src={`data:${selectedInvoice.mimeType};base64,${selectedInvoice.file}`}
+              title="PDF Preview"
+              style={{ width: "100%", height: "500px", marginTop: "1rem", borderRadius: 8 }}
+            />
+          ) : (
+            <Typography sx={{ mt: 2 }}>
+              <em>Preview not available for this file type. Please download to view.</em>
+            </Typography>
           )}
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">Close</Button>

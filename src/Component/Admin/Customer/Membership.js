@@ -112,9 +112,9 @@ const MembershipInformation = () => {
                   fontWeight: 'bold',
                   color:
                     membershipInfo.planStatus === "Active" ? "green" :
-                    membershipInfo.planStatus === "Pending" ? "orange" :
-                    membershipInfo.planStatus === "Inactive" ? "red" :
-                    "#003366"
+                      membershipInfo.planStatus === "Pending" ? "orange" :
+                        membershipInfo.planStatus === "Inactive" ? "red" :
+                          "#003366"
                 }}
               >
                 {membershipInfo.planStatus || "N/A"}
@@ -127,40 +127,40 @@ const MembershipInformation = () => {
               <LabelValue label="Location Code:" value={membershipInfo.locationCode} />
             </Grid>
             <Grid item xs={12}>
-  <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>Packages:</Typography>
-  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
-    {membershipInfo.package?.length > 0 ? (
-      membershipInfo.package.map((pkg, index) => (
-        <Chip
-          key={index}
-          label={pkg.package_name}
-          variant="outlined"
-          sx={{ borderColor: '#003366', color: '#003366', fontWeight: 'bold' }}
-        />
-      ))
-    ) : (
-      <Typography variant="body2" color="text.secondary">N/A</Typography>
-    )}
-  </Box>
-</Grid>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>Packages:</Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
+                {membershipInfo.package?.length > 0 ? (
+                  membershipInfo.package.map((pkg, index) => (
+                    <Chip
+                      key={index}
+                      label={pkg.package_name}
+                      variant="outlined"
+                      sx={{ borderColor: '#003366', color: '#003366', fontWeight: 'bold' }}
+                    />
+                  ))
+                ) : (
+                  <Typography variant="body2" color="text.secondary">N/A</Typography>
+                )}
+              </Box>
+            </Grid>
 
-<Grid item xs={12}>
-  <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>Reason Names:</Typography>
-  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
-    {membershipInfo.order_reason?.length > 0 ? (
-      membershipInfo.order_reason.map((reason, index) => (
-        <Chip
-          key={index}
-          label={reason.order_reason_name}
-          variant="outlined"
-          sx={{ borderColor: '#003366', color: '#003366', fontWeight: 'bold' }}
-        />
-      ))
-    ) : (
-      <Typography variant="body2" color="text.secondary">N/A</Typography>
-    )}
-  </Box>
-</Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>Reason Names:</Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
+                {membershipInfo.order_reason?.length > 0 ? (
+                  membershipInfo.order_reason.map((reason, index) => (
+                    <Chip
+                      key={index}
+                      label={reason.order_reason_name}
+                      variant="outlined"
+                      sx={{ borderColor: '#003366', color: '#003366', fontWeight: 'bold' }}
+                    />
+                  ))
+                ) : (
+                  <Typography variant="body2" color="text.secondary">N/A</Typography>
+                )}
+              </Box>
+            </Grid>
 
             {/* <Grid item xs={12}>
               <LabelValue
@@ -191,19 +191,19 @@ const MembershipInformation = () => {
               <TextField name="planStartDate" type="date" fullWidth size="small" label="Join Date" value={tempMembershipInfo.planStartDate || ""} onChange={handleChange} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-             <TextField
-  name="planEndDate"
-  type="date"
-  fullWidth
-  size="small"
-  label="Expiry Date"
-  value={tempMembershipInfo.planEndDate || ""}
-  onChange={handleChange}
-  InputLabelProps={{ shrink: true }}
-  inputProps={{
-    min: tempMembershipInfo.planStartDate || undefined,
-  }}
-/>
+              <TextField
+                name="planEndDate"
+                type="date"
+                fullWidth
+                size="small"
+                label="Expiry Date"
+                value={tempMembershipInfo.planEndDate || ""}
+                onChange={handleChange}
+                InputLabelProps={{ shrink: true }}
+                inputProps={{
+                  min: tempMembershipInfo.planStartDate || undefined,
+                }}
+              />
 
             </Grid>
             <Grid item xs={12} sm={6}>

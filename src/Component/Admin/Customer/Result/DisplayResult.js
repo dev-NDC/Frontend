@@ -4,8 +4,6 @@ import {
     IconButton, Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Typography, TextField, MenuItem, CircularProgress
 } from "@mui/material";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import { Edit, Delete, Visibility, Download } from "@mui/icons-material";
 import CustomerContext from "../../../../Context/Admin/Customer/CustomerContext";
 import ResultContext from "../../../../Context/Admin/Customer/Result/ResultContext";
@@ -50,38 +48,15 @@ function DisplayResult() {
         setPreviewUrl(null);
     };
 
-    const handleDownload = async (result) => {
-        const container = document.createElement("div");
-        container.style.position = "fixed";
-        container.style.top = "-9999px";
-        container.style.width = "600px";
-        container.style.padding = "20px";
-        container.style.backgroundColor = "white";
-        container.innerHTML = `
-            <h2>Test Result</h2>
-            <p><strong>Name:</strong> ${result.driverName}</p>
-            <p><strong>License Number:</strong> ${result.licenseNumber}</p>
-            <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString("en-US")}</p>
-            <p><strong>Test Type:</strong> ${result.testType}</p>
-            <img id="resultImage" src="" style="width:100%; margin-top:10px; border-radius:10px;" />
-        `;
+    const handleDownload = (result) => {
+        if (!result?.file || !result?.mimeType) return;
 
-        const imageUrl = `data:${result.mimeType};base64,${result.file}`;
-        container.querySelector("#resultImage").src = imageUrl;
-
-        document.body.appendChild(container);
-
-        const canvas = await html2canvas(container, { scale: 2 });
-        const imgData = canvas.toDataURL("image/png");
-
-        const pdf = new jsPDF("p", "mm", "a4");
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${result.driverName || "result"}.pdf`);
-
-        document.body.removeChild(container);
+        const link = document.createElement("a");
+        link.href = `data:${result.mimeType};base64,${result.file}`;
+        link.download = result.resultNumber || "result.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     const handleUpdate = async () => {
@@ -131,15 +106,15 @@ function DisplayResult() {
     const getStatusTextColor = (status) => {
         switch (status) {
             case "Positive":
-                return "#f44336"; 
+                return "#f44336";
             case "Pending":
-                return "#ff9800"; 
+                return "#ff9800";
             case "Negative":
-                return " #4caf50 "; 
+                return " #4caf50 ";
             case "In Progress":
-                return "#ff9800"; 
+                return "#ff9800";
             default:
-                return "#000"; 
+                return "#000";
         }
     };
 
@@ -192,12 +167,22 @@ function DisplayResult() {
                     <Typography gutterBottom><strong>Date:</strong> {new Date(selectedResult?.date).toLocaleDateString("en-US")}</Typography>
                     <Typography gutterBottom><strong>Test Type:</strong> {selectedResult?.testType}</Typography>
 
-                    {selectedResult?.file && (
+                    {selectedResult?.mimeType?.startsWith("image/") ? (
                         <img
                             src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
-                            alt="Result"
+                            alt="Invoice"
                             style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
                         />
+                    ) : selectedResult?.mimeType === "application/pdf" ? (
+                        <iframe
+                            src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
+                            title="PDF Preview"
+                            style={{ width: "100%", height: "500px", marginTop: "1rem", borderRadius: 8 }}
+                        />
+                    ) : (
+                        <Typography sx={{ mt: 2 }}>
+                            <em>Preview not available for this file type. Please download to view.</em>
+                        </Typography>
                     )}
                 </DialogContent>
                 <DialogActions>

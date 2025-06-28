@@ -26,9 +26,6 @@ const InvoiceState = (props) => {
 
     const updateInvoice = async (currentId, invoiceId, updatedData) => {
         try {
-            console.log("Updating invoice with ID:", invoiceId);
-            console.log("Updated data:", updatedData);
-            console.log("Current ID:", currentId);
             await axios.post(`${API_URL}/admin/editInvoice`, {
                 currentId,
                 invoiceId,
