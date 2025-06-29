@@ -104,7 +104,12 @@ const Notes = () => {
         <Button
           variant="contained"
           onClick={handleAddNote}
-          sx={{ minWidth: { sm: "120px" }, whiteSpace: "nowrap" }}
+          sx={{
+            minWidth: { sm: "120px" },
+            whiteSpace: "nowrap",
+            backgroundColor: "#0a0a42",
+            "&:hover": { backgroundColor: "#08083a" }
+          }}
         >
           Add Note
         </Button>
@@ -122,10 +127,12 @@ const Notes = () => {
                 elevation={3}
                 sx={{
                   p: 2,
-                  position: "relative",
                   height: "100%",
                   backgroundColor: "#f5faff",
-                  borderLeft: "4px solid #1976d2"
+                  borderLeft: "4px solid #1976d2",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between"
                 }}
               >
                 {editIndex === index ? (
@@ -150,19 +157,18 @@ const Notes = () => {
                     </Box>
                   </Box>
                 ) : (
-                  <Box>
-                    {/* Note Text */}
+                  <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
                     <Typography
                       sx={{
                         fontSize: "1rem",
                         whiteSpace: "pre-wrap",
-                        wordBreak: "break-word"
+                        wordBreak: "break-word",
+                        flexGrow: 1
                       }}
                     >
                       {note.text}
                     </Typography>
 
-                    {/* Timestamp and Author Block */}
                     <Box sx={{ mt: 2 }}>
                       <Typography
                         variant="caption"
@@ -183,15 +189,15 @@ const Notes = () => {
                       </Typography>
                     </Box>
 
-                    {/* Action buttons */}
-                    <Box sx={{ position: "absolute", top: 8, right: 8 }}>
+                    {/* Action buttons moved below the text */}
+                    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                       <Tooltip title="Edit">
-                        <IconButton onClick={() => handleEdit(index)}>
+                        <IconButton color="primary" onClick={() => handleEdit(index)}>
                           <EditIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete">
-                        <IconButton onClick={() => handleDeleteNote(note._id)}>
+                        <IconButton color="error" onClick={() => handleDeleteNote(note._id)}>
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
