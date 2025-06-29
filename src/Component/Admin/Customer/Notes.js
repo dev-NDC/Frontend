@@ -31,13 +31,11 @@ const Notes = () => {
 
   useEffect(() => {
     if (userDetails?.notes) {
-      setNotes(userDetails.notes);
-      // sort notes by date in descending order
-      setNotes((prevNotes) =>
-        [...prevNotes].sort((a, b) => new Date(b.timestamp) - new
-          Date(a.timestamp))
+      setNotes(
+        [...userDetails.notes].sort(
+          (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+        )
       );
-
       setLoading(false);
     }
   }, [userDetails]);
@@ -50,8 +48,8 @@ const Notes = () => {
     }
   };
 
-  const handleDeleteNote = async(index) => {
-    await deleteNote(currentId, index);
+  const handleDeleteNote = async (id) => {
+    await deleteNote(currentId, id);
     await getSingleUserData(currentId);
   };
 
@@ -60,7 +58,7 @@ const Notes = () => {
     setEditText(notes[index].text);
   };
 
-  const handleSaveEdit = async() => {
+  const handleSaveEdit = async () => {
     await editNote(currentId, notes[editIndex]._id, editText.trim());
     await getSingleUserData(currentId);
     setEditIndex(null);
@@ -80,16 +78,9 @@ const Notes = () => {
     );
   }
 
-
   return (
     <Box sx={{ maxWidth: 700, mx: "auto", mt: 4 }}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          mb: 3,
-        }}
-      >
+      <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
         <NoteAltIcon sx={{ mr: 1, fontSize: 30, color: "#1976d2" }} />
         <Typography variant="h5" fontWeight="bold">
           Notes
@@ -160,6 +151,7 @@ const Notes = () => {
                   </Box>
                 ) : (
                   <Box>
+                    {/* Note Text */}
                     <Typography
                       sx={{
                         fontSize: "1rem",
@@ -169,6 +161,29 @@ const Notes = () => {
                     >
                       {note.text}
                     </Typography>
+
+                    {/* Timestamp and Author Block */}
+                    <Box sx={{ mt: 2 }}>
+                      <Typography
+                        variant="caption"
+                        color="textSecondary"
+                        sx={{ fontSize: "0.8rem" }}
+                      >
+                        Added on:{" "}
+                        {new Date(note.timestamp).toLocaleString("en-US", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true
+                        })}
+                        <br />
+                        By: <strong>{note.createdByName || "Staff Member"}</strong>
+                      </Typography>
+                    </Box>
+
+                    {/* Action buttons */}
                     <Box sx={{ position: "absolute", top: 8, right: 8 }}>
                       <Tooltip title="Edit">
                         <IconButton onClick={() => handleEdit(index)}>

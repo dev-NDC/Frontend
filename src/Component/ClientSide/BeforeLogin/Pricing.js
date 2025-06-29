@@ -33,8 +33,8 @@ export default function Pricing() {
                         border: "2px solid #e0e0e0"
                     }}>
                         <p className='text-center' style={{ color: "#007bff", fontWeight: 700, letterSpacing: '1px', marginBottom: "5px" }}>PRICING</p>
-                        <p className='text-center' style={{ fontSize: '26px', fontWeight: '800', marginBottom: '5px', color: '#212529' }}>DRUG TESTING PLANS</p>
-                        <p className='text-center' style={{ fontSize: '14px', color: '#6c757d', marginBottom: 0 }}>
+                        <p className='text-center' style={{ fontSize: '28px', fontWeight: '800', marginBottom: '5px', color: '#212529' }}>DRUG TESTING PLANS</p>
+                        <p className='text-center' style={{ fontSize: '15px', color: '#6c757d', marginBottom: 0 }}>
                             Pay by the month or the year, and cancel at any time.
                         </p>
                     </div>
@@ -102,15 +102,15 @@ export default function Pricing() {
                             <div className="card flex-fill" style={{ backgroundColor: plan.bg, borderRadius: '14px', height: '100%' }}>
                                 <div className="card-body d-flex flex-column p-3" style={{ minHeight: '520px' }}>
                                     <div className='text-center mb-2'>
-                                        <p style={{ fontSize: '20px', fontWeight: '700', marginBottom: '4px' }}>{plan.title}</p>
-                                        <p style={{ fontSize: '20px', fontWeight: '600', marginBottom: '2px' }}>{plan.price}</p>
-                                        <p style={{ fontSize: '13px', marginBottom: '4px' }}>Every Year</p>
-                                        <p style={{ fontSize: '13px', color: '#444' }}>{plan.subtitle}</p>
+                                        <p style={{ fontSize: '22px', marginBottom: '4px' }}>{plan.title}</p>
+                                        <p style={{ fontSize: '22px', marginBottom: '2px' }}>{plan.price}</p>
+                                        <p style={{ fontSize: '15px', marginBottom: '4px' }}>Every Year</p>
+                                        <p style={{ fontSize: '15px', color: '#444' }}>{plan.subtitle}</p>
                                         <hr style={{ color: "white", height: '2px' }} />
                                     </div>
                                     <div className="flex-grow-1">
                                         {plan.features.map((item, i) => (
-                                            <p key={i} style={{ fontSize: '13px', margin: '4px 0' }}>
+                                            <p key={i} style={{ margin: '6px 0' }}>
                                                 <CheckIcon style={{ marginRight: '6px', fontSize: '16px' }} />
                                                 {item}
                                             </p>
@@ -140,8 +140,8 @@ export default function Pricing() {
                         transition: background-color 0.3s, color 0.3s;
                         font-weight: 600;
                         border-radius: 8px;
-                        padding: 8px;
-                        font-size: 14px;
+                        padding: 10px;
+                        font-size: 15px;
                     }
 
                     .custom-btn:hover {
@@ -163,6 +163,11 @@ export default function Pricing() {
 
                     .flex-grow-1 {
                         flex-grow: 1;
+                    }
+
+                    .card-body * {
+                        font-weight: bold !important;
+                        font-size: 15px;
                     }
                 `}
             </style>

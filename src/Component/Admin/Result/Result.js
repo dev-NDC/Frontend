@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button,
-    Typography, CircularProgress
+    Typography, CircularProgress, Paper, Box
 } from "@mui/material";
 import { Visibility, Download } from "@mui/icons-material";
 import axios from "axios";
@@ -66,54 +66,60 @@ function DisplayResult() {
     if (loading) return <CircularProgress />;
 
     return (
-        <TableContainer>
-            <Table>
-                <TableHead style={{ backgroundColor: "#0b2f6a" }}>
-                    <TableRow>
-                        <TableCell style={{ color: "white" }}>Sr</TableCell>
-                        <TableCell style={{ color: "white" }}>Company Name</TableCell>
-                        <TableCell style={{ color: "white" }}>Name</TableCell>
-                        <TableCell style={{ color: "white" }}>License #</TableCell>
-                        <TableCell style={{ color: "white" }}>Test Date</TableCell>
-                        <TableCell style={{ color: "white" }}>Test Type</TableCell>
-                        <TableCell style={{ color: "white" }}>Status</TableCell>
-                        <TableCell style={{ color: "white" }}>Case Number</TableCell>
-                        <TableCell style={{ color: "white" }} align="right">Actions</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {results.map((result, index) => (
-                        <TableRow key={index}>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{result.companyName}</TableCell>
-                            <TableCell>{result.driverName}</TableCell>
-                            <TableCell>{result.licenseNumber}</TableCell>
-                            <TableCell>{new Date(result.testDate).toLocaleDateString('en-US')}</TableCell>
-                            <TableCell>{result.testType}</TableCell>
-                            <TableCell>
-                                <Typography
-                                    style={{
-                                        color:
-                                            result.status === "Positive"
-                                                ? "red"
-                                                : result.status?.toLowerCase() === "negative"
-                                                    ? "green"
-                                                    : "orange",
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    {result.status}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>{result.caseNumber}</TableCell>
-                            <TableCell align="right">
-                                <IconButton onClick={() => handleView(result)}><Visibility /></IconButton>
-                                <IconButton onClick={() => handleDownload(result)}><Download /></IconButton>
-                            </TableCell>
+        <Box>
+            <TableContainer component={Paper} sx={{ mt: 3, p: 2, borderRadius: 2, boxShadow: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+                    Result List
+                </Typography>
+
+                <Table>
+                    <TableHead>
+                        <TableRow sx={{ backgroundColor: "#003366" }}>
+                            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Sr</TableCell>
+                            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Company Name</TableCell>
+                            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Name</TableCell>
+                            <TableCell sx={{ color: "white", fontWeight: "bold" }}>License #</TableCell>
+                            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Test Date</TableCell>
+                            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Test Type</TableCell>
+                            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Status</TableCell>
+                            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Case Number</TableCell>
+                            <TableCell sx={{ color: "white", fontWeight: "bold" }} align="right">Actions</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHead>
+                    <TableBody>
+                        {results.map((result, index) => (
+                            <TableRow key={index} hover>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{result.companyName}</TableCell>
+                                <TableCell>{result.driverName}</TableCell>
+                                <TableCell>{result.licenseNumber}</TableCell>
+                                <TableCell>{new Date(result.testDate).toLocaleDateString('en-US')}</TableCell>
+                                <TableCell>{result.testType}</TableCell>
+                                <TableCell>
+                                    <Typography
+                                        style={{
+                                            color:
+                                                result.status === "Positive"
+                                                    ? "red"
+                                                    : result.status?.toLowerCase() === "negative"
+                                                        ? "green"
+                                                        : "orange",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        {result.status}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>{result.caseNumber}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton onClick={() => handleView(result)}><Visibility /></IconButton>
+                                    <IconButton onClick={() => handleDownload(result)}><Download /></IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
 
             {/* View Modal */}
             <Dialog open={openModal} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -143,7 +149,7 @@ function DisplayResult() {
                     <Button onClick={handleClose}>Close</Button>
                 </DialogActions>
             </Dialog>
-        </TableContainer>
+        </Box>
     );
 }
 
