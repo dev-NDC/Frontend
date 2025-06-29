@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Divider, Typography, Box, AppBar, Toolbar, useMediaQuery } from "@mui/material";
-import { Home, ExitToApp, Menu } from "@mui/icons-material";
+import { Home, ExitToApp, Menu, Settings } from "@mui/icons-material";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import PersonIcon from '@mui/icons-material/Person';
 import BusinessIcon from '@mui/icons-material/Business';
@@ -45,6 +45,7 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
     { text: "Create New Order", icon: <NoteAddIcon />, index: 9,index2:9},
     { text: "Random", icon: <ShuffleIcon />, index: 7,index2:7 },
     { text: "Result", icon: <AssignmentTurnedInIcon />, index: 10,index2:10 },
+    { text: "Setting", icon: <Settings />, index: 11,index2:11 },
     { text: "Logout", icon: <ExitToApp />, index: 8, index2 : 8 }
   ];
 

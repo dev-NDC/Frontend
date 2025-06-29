@@ -5,6 +5,7 @@ import {
 import SignupContext from "../../../../Context/ClientSide/SignUp/SignupContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+const API_URL = process.env.REACT_APP_API_URL;
 
 function CompanyInfo() {
     const {
@@ -78,8 +79,9 @@ function CompanyInfo() {
         if (!usdotLookup.trim()) return;
         setLoading(true);
         try {
-            const response = await axios.get(`https://data.transportation.gov/resource/az4n-8mr2.json?dot_number=${usdotLookup}`);
-            const data = response.data[0];
+            // Call your backend endpoint (POST, send dot_number in body)
+            const response = await axios.post(`${API_URL}/random/getValueFromUSDOT`, { dot_number: usdotLookup });
+            const data = response.data.data;
             if (data) {
                 setCompanyInfoData(prev => ({
                     ...prev,
@@ -93,14 +95,14 @@ function CompanyInfo() {
                     city: data.phy_city || "",
                     state: data.phy_state || "",
                     zip: data.phy_zip || "",
-                    suite: "", // optional
+                    suite: "",
                 }));
             } else {
                 toast.error("No company found for this USDOT number.");
             }
         } catch (error) {
             console.error("USDOT API error:", error);
-            alert("Error fetching company data.");
+            toast.error("Error fetching company data.");
         } finally {
             setLoading(false);
         }

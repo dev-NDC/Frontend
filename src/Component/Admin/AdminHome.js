@@ -16,12 +16,14 @@ import ViewAdmin from "./Admin/ViewAdmin";
 import Random from "./Random/Random"
 import CreateNewOrder from "./CreateNewOrder/CreateNewOrder";
 import Result from "./Result/Result";
+import Setting from "./Setting/Setting"
 
 import AdminContext from "../../Context/Admin/AdminContext";
 import CustomerState from "../../Context/Admin/Customer/CustomerState"
 import AgencyState from "../../Context/Admin/Agency/AgencyState";
 import AdminState from "../../Context/Admin/Admin/AdminState";
 import RandomState from "../../Context/Admin/Random/RandomState";
+import SettingState from "../../Context/Admin/Setting/SettingState";
 import CreateNewAdmin from "../../Context/Admin/CreateNewOrder/CreateNewOrderState";
 
 const API_URL = process.env.REACT_APP_API_URL
@@ -79,6 +81,8 @@ function AdminHome() {
                 return <CreateNewAdmin><CreateNewOrder /></CreateNewAdmin>;
             case 10:
                 return <Result/>
+            case 11:
+                return <SettingState><Setting/></SettingState>
             default:    
                 return <Welcome />; // Default component
         }
