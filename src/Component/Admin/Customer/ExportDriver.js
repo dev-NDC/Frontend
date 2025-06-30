@@ -25,8 +25,8 @@ function ExportDriver() {
     const handleExport = async () => {
         try {
             const response = await axios.get(`${API_URL}/admin/exportDriver`);
-            console.log(response.data);
             const drivers = response.data.data;
+            console.log(drivers)
             setDriverData(drivers);
             setOpen(true);
         } catch (error) {
@@ -36,14 +36,16 @@ function ExportDriver() {
 
     const handleDownload = () => {
         const excelData = driverData.map(driver => ({
-            "Driver Name": driver["Driver Name"],
-            "DOB": driver["DOB"],
-            "License Number": driver["License Number"],
-            "Company Name": driver["Company Name"],
-            "Company Email": driver["Company Email"],
-            "Date Added": new Date(driver["Date Added"]).toLocaleDateString() || "N/A",
-            "Date Deleted": new Date(driver["Date Deleted"]).toLocaleDateString() || "N/A" || "Not Deleted",
-            "Agency Name": driver["Agency Name"],
+            "Driver Name": `${driver.first_name} ${driver.last_name}`,
+            "DOB": driver.dob,
+            "License Number": driver.government_id,
+            "Company Name": driver.companyName,
+            "Company Email": driver.companyEmail,
+            "Date Added": new Date(driver.creationDate).toLocaleDateString("en-US") || "N/A",
+            "Date Deleted": driver?.deletionDate
+                ? new Date(driver.deletionDate).toLocaleDateString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit' })
+                : "Not Deleted",
+            "Agency Name": driver.agencyName,
         }));
 
 
@@ -59,17 +61,17 @@ function ExportDriver() {
     return (
         <div>
             <Button variant="contained" color="primary" onClick={handleExport} style={{
-                    backgroundColor: "#002D72",         // Navy Blue
-                    color: "#fff",                      // White text
-                    borderRadius: "6px",
-                    padding: "10px 20px",
-                    fontWeight: "bold",
-                    textTransform: "none",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",                         // spacing between icon and text
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-                }}>
+                backgroundColor: "#002D72",         // Navy Blue
+                color: "#fff",                      // White text
+                borderRadius: "6px",
+                padding: "10px 20px",
+                fontWeight: "bold",
+                textTransform: "none",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",                         // spacing between icon and text
+                boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+            }}>
                 Export Driver
             </Button>
 
@@ -95,14 +97,17 @@ function ExportDriver() {
                             <TableBody>
                                 {driverData.map((driver, index) => (
                                     <TableRow key={index}>
-                                        <TableCell>{driver["Driver Name"]}</TableCell>
-                                        <TableCell>{driver["DOB"]}</TableCell>
-                                        <TableCell>{driver["License Number"]}</TableCell>
-                                        <TableCell>{driver["Company Name"]}</TableCell>
-                                        <TableCell>{driver["Company Email"]}</TableCell>
-                                        <TableCell>{new Date(driver["Date Added"]).toLocaleDateString() || "N/A"}</TableCell>
-                                        <TableCell>{new Date(driver["Date Deleted"]).toLocaleDateString() || "N/A" || "Not Deleted"}</TableCell>
-                                        <TableCell>{driver["Agency Name"]}</TableCell>
+                                        <TableCell>{driver.first_name} {driver.last_name}</TableCell>
+                                        <TableCell>{driver.dob}</TableCell>
+                                        <TableCell>{driver.government_id}</TableCell>
+                                        <TableCell>{driver.companyName}</TableCell>
+                                        <TableCell>{driver.companyEmail}</TableCell>
+                                        <TableCell>{driver.creationDate ? new Date(driver.creationDate).toLocaleDateString("en-US") : "N/A"}</TableCell>
+                                        <TableCell>{driver?.deletionDate
+                                            ? new Date(driver.deletionDate).toLocaleDateString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit' })
+                                            : "Not Deleted"}
+                                        </TableCell>
+                                        <TableCell>{driver.agencyName}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

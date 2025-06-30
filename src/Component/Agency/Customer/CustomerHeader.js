@@ -19,17 +19,14 @@ import Membership from "./Membership"
 import RandomDriver from "./Random/RandomDriver"
 
 import DriverState from "../../../Context/Agency/Customer/Driver/DriverState";
-import CertificateState from "../../../Context/Agency/Customer/Certificate/CertificateState";
-import InvoiceState from "../../../Context/Agency/Customer/Invoice/InvoiceState";
-
 import CustomerContext from "../../../Context/Agency/Customer/CustomerContext";
 
 const tabData = [
   { label: "Company Info", icon: <BusinessIcon />, component: <CompanyDetails /> },
   { label: "Driver", icon: <DirectionsCarIcon />, component: <DriverState><Driver /></DriverState> },
   { label: "Membership", icon: <CardMembershipIcon />, component: <Membership /> },
-  { label: "Certificate", icon: <WorkspacePremiumIcon />, component: <CertificateState><Certificate /></CertificateState> },
-  { label: "Invoice", icon: <ReceiptIcon />, component: <InvoiceState> <Invoice /> </InvoiceState> },
+  { label: "Certificate", icon: <WorkspacePremiumIcon />, component: <Certificate />},
+  { label: "Invoice", icon: <ReceiptIcon />, component: <Invoice />  },
   { label: "Result", icon: <AssessmentIcon />, component: <Result /> },
   { label: "Payment Info", icon: <PaymentIcon />, component: <PaymentInformation /> },
   { label: "Random Driver", icon: <Shuffle />, component: <RandomDriver /> },

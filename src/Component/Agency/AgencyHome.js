@@ -11,10 +11,13 @@ import Welcome from "./Welcome";
 import ViewCustomer from "./Customer/ViewCustomer";
 import ViewCustomerDetails from "./Customer/ViewUserDetails";
 import CreateNewOrder from "./CreateNewOrder/CreateNewOrder";
+import Result from "./Result/Result"
+import Random from "./Random/Random"
 
 import AdminContext from "../../Context/Agency/AgencyContext";
 import CustomerState from "../../Context/Agency/Customer/CustomerState"
 import CreateNewOrderState from "../../Context/Agency/CreateNewOrder/CreateNewOrderState";
+import RandomState from "../../Context/Agency/Random/RandomState"
 
 const API_URL = process.env.REACT_APP_API_URL;
 const drawerWidth = 240;
@@ -61,6 +64,10 @@ function AgencyHome() {
                 return  <CustomerState><ViewCustomerDetails /></CustomerState> 
             case 8: 
                 return <CreateNewOrderState><CreateNewOrder/></CreateNewOrderState>
+            case 10:   
+                return <Result/>
+            case 11:
+                return <RandomState><Random/></RandomState>
             default:
                 return <Welcome />; // Default component
         }

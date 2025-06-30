@@ -5,7 +5,7 @@ import {
   Paper, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Button,
   useMediaQuery
 } from "@mui/material";
-import { MoreVert, Visibility,  } from "@mui/icons-material";
+import { MoreVert, Visibility, } from "@mui/icons-material";
 import HomeContext from "../../../Context/ClientSide/AfterLogin/Home/HomeContext";
 
 const formatDate = (dateStr) => {
@@ -86,9 +86,9 @@ function Membership() {
                   fontWeight: 'bold',
                   color:
                     membershipInfo.planStatus === "Active" ? "green" :
-                    membershipInfo.planStatus === "Pending" ? "orange" :
-                    membershipInfo.planStatus === "Inactive" ? "red" :
-                    "#003366"
+                      membershipInfo.planStatus === "Pending" ? "orange" :
+                        membershipInfo.planStatus === "Inactive" ? "red" :
+                          "#003366"
                 }}
               >
                 {membershipInfo.planStatus || "N/A"}
@@ -223,16 +223,11 @@ function Membership() {
               ? new Date(selectedCertificate.expirationDate).toLocaleDateString("en-US")
               : "N/A"}
           </Typography>
-          {selectedCertificate?.certificateFile?.data && (
-            <img
-              src={URL.createObjectURL(
-                new Blob(
-                  [new Uint8Array(selectedCertificate.certificateFile.data)],
-                  { type: selectedCertificate.mimeType || "image/png" }
-                )
-              )}
-              alt="Certificate"
-              style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
+          {selectedCertificate?.certificateFile && (
+            <iframe
+              src={`data:${selectedCertificate.mimeType || "application/pdf"};base64,${selectedCertificate.certificateFile}`}
+              title="Certificate PDF"
+              style={{ width: "100%", height: "500px", marginTop: "1rem", borderRadius: 8 }}
             />
           )}
         </DialogContent>

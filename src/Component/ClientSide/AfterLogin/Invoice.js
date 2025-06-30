@@ -17,7 +17,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Box,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import HomeContext from "../../../Context/ClientSide/AfterLogin/Home/HomeContext";
@@ -120,8 +119,8 @@ function Invoice() {
                             invoice.status === "Paid"
                               ? "green"
                               : invoice.status === "Pending"
-                              ? "red"
-                              : "orange",
+                                ? "red"
+                                : "orange",
                         }}
                       >
                         {invoice.status}
@@ -175,23 +174,22 @@ function Invoice() {
               <strong>Status:</strong> {selectedInvoice?.status}
             </Typography>
 
-            {selectedInvoice?.file?.data && (
-              <Box mt={2}>
-                <Typography gutterBottom>
-                  <strong>Attached File Preview:</strong>
-                </Typography>
-                <iframe
-                  src={URL.createObjectURL(
-                    new Blob([new Uint8Array(selectedInvoice.file.data)], {
-                      type: selectedInvoice.mimeType,
-                    })
-                  )}
-                  title="Invoice File"
-                  width="100%"
-                  height="400px"
-                  style={{ borderRadius: 8, border: "1px solid #ccc" }}
-                />
-              </Box>
+            {selectedInvoice?.mimeType?.startsWith("image/") ? (
+              <img
+                src={`data:${selectedInvoice.mimeType};base64,${selectedInvoice.file?.data}`}
+                alt="Invoice"
+                style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
+              />
+            ) : selectedInvoice?.mimeType === "application/pdf" ? (
+              <iframe
+                src={`data:${selectedInvoice.mimeType};base64,${selectedInvoice.file}`}
+                title="PDF Preview"
+                style={{ width: "100%", height: "500px", marginTop: "1rem", borderRadius: 8 }}
+              />
+            ) : (
+              <Typography sx={{ mt: 2 }}>
+                <em>Preview not available for this file type. Please download to view.</em>
+              </Typography>
             )}
           </DialogContent>
           <DialogActions>

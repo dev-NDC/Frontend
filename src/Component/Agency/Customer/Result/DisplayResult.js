@@ -4,8 +4,6 @@ import {
     IconButton, Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Typography, CircularProgress
 } from "@mui/material";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import { Visibility, Download } from "@mui/icons-material";
 import CustomerContext from "../../../../Context/Agency/Customer/CustomerContext";
 
@@ -34,71 +32,15 @@ function DisplayResult() {
         setSelectedResult(null);
     };
 
-    const handleDownload = async (result) => {
-        const container = document.createElement("div");
-        container.style.position = "fixed";
-        container.style.top = "-9999px";
-        container.style.width = "600px";
-        container.style.padding = "20px";
-        container.style.backgroundColor = "white";
-        container.innerHTML = `
-        <h2>Test Result</h2>
-        <p><strong>Name:</strong> ${result.driverName}</p>
-        <p><strong>License Number:</strong> ${result.licenseNumber}</p>
-        <p><strong>Date:</strong> ${new Date(result.date).toLocaleDateString("en-US")}</p>
-        <p><strong>Test Type:</strong> ${result.testType}</p>
-        <p><strong>Status:</strong> ${result.status}</p>
-        <p><strong>Case Number:</strong> ${result.caseNumber}</p>
-        <img id="resultImage" src="data:${result.mimeType};base64,${result.file}" 
-             style="width:100%; margin-top:10px; border-radius:10px;" />
-    `;
+    const handleDownload = (result) => {
+        if (!result?.file || !result?.mimeType) return;
 
-       document.body.appendChild(container);
-
-// Use html2canvas to convert the container to an image
-const canvas = await html2canvas(container, {
-  scale: 2, // increase for better resolution (2 is a good balance)
-  useCORS: true // allow images from other origins if needed
-});
-
-const imgData = canvas.toDataURL("image/png");
-
-const pdf = new jsPDF({
-  orientation: "portrait",
-  unit: "mm",
-  format: "a4"
-});
-
-const pageWidth = pdf.internal.pageSize.getWidth();
-const pageHeight = pdf.internal.pageSize.getHeight();
-
-// Calculate image dimensions to fit the page
-const imgWidth = pageWidth;
-const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-let position = 0;
-
-// If content height is more than one page, add pages
-if (imgHeight <= pageHeight) {
-  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-} else {
-  // Split content into multiple pages
-  let remainingHeight = imgHeight;
-
-  while (remainingHeight > 0) {
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-    remainingHeight -= pageHeight;
-    if (remainingHeight > 0) {
-      pdf.addPage();
-      position = 0;
-    }
-  }
-}
-
-pdf.save(`${result.driverName || "result"}.pdf`);
-
-document.body.removeChild(container);
-
+        const link = document.createElement("a");
+        link.href = `data:${result.mimeType};base64,${result.file}`;
+        link.download = result.resultNumber || "result.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     const getStatusColor = (status) => {
@@ -173,12 +115,22 @@ document.body.removeChild(container);
                     </Typography>
                     <Typography gutterBottom><strong>Case Number:</strong> {selectedResult?.caseNumber}</Typography>
 
-                    {selectedResult?.file && (
+                    {selectedResult?.mimeType?.startsWith("image/") ? (
                         <img
                             src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
-                            alt="Result"
+                            alt="Invoice"
                             style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
                         />
+                    ) : selectedResult?.mimeType === "application/pdf" ? (
+                        <iframe
+                            src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
+                            title="PDF Preview"
+                            style={{ width: "100%", height: "500px", marginTop: "1rem", borderRadius: 8 }}
+                        />
+                    ) : (
+                        <Typography sx={{ mt: 2 }}>
+                            <em>Preview not available for this file type. Please download to view.</em>
+                        </Typography>
                     )}
                 </DialogContent>
                 <DialogActions>

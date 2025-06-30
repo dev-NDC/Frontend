@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Divider, Typography, Box, AppBar, Toolbar, useMediaQuery } from "@mui/material";
-import { Home, Business,  ExitToApp, Menu } from "@mui/icons-material";
+import { Home, Business,  ExitToApp, Menu, Shuffle } from "@mui/icons-material";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 import { useTheme } from "@mui/material/styles";
 import AdminContext from "../../Context/Agency/AgencyContext";
@@ -36,6 +37,8 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
     { text: "Home", icon: <Home />, index: 1,index2:1 },
     { text: "Customer", icon: <Business />, index: 2,index2 : 5 },
     { text: "Create New Order", icon: <NoteAddIcon />, index: 8,index2 : 9 },
+    { text: "Result", icon: <AssignmentTurnedInIcon />, index: 10,index2 : 10 },
+    { text: "Random", icon: <Shuffle />, index: 11,index2 : 11 },
     { text: "Logout", icon: <ExitToApp />, index: 4, index2 : 4 }
   ];
 

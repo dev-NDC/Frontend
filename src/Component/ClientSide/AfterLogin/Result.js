@@ -116,28 +116,28 @@ function Result() {
                         </Typography>
                         <Typography gutterBottom><strong>Case Number:</strong> {selectedResult?.caseNumber}</Typography>
                         {selectedResult?.file && (
-    <>
-        {selectedResult.mimeType === "application/pdf" ? (
-            <iframe
-                title="PDF Preview"
-                src={`data:application/pdf;base64,${selectedResult.file}`}
-                style={{
-                    width: "100%",
-                    height: "500px",
-                    marginTop: "1rem",
-                    border: "1px solid #ccc",
-                    borderRadius: 8
-                }}
-            />
-        ) : (
-            <img
-                src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
-                alt="Result"
-                style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
-            />
-        )}
-    </>
-)}
+                            <>
+                                {selectedResult.mimeType === "application/pdf" ? (
+                                    <iframe
+                                        title="PDF Preview"
+                                        src={`data:application/pdf;base64,${selectedResult.file}`}
+                                        style={{
+                                            width: "100%",
+                                            height: "500px",
+                                            marginTop: "1rem",
+                                            border: "1px solid #ccc",
+                                            borderRadius: 8
+                                        }}
+                                    />
+                                ) : (
+                                    <img
+                                        src={`data:${selectedResult.mimeType};base64,${selectedResult.file}`}
+                                        alt="Result"
+                                        style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
+                                    />
+                                )}
+                            </>
+                        )}
 
                     </DialogContent>
                     <DialogActions>
