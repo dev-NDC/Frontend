@@ -24,7 +24,7 @@ function Landing() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         style={{ marginTop: "90px" }}
       >
-        <div >
+        <div>
           {/* === Background Image Hero Section === */}
           <div
             style={{
@@ -32,7 +32,7 @@ function Landing() {
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-              padding: "80px 0px",
+              padding: "200px 0px", // 🔼 Increased height
               color: "white",
             }}
           >
@@ -50,11 +50,7 @@ function Landing() {
                   }}
                 >
                   <p
-                    style={{
-                      color: "blue",
-                      fontSize: "20px",
-                      fontWeight: 600,
-                    }}
+                    style={{ color: "blue", fontSize: "20px", fontWeight: 600 }}
                   >
                     #1 in Workplace Safety
                   </p>
@@ -66,8 +62,8 @@ function Landing() {
                     }}
                   >
                     Comprehensive{" "}
-                    <span style={{ color: "red" }}>DOT Drug </span>
-                    Testing Services
+                    <span style={{ color: "red" }}>DOT Drug </span> Testing
+                    Services
                   </p>
                   <p>
                     Ensure a safer workplace with SafetyChecks through precise
@@ -97,6 +93,7 @@ function Landing() {
               backgroundColor: "rgb(54, 107, 191)",
               marginTop: "30px",
               padding: "30px 0px",
+              borderRadius: "20px",
             }}
           >
             <div className="container">
@@ -125,20 +122,6 @@ function Landing() {
                 safety experts
               </p>
             </div>
-          </div>
-
-          {/* === Occupational Screening Section === */}
-          <div className="container" style={{ marginTop: "30px" }}>
-            <p
-              className="text-center"
-              style={{ fontSize: "36px", fontWeight: 900, marginBottom: "0px" }}
-            >
-              Comprehensive <span style={{ color: "blue" }}>Occupational </span>
-              Screening Services
-            </p>
-            <p className="text-center">
-              <b>Ensuring Safety and Compliance for Your Workforce</b>
-            </p>
           </div>
 
           {/* === Services Cards (Old) === */}
@@ -176,100 +159,102 @@ function Landing() {
             </Grid>
           </Container>
 
-          {/* === DOT Consortium Programs Cards (New Custom Section) === */}
+          {/* === Custom Program Cards Section === */}
           <Container style={{ marginTop: "60px", marginBottom: "50px" }}>
-  <Typography
-    variant="h4"
-    align="center"
-    fontWeight="bold"
-    style={{ marginBottom: "0px", color: "#0a0a42" }}
-  >
-    Labworks USA
-  </Typography>
-  <Typography
-    variant="h5"
-    align="center"
-    fontWeight="600"
-    style={{ marginBottom: "30px" }}
-  >
-    DOT Consortium Programs
-  </Typography>
+            <Typography
+              variant="h4"
+              align="center"
+              fontWeight="bold"
+              style={{ marginBottom: "0px", color: "#0a0a42" }}
+            >
+              Nationwide Drug Center 
+            </Typography>
+            <Typography
+              variant="h5"
+              align="center"
+              fontWeight="600"
+              style={{ marginBottom: "30px" }}
+            >
+              DOT Consortium Programs
+            </Typography>
 
-  <Grid container spacing={3}>
-    {programs.map((program, index) => (
-      <Grid item xs={12} md={6} key={index}>
-        <motion.div
-          whileHover={{
-            scale: 1.03,
-            boxShadow: "0px 12px 24px rgba(0,0,0,0.15)",
-          }}
-          transition={{ type: "spring", stiffness: 300 }}
-          style={{ height: "100%" }}
-        >
-          <Card
-            elevation={3}
-            style={{
-              height: "100%",
-              minHeight: "320px", // Fixed height for consistency
-              padding: "20px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              borderRadius: "12px",
-            }}
-          >
-            <div style={{ display: "flex", gap: "15px" }}>
-              <div style={{ fontSize: "40px", color: "#1976d2" }}>
-                {program.icon}
-              </div>
-              <div>
-                <Typography
-                  variant="h6"
-                  fontWeight="bold"
-                  gutterBottom
-                  style={{ color: "#0a0a42" }}
-                >
-                  {program.title}
-                </Typography>
-                <ul style={{ paddingLeft: "20px", margin: 0 }}>
-                  {program.points.map((point, i) => (
-                    <li
-                      key={i}
-                      style={{ marginBottom: "4px", fontSize: "0.95rem" }}
+            <Grid container spacing={3}>
+              {programs.map((program, index) => (
+                <Grid item xs={12} md={6} key={index}>
+                  <motion.div
+                    whileHover={{
+                      scale: 1.03,
+                      boxShadow: "0px 12px 24px rgba(0,0,0,0.15)",
+                    }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                    style={{ height: "100%" }}
+                  >
+                    <Card
+                      elevation={3}
+                      style={{
+                        height: "100%",
+                        minHeight: "320px",
+                        padding: "20px",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        borderRadius: "12px",
+                      }}
                     >
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            {program.button && (
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "#0a0a42",
-                  color: "#fff",
-                  marginTop: "16px",
-                  alignSelf: "flex-start",
-                }}
-              >
-                {program.button}
-              </Button>
-            )}
-          </Card>
-        </motion.div>
-      </Grid>
-    ))}
-
-    {/* Leave a blank card for spacing (optional) */}
-    {programs.length % 2 !== 0 && (
-      <Grid item xs={12} md={6}>
-        <div style={{ height: "100%", minHeight: "320px" }} />
-      </Grid>
-    )}
-  </Grid>
-</Container>
-
+                      <div style={{ display: "flex", gap: "15px" }}>
+                        <div style={{ fontSize: "40px", color: "#1976d2" }}>
+                          {program.icon}
+                        </div>
+                        <div>
+                          <Typography
+                            variant="h6"
+                            fontWeight="bold"
+                            gutterBottom
+                            style={{ color: "#0a0a42" }}
+                          >
+                            {program.title}
+                          </Typography>
+                          <ul style={{ paddingLeft: "20px", margin: 0 }}>
+                            {program.points.map((point, i) => (
+                              <li
+                                key={i}
+                                style={{
+                                  marginBottom: "4px",
+                                  fontSize: "0.95rem",
+                                }}
+                              >
+                                {point}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                      {program.button && program.path && (
+                        <Button
+                          component={Link}
+                          to={program.path}
+                          variant="contained"
+                          style={{
+                            backgroundColor: "#0a0a42",
+                            color: "#fff",
+                            marginTop: "16px",
+                            alignSelf: "flex-start",
+                          }}
+                        >
+                          {program.button}
+                        </Button>
+                      )}
+                    </Card>
+                  </motion.div>
+                </Grid>
+              ))}
+              {programs.length % 2 !== 0 && (
+                <Grid item xs={12} md={6}>
+                  <div style={{ height: "100%", minHeight: "320px" }} />
+                </Grid>
+              )}
+            </Grid>
+          </Container>
         </div>
       </motion.div>
     </>
@@ -278,29 +263,29 @@ function Landing() {
 
 export default Landing;
 
-// === Existing Image-Based Services ===
+// === Services Data ===
 const services = [
   {
     title: "Occupational Services",
     image: "./Images/BeforeLogin/Landing/occupational services.png",
     description:
-      "Comprehensive occupational services focus on maintaining workforce health and ensuring compliance with safety regulations. These services include regular health assessments, wellness programs, injury prevention strategies, and training on safety practices.",
+      "Comprehensive occupational services focus on maintaining workforce health and ensuring compliance with safety regulations.",
   },
   {
     title: "Pre-Employment Screening",
     image: "./Images/BeforeLogin/Landing/Pre-Employment Screening.png",
     description:
-      "Streamlining hiring through thorough pre-employment screening is essential for identifying the right candidates. This includes background checks, skill assessments, and health screenings to verify qualifications.",
+      "Thorough screening helps identify qualified candidates through background checks and assessments.",
   },
   {
     title: "Drug Testing",
     image: "./Images/BeforeLogin/Landing/Drug Testing.png",
     description:
-      "Our efficient drug testing services meet DOT standards and your company’s needs. We offer pre-employment, random, and post-incident screenings with fast turnaround and secure reporting.",
+      "DOT-compliant testing for pre-employment, random, and post-incident needs with secure reporting.",
   },
 ];
 
-// === New Custom Program Cards ===
+// === Programs Data ===
 const programs = [
   {
     title: "Drug & Alcohol Testing",
@@ -314,6 +299,7 @@ const programs = [
       "Return to duty / SAP follow up program assistance",
     ],
     button: "Sign Up Now!",
+    path: "/pricing",
   },
   {
     title: "FMCSA Clearinghouse",
@@ -344,5 +330,6 @@ const programs = [
       "DOT Approved Supervisor Training Available to non-members",
     ],
     button: "Non-Members Purchase",
+    // path: "/training-purchase",
   },
 ];
