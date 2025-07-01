@@ -12,13 +12,14 @@ import {
   Box,
   AppBar,
   Toolbar,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import {
   Home,
   Business,
   ExitToApp,
-  Menu
+  Menu,
+  Shuffle
 } from "@mui/icons-material";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
