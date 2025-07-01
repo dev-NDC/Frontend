@@ -19,7 +19,7 @@ function AddRandom() {
 
   const years = ["2023", "2024", "2025", "2026", "2027", "2028", "2029"];
   const quarters = ["Q1", "Q2", "Q3", "Q4"];
-  const testTypes = ["Random", "Pre-Employment", "Post-Accident", "Return-to-Duty"];
+  const testTypes = [ "BAT","DOT PANEL"];
 
   const handleCompanyChange = (e) => {
     const selectedId = e.target.value;

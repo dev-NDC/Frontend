@@ -1,4 +1,3 @@
-// src/components/Navbar/Navbar.js
 import React, { useContext } from "react";
 import {
   Drawer,
@@ -22,9 +21,9 @@ import {
   Shuffle
 } from "@mui/icons-material";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+
 import { useTheme } from "@mui/material/styles";
-import AdminContext from "../../Context/Agency/AgencyContext"; // Adjust if needed
+import AdminContext from "../../Context/Agency/AgencyContext";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
@@ -46,13 +45,6 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
       navigate("/");
     } else {
       setCurrentActiveButton(index);
-
-      // Navigation logic
-      if (index === 1) navigate("/agency/home");
-      else if (index === 2) navigate("/agency/customers");
-      else if (index === 8) navigate("/agency/create-order");
-      else if (index === 10) navigate("/agency/result");
-
       if (isMobile) {
         setIsMobileOpen(false);
       }
@@ -71,34 +63,30 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
   const drawerContent = (
     <Box sx={{ width: drawerWidth, backgroundColor: "#0a0a42", color: "white", height: "100vh", p: 2 }}>
       <Typography variant="h6" sx={{ textAlign: "center", mb: 2 }}>
-        <img src="/Images/BeforeLogin/logo.png" alt="Logo" style={{ width: "100px" }} />
+        <img src="./Images/BeforeLogin/logo.png" alt="Logo" style={{ width: "100px" }} />
       </Typography>
-      <Typography variant="caption" sx={{ textAlign: "center", display: "block", mb: 2 }}>
-        DASHBOARD
-      </Typography>
+      <Typography variant="caption" sx={{ textAlign: "center", display: "block", mb: 2 }}>DASHBOARD</Typography>
       <Divider sx={{ backgroundColor: "white", mb: 2 }} />
       <List>
         {menuItems.map((item) => (
           <ListItem
-            component="div"
-            key={item.index}
-            onClick={() => handleItemClick(item.index)}
-            sx={{
-              borderRadius: 2,
-              mb: 1,
-              cursor: "pointer",
-              backgroundColor: currentActiveButton === item.index || currentActiveButton === item.index2 ? "white" : "transparent",
-              color: currentActiveButton === item.index || currentActiveButton === item.index2 ? "black" : "white",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.2)"
-              }
-            }}
-          >
-            <ListItemIcon sx={{ color: currentActiveButton === item.index || currentActiveButton === item.index2 ? "black" : "white" }}>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText primary={item.text} sx={{ fontWeight: 900 }} />
-          </ListItem>
+          component="div" // Instead of button prop
+          key={item.index}
+          onClick={() => handleItemClick(item.index)}
+          sx={{
+            borderRadius: 2,
+            mb: 1,
+            cursor: "pointer",
+            backgroundColor: currentActiveButton === item.index || currentActiveButton === item.index2 ? "white" : "transparent",
+            color: currentActiveButton === item.index || currentActiveButton === item.index2 ? "black" : "white",
+            "&:hover": currentActiveButton === item.index ? { backgroundColor: "white" } : { backgroundColor: "rgba(255, 255, 255, 0.2)" }
+          }}
+        >
+          <ListItemIcon sx={{ color: currentActiveButton === item.index  || currentActiveButton === item.index2? "black" : "white" }}>
+            {item.icon}
+          </ListItemIcon>
+          <ListItemText primary={item.text} sx={{ fontWeight: 900 }} />
+        </ListItem>
         ))}
       </List>
     </Box>
@@ -109,11 +97,11 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
       {isMobile && (
         <AppBar position="fixed" sx={{ backgroundColor: "#0a0a42", zIndex: 1400 }}>
           <Toolbar>
-            <IconButton color="inherit" onClick={handleDrawerToggle}>
+            <IconButton color="inherit" aria-label="toggle drawer" onClick={handleDrawerToggle}>
               <Menu />
             </IconButton>
             <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
-              <img src="/Images/BeforeLogin/logo.png" alt="Logo" style={{ width: "100px" }} />
+              <img src="./Images/BeforeLogin/logo.png" alt="Logo" style={{ width: "100px" }} />
             </Box>
           </Toolbar>
         </AppBar>
