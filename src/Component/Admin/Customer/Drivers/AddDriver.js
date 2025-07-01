@@ -6,7 +6,6 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Typography
 } from "@mui/material";
 
 import DriverContext from "../../../../Context/Admin/Customer/Driver/DriverContext";
@@ -91,16 +90,16 @@ function AddDriver() {
                         name="license"
                         onChange={handleChange}
                     />
-                    <Typography variant="subtitle2" style={{ marginTop: "10px" }}>
-                        Date of Birth (DOB)
-                    </Typography>
+
                     <TextField
                         fullWidth
-                        margin="dense"
+                        required
                         type="date"
+                        margin="dense"
+                        InputLabelProps={{ shrink: true }}
+                        label="DOB"
                         name="dob"
                         onChange={handleChange}
-                        InputLabelProps={{ shrink: true }}
                     />
                     <TextField
                         fullWidth

@@ -17,7 +17,6 @@ import Random from "./Random/Random"
 import AdminContext from "../../Context/Agency/AgencyContext";
 import CustomerState from "../../Context/Agency/Customer/CustomerState"
 import CreateNewOrderState from "../../Context/Agency/CreateNewOrder/CreateNewOrderState";
-import RandomState from "../../Context/Agency/Random/RandomState"
 
 const API_URL = process.env.REACT_APP_API_URL;
 const drawerWidth = 240;
@@ -67,7 +66,7 @@ function AgencyHome() {
             case 10:   
                 return <Result/>
             case 11:
-                return <RandomState><Random/></RandomState>
+                return <Random/>
             default:
                 return <Welcome />; // Default component
         }
