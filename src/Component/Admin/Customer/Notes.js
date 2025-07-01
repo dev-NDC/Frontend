@@ -158,6 +158,36 @@ const Notes = () => {
                   </Box>
                 ) : (
                   <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                      <Typography
+                        variant="caption"
+                        color="textSecondary"
+                        sx={{ fontSize: "0.8rem" }}
+                      >
+                        By: <strong>{note.createdByName || "Staff Member"}</strong><br />
+                        {new Date(note.timestamp).toLocaleString("en-US", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true
+                        })}
+                      </Typography>
+                      <Box>
+                        <Tooltip title="Edit">
+                          <IconButton color="primary" onClick={() => handleEdit(index)}>
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton color="error" onClick={() => handleDeleteNote(note._id)}>
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </Box>
+
                     <Typography
                       sx={{
                         fontSize: "1rem",
@@ -168,40 +198,6 @@ const Notes = () => {
                     >
                       {note.text}
                     </Typography>
-
-                    <Box sx={{ mt: 2 }}>
-                      <Typography
-                        variant="caption"
-                        color="textSecondary"
-                        sx={{ fontSize: "0.8rem" }}
-                      >
-                        Added on:{" "}
-                        {new Date(note.timestamp).toLocaleString("en-US", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true
-                        })}
-                        <br />
-                        By: <strong>{note.createdByName || "Staff Member"}</strong>
-                      </Typography>
-                    </Box>
-
-                    {/* Action buttons moved below the text */}
-                    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                      <Tooltip title="Edit">
-                        <IconButton color="primary" onClick={() => handleEdit(index)}>
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete">
-                        <IconButton color="error" onClick={() => handleDeleteNote(note._id)}>
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
                   </Box>
                 )}
               </Paper>
