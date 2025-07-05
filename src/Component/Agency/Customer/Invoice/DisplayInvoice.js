@@ -34,7 +34,6 @@ function DisplayInvoice() {
     };
 
     const handleDownload = (invoice) => {
-        console.log("Downloading invoice:", invoice);
         if (!invoice?.file || !invoice?.mimeType) return;
 
         const link = document.createElement("a");

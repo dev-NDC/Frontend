@@ -21,7 +21,6 @@ const CustomerState = (props) => {
                     setUserDetails(response.data.data);
                     setCurrentCompany(response?.data?.data?.companyInfoData?.companyName)
                     setLoading(false);
-                    console.log(response.data.data)
                 })
                 .catch((error) => {
                     console.error("Error fetching user details:", error);
@@ -37,7 +36,7 @@ const CustomerState = (props) => {
             .then(response => {
                 const data = response.data;
                 toast.success(data.message);
-                setUserDetails(data);
+                getSingleUserData(currentId)
             })
             .catch(error => {
                 toast.error("server error, Please try again later")
@@ -50,7 +49,7 @@ const CustomerState = (props) => {
             .then(response => {
                 const data = response.data;
                 toast.success(data.message);
-                setUserDetails(data);
+                getSingleUserData(currentId)
             })
             .catch(error => {
                 toast.error("server error, Please try again later")

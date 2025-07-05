@@ -25,9 +25,6 @@ const CertificateState = (props) => {
 
     const updateCertificate = async (currentId, certificateId, updatedData) => {
         try {
-            console.log("Updating certificate with ID:", certificateId);
-            console.log("Updated data:", updatedData);
-            console.log("Current ID:", currentId);
             await axios.post(`${API_URL}/admin/editCertificate`, {
                 currentId,
                 certificateId,

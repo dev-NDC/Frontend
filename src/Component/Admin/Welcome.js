@@ -63,6 +63,8 @@ const Welcome = () => {
 
   const [userData, setUserData] = useState([]);
   const [testScheduleData, setTestScheduleData] = useState([]);
+  const [websiteVisits, setWebsiteVisits] = useState([]);
+
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -102,6 +104,24 @@ const Welcome = () => {
       }
     };
 
+    const fetchWebsiteVisits = async () => {
+      try {
+        const token = Cookies.get("token");
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const res = await axios.get(`${API_URL}/admin/getWebsiteVisitsLast6Months`);
+        // Format: name (month), count
+        const formatted = res.data.data.map(d => ({
+          name: d.name,
+          count: d.count
+        }));
+        setWebsiteVisits(formatted);
+      } catch (err) {
+        console.error("Failed to load website visits data:", err);
+      }
+    };
+
+
+    fetchWebsiteVisits();
     fetchCounts();
     fetchUserStats();
     fetchTestScheduleData();
@@ -177,15 +197,32 @@ const Welcome = () => {
               Website Views
             </Typography>
             <Typography variant="body2" sx={{ mb: 2 }}>
-              Last Campaign Performance
+              Visits over the last 6 months
             </Typography>
-            <Box mt={4} textAlign="center" fontSize={24}>
-              📊 Bar Chart
-            </Box>
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={websiteVisits}>
+                <XAxis dataKey="name" stroke="#fff" />
+                <YAxis stroke="#fff" allowDecimals={false} />
+                <Tooltip
+                  cursor={{ fill: "transparent" }}
+                  contentStyle={{
+                    backgroundColor: "#fff",
+                    borderRadius: 8,
+                    border: "none",
+                    boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+                    color: "#000",
+                  }}
+                  labelStyle={{ color: "#000", fontWeight: 600 }}
+                  itemStyle={{ color: "#2196f3" }}
+                />
+                <Bar dataKey="count" fill="#ffffff" barSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
             <Typography variant="caption" sx={{ mt: 4, display: "block" }}>
-              campaign sent 2 days ago
+              Updated {websiteVisits.length ? websiteVisits[websiteVisits.length - 1].name : "--"}
             </Typography>
           </ChartBox>
+
         </Grid>
 
         <Grid item xs={12} md={4}>

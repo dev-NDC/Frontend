@@ -39,7 +39,6 @@ function DisplayInvoice() {
   };
 
   const handleDownload = (invoice) => {
-    console.log("Downloading invoice:", invoice);
     if (!invoice?.file || !invoice?.mimeType) return;
 
     const link = document.createElement("a");
@@ -137,7 +136,7 @@ function DisplayInvoice() {
 
           {selectedInvoice?.mimeType?.startsWith("image/") ? (
             <img
-              src={`data:${selectedInvoice.mimeType};base64,${selectedInvoice.file?.data}`}
+              src={`data:${selectedInvoice.mimeType};base64,${selectedInvoice.file}`}
               alt="Invoice"
               style={{ width: "100%", marginTop: "1rem", borderRadius: 8 }}
             />

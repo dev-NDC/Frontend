@@ -124,9 +124,10 @@ function ActiveDriver() {
             <Dialog open={editOpen} onClose={() => setEditOpen(false)}>
                 <DialogTitle>Edit Driver</DialogTitle>
                 <DialogContent>
-                    <TextField fullWidth margin="dense" label="Name" name="name" value={editedDriver?.name || ""} onChange={handleEditChange} />
+                    <TextField fullWidth margin="dense" label="Name" name="first_name" value={editedDriver?.first_name || ""} onChange={handleEditChange} />
+                    <TextField fullWidth margin="dense" label="Name" name="last_name" value={editedDriver?.last_name || ""} onChange={handleEditChange} />
                     <TextField fullWidth margin="dense" label="Email" name="email" value={editedDriver?.email || ""} onChange={handleEditChange} />
-                    <TextField fullWidth margin="dense" label="License #" name="licenseNumber" value={editedDriver?.licenseNumber || ""} onChange={handleEditChange} />
+                    <TextField fullWidth margin="dense" label="License #" name="government_id" value={editedDriver?.government_id || ""} onChange={handleEditChange} />
                     <TextField fullWidth margin="dense" label="DOB" name="dob" value={editedDriver?.dob || ""} onChange={handleEditChange} />
                     <TextField fullWidth margin="dense" label="Phone No" name="phone" value={editedDriver?.phone || ""} onChange={handleEditChange} />
                 </DialogContent>

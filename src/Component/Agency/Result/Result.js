@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import { Visibility, Download } from "@mui/icons-material";
 import axios from "axios";
-
+import Cookies from "js-cookie";
 const API_URL = process.env.REACT_APP_API_URL;
 
 function DisplayResult() {
@@ -18,6 +18,8 @@ function DisplayResult() {
     useEffect(() => {
         const fetchResults = async () => {
             try {
+                const token = Cookies.get("token");
+                 axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
                 const res = await axios.get(`${API_URL}/agency/getAllResult`);
                 setResults(res.data.data || []);
             } catch (err) {

@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 const API_URL = process.env.REACT_APP_API_URL;
 
-const AdminState = (props) => {
+const AgencyState = (props) => {
     const [currentActiveButton, setCurrentActiveButton] = useState(1);
     const [AllUserData,setAllUserData] = useState([]);
     
@@ -24,6 +24,7 @@ const AdminState = (props) => {
             toast.error("Invalid access, Please login again");
         }
     }, []);
+    
     return (
         <AdminContext.Provider value={{currentActiveButton,AllUserData,setCurrentActiveButton}}>
             {props.children}
@@ -31,4 +32,4 @@ const AdminState = (props) => {
     )
 }
 
-export default AdminState;
+export default AgencyState;

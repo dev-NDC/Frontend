@@ -24,7 +24,6 @@ function ShowRandom() {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         const response = await axios.get(`${API_URL}/agency/fetchRandomData`);
         setRandomUserDetails(response.data.data);
-        console.log(response.data.data)
         setLoading(false);
       } catch {
         toast.error("Server error, Please try again later");

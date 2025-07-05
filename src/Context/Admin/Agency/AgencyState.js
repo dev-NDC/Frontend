@@ -64,7 +64,6 @@ const CustomerState = (props) => {
 
     //function to update company information in backend
     const updateAgencyInformation = async (data) => {
-        console.log(data)
         await axios.post(`${API_URL}/admin/updateAgencyData`, { data, currentId })
             .then(response => {
                 const data = response.data;

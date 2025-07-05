@@ -25,7 +25,6 @@ function ExportCompany() {
   const handleExport = async () => {
     try {
       const response = await axios.get(`${API_URL}/admin/exportCompany`);
-      console.log(response.data);
       const companies = response.data.data;
       setCompanyData(companies);
       setOpen(true);

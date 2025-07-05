@@ -26,7 +26,6 @@ function ExportDriver() {
         try {
             const response = await axios.get(`${API_URL}/admin/exportDriver`);
             const drivers = response.data.data;
-            console.log(drivers)
             setDriverData(drivers);
             setOpen(true);
         } catch (error) {

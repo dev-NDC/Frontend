@@ -13,14 +13,7 @@ import StoreIcon from "@mui/icons-material/Store";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import Result from "./Result/Result"
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -34,18 +27,6 @@ const GradientCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const ChartBox = styled(Box)(({ bgcolor }) => ({
-  borderRadius: 20,
-  padding: 24,
-  height: 300,
-  background: bgcolor,
-  color: "#fff",
-  boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
-  transition: "transform 0.3s ease",
-  "&:hover": {
-    transform: "translateY(-5px)",
-  },
-}));
 
 const Welcome = () => {
   const [counts, setCounts] = useState({
@@ -54,9 +35,6 @@ const Welcome = () => {
     totalDrivers: 0,
     totalAgencies: 0,
   });
-
-  const [userData, setUserData] = useState([]);
-  const [testScheduleData, setTestScheduleData] = useState([]);
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -70,35 +48,7 @@ const Welcome = () => {
       }
     };
 
-    const fetchUserStats = async () => {
-      try {
-        const token = Cookies.get("token");
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const res = await axios.get(`${API_URL}/agency/getUserCountsLast6Months`);
-        const formatted = res.data.data.map((d) => ({
-          name: `${d.month} ${d.year}`,
-          count: d.count,
-        }));
-        setUserData(formatted);
-      } catch (err) {
-        console.error("Failed to load user chart data:", err);
-      }
-    };
-
-    const fetchTestScheduleData = async () => {
-      try {
-        const token = Cookies.get("token");
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const res = await axios.get(`${API_URL}/agency/getMonthlyTestScheduleStats`);
-        setTestScheduleData(res.data);
-      } catch (err) {
-        console.error("Failed to load test schedule data:", err);
-      }
-    };
-
     fetchCounts();
-    fetchUserStats();
-    fetchTestScheduleData();
   }, []);
 
   const metrics = [
@@ -160,90 +110,7 @@ const Welcome = () => {
           ))}
         </Grid>
       </Box>
-
-      <Grid container spacing={4} sx={{ mt: 4 }}>
-        <Grid item xs={12} md={4}>
-          <ChartBox bgcolor="#2196f3">
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              Website Views
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 2 }}>
-              Last Campaign Performance
-            </Typography>
-            <Box mt={4} textAlign="center" fontSize={24}>
-              📊 Bar Chart
-            </Box>
-            <Typography variant="caption" sx={{ mt: 4, display: "block" }}>
-              campaign sent 2 days ago
-            </Typography>
-          </ChartBox>
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <ChartBox bgcolor="#4caf50">
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              New Users
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 2 }}>
-              New users over the last 6 months
-            </Typography>
-            <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={userData}>
-                <XAxis dataKey="name" stroke="#fff" />
-                <YAxis stroke="#fff" allowDecimals={false} />
-                <Tooltip
-                  cursor={{ fill: "transparent" }}
-                  contentStyle={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: 8,
-                    border: "none",
-                    boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
-                    color: "#000",
-                  }}
-                  labelStyle={{ color: "#000", fontWeight: 600 }}
-                  itemStyle={{ color: "#d32f2f" }}
-                />
-                <Bar dataKey="count" fill="#d32f2f" barSize={40} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartBox>
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <ChartBox bgcolor="#000000">
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              Test Scheduled
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 2 }}>
-              Random vs Other tests (Last 6 months)
-            </Typography>
-            <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={testScheduleData}>
-                <XAxis dataKey="name" stroke="#fff" />
-                <YAxis stroke="#fff" allowDecimals={false} />
-                <Tooltip
-                  cursor={{ fill: "transparent" }}
-                  contentStyle={{
-                    backgroundColor: "#fff",
-                    borderRadius: 8,
-                    border: "none",
-                    boxShadow: "none",
-                    color: "#000",
-                  }}
-                  labelStyle={{ color: "#000", fontWeight: 600 }}
-                  itemStyle={{ color: "#000" }}
-                  formatter={(value, name) => [
-                    `${value}`,
-                    name === "random" ? "Random" : "Other",
-                  ]}
-                />
-                <Bar dataKey="random" stackId="a" fill="#1976d2" />
-                <Bar dataKey="other" stackId="a" fill="#fbc02d" />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartBox>
-        </Grid>
-      </Grid>
+      <Result/>
     </Box>
   );
 };

@@ -164,7 +164,7 @@ const Notes = () => {
                         color="textSecondary"
                         sx={{ fontSize: "0.8rem" }}
                       >
-                        By: <strong>{note.createdByName || "Staff Member"}</strong><br />
+                        By: <strong>{note.addedBy || "Staff Member"}</strong><br />
                         {new Date(note.timestamp).toLocaleString("en-US", {
                           year: "numeric",
                           month: "2-digit",
