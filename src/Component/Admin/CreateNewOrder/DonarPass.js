@@ -1,41 +1,54 @@
-import React, { useState , useContext} from "react";
+import React, {  useContext } from "react";
 import {
-  Box,
-  Typography,
-  ToggleButton,
-  ToggleButtonGroup,
-  TextField,
+  Box, Typography, ToggleButton, ToggleButtonGroup, TextField
 } from "@mui/material";
 import CreateNewOrderContext from "../../../Context/Admin/CreateNewOrder/CreateNewOrderContext";
 
 function DonarPass() {
-    const {formData, setFormData,} = useContext(CreateNewOrderContext);
+  const { formData, setFormData } = useContext(CreateNewOrderContext);
 
-  const [showCCEmailInput, setShowCCEmailInput] = useState(false);
+  // If sendLink = true, always show email input, hide donor pass.
+  // If sendLink = false, show donor pass toggle. If donorPass is true, show ccEmail input.
 
+  // Email field state for "Send Scheduling Link"
+  const handleEmailChange = (event) => {
+    setFormData({ ...formData, email: event.target.value });
+  };
+
+  // For send scheduling link
   const handleSendLinkChange = (_, value) => {
     if (value !== null) {
-      setFormData({ ...formData, sendLink: value === "yes" });
+      setFormData({
+        ...formData,
+        sendLink: value === "yes",
+        donorPass: value === "yes" ? false : formData.donorPass,
+        email: "",
+        ccEmail: ""
+      });
     }
   };
 
+  // For donor pass toggle
   const handleDonorPassChange = (_, value) => {
     if (value !== null) {
-      const show = value === "yes";
-      setFormData({ ...formData, ccEmail: show ? formData.ccEmail : "" });
-      setShowCCEmailInput(show);
+      setFormData({
+        ...formData,
+        donorPass: value === "yes",
+        ccEmail: value === "yes" ? formData.ccEmail : ""
+      });
     }
   };
 
+  // For ccEmail field (Donor Pass)
   const handleCCEmailChange = (event) => {
     setFormData({ ...formData, ccEmail: event.target.value });
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 4, mb : 3 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 4, mb: 3 }}>
       {/* Send Scheduling Link */}
       <Box>
-        <Typography variant="subtitle1" sx={{ mb: 1 }}>
+        <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: "bold" }}>
           Send Scheduling Link
         </Typography>
         <ToggleButtonGroup
@@ -49,32 +62,45 @@ function DonarPass() {
         </ToggleButtonGroup>
       </Box>
 
-      {/* Send Donor Pass */}
-      <Box>
-        <Typography variant="subtitle1" sx={{ mb: 1 }}>
-          Send Donor Pass
-        </Typography>
-        <ToggleButtonGroup
-          value={showCCEmailInput ? "yes" : "no"}
-          exclusive
-          onChange={handleDonorPassChange}
-          size="small"
-        >
-          <ToggleButton value="yes">Yes</ToggleButton>
-          <ToggleButton value="no">No</ToggleButton>
-        </ToggleButtonGroup>
+      {/* If Send Scheduling Link is Yes, show email input and hide Donor Pass */}
+      {formData.sendLink ? (
+        <TextField
+          label="Enter Email (for scheduling link)"
+          variant="outlined"
+          fullWidth
+          required
+          value={formData.email}
+          onChange={handleEmailChange}
+          sx={{ mt: 2 }}
+        />
+      ) : (
+        // Otherwise, show donor pass toggle and ccEmail field if enabled
+        <Box>
+          <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: "bold" }}>
+            Send Donor Pass
+          </Typography>
+          <ToggleButtonGroup
+            value={formData.donorPass ? "yes" : "no"}
+            exclusive
+            onChange={handleDonorPassChange}
+            size="small"
+          >
+            <ToggleButton value="yes">Yes</ToggleButton>
+            <ToggleButton value="no">No</ToggleButton>
+          </ToggleButtonGroup>
 
-        {showCCEmailInput && (
-          <TextField
-            label="Enter email(s) separated by semicolons"
-            variant="outlined"
-            fullWidth
-            value={formData.ccEmail}
-            onChange={handleCCEmailChange}
-            sx={{ mt: 2 }}
-          />
-        )}
-      </Box>
+          {formData.donorPass && (
+            <TextField
+              label="Enter CC Email(s) separated by semicolons"
+              variant="outlined"
+              fullWidth
+              value={formData.ccEmail}
+              onChange={handleCCEmailChange}
+              sx={{ mt: 2 }}
+            />
+          )}
+        </Box>
+      )}
     </Box>
   );
 }

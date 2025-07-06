@@ -98,8 +98,30 @@ const RandomState = (props) => {
         }
     }
 
+    const sendEmailToRandomDriver = async (selectedItem, ccEmail) => {
+        const token = Cookies.get("token");
+        if (token) {
+            const data = {
+                selectedItem,
+                ccEmail
+            }
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            axios.post(`${API_URL}/admin/sendEmailToRandomDriver`, data)
+                .then(response => {
+                    toast.success(response.data.message || "Email sent successfully!");
+                    fetchRandomData();
+                })
+                .catch(error => {
+                    const message = error?.response?.data?.message || "Server error, Please try again later";
+                    toast.error(message);
+                });
+        } else {
+            toast.error("Invalid access, Please login again");
+        }
+    }
+
     return (
-        <RandomContext.Provider value={{ yearFilter, setYearFilter,quarterFilter, setQuarterFilter, AddRandomDriver, fetchRandomDriver, fetchRandomData, deleteRandomEntry, updateRandomStatus, randomUserDetails, RandomUserAddDetails }}>
+        <RandomContext.Provider value={{ yearFilter, setYearFilter, quarterFilter, sendEmailToRandomDriver, setQuarterFilter, AddRandomDriver, fetchRandomDriver, fetchRandomData, deleteRandomEntry, updateRandomStatus, randomUserDetails, RandomUserAddDetails }}>
             {props.children}
         </RandomContext.Provider>
     )

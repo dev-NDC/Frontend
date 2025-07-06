@@ -2,9 +2,11 @@ import React, { useContext, useState, useRef } from "react";
 import { TextField, Button, Box, Typography, Grid, Checkbox, FormControlLabel, Paper, Modal } from "@mui/material";
 import SignupContext from "../../../../Context/ClientSide/SignUp/SignupContext";
 import SignatureCanvas from 'react-signature-canvas';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 function Submit() {
-    const { submitFormData, setSubmitFormData, submitFormFunction } = useContext(SignupContext);
+    const { submitFormData, setSubmitFormData, submitFormFunction, isLoading } = useContext(SignupContext);
     const [errors, setErrors] = useState({
         firstName: false,
         lastName: false,
@@ -61,7 +63,7 @@ function Submit() {
         submitFormData.firstName &&
         submitFormData.lastName &&
         submitFormData.date &&
-        submitFormData.signature && 
+        submitFormData.signature &&
         submitFormData.signature.startsWith("data:image/png;base64,") &&  // Signature must be a valid image URL
         submitFormData.agree &&
         Object.values(errors).every(error => !error);
@@ -146,16 +148,22 @@ function Submit() {
                     <Button
                         variant="contained"
                         sx={{
-                            backgroundColor: isFormValid ? "#003366" : "#E0E0E0",
-                            color: isFormValid ? "#FFFFFF" : "#A0A0A0",
-                            cursor: isFormValid ? "pointer" : "not-allowed",
+                            backgroundColor: isFormValid && !isLoading ? "#003366" : "#E0E0E0",
+                            color: isFormValid && !isLoading ? "#FFFFFF" : "#A0A0A0",
+                            cursor: isFormValid && !isLoading ? "pointer" : "not-allowed",
+                            minWidth: 120
                         }}
                         onClick={handleSubmit}
-                        disabled={!isFormValid}
+                        disabled={!isFormValid || isLoading}
                     >
-                        Sign up
+                        {isLoading ? (
+                            <CircularProgress size={24} color="inherit" />
+                        ) : (
+                            "Sign up"
+                        )}
                     </Button>
                 </Grid>
+
             </Grid>
 
             {/* Signature Modal */}

@@ -53,6 +53,7 @@ function OrderInformation() {
             city: selectedCompany.companyDetails.city || "",
             zip: selectedCompany.companyDetails.zip || "",
             phone1: selectedCompany.companyDetails.contactNumber || "",
+            state : selectedCompany.companyDetails.state
         }));
         setAvailablePackages(selectedCompany?.packages || []);
         setAvailableReasons(selectedCompany?.orderReasons || []);

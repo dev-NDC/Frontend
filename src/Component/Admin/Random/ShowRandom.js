@@ -3,7 +3,7 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   IconButton, Menu, MenuItem, Typography, Paper, Box, CircularProgress,
   FormControl, Select, InputLabel, MenuItem as SelectItem,
-  Dialog, DialogTitle, DialogContent, DialogActions, Button
+  Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import RandomContext from '../../../Context/Admin/Random/RandomContext';
@@ -20,7 +20,8 @@ function ShowRandom() {
     yearFilter,
     setYearFilter,
     quarterFilter,
-    setQuarterFilter
+    setQuarterFilter,
+    sendEmailToRandomDriver // <-- Make sure this exists in your context!
   } = useContext(RandomContext);
 
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -29,6 +30,8 @@ function ShowRandom() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [statusValue, setStatusValue] = useState('');
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [ccEmail, setCcEmail] = useState(""); // <-- NEW STATE
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,6 +86,23 @@ function ShowRandom() {
     }
   };
 
+  // ---- Send Email Modal Logic ----
+  const handleSendEmail = () => {
+    setCcEmail(""); // Reset each time
+    setEmailOpen(true);
+    handleMenuClose();
+  };
+
+  const handleSendEmailConfirm = async () => {
+    try {
+      await sendEmailToRandomDriver(selectedItem, ccEmail); // Your context/backend should handle ccEmail
+      setEmailOpen(false);
+      setSelectedItem(null);
+    } catch (error) {
+      toast.error("Failed to send email.");
+    }
+  };
+
   const uniqueYears = [
     "All",
     ...new Set(randomUserDetails?.map(item => item.year).filter(Boolean))
@@ -118,7 +138,6 @@ function ShowRandom() {
                 ))}
               </Select>
             </FormControl>
-
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>Quarter</InputLabel>
               <Select
@@ -199,6 +218,7 @@ function ShowRandom() {
 
       {/* Action Menu */}
       <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={handleMenuClose}>
+        <MenuItem onClick={handleSendEmail}>Send Email</MenuItem>
         <MenuItem onClick={handleEdit}>Edit</MenuItem>
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
@@ -261,6 +281,43 @@ function ShowRandom() {
             }}
           >
             Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Send Email Modal */}
+      <Dialog open={emailOpen} onClose={() => setEmailOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle>Send Email</DialogTitle>
+        <DialogContent dividers>
+          <Typography sx={{ mb: 2 }}>
+            Are you sure you want to send an email to <b>{selectedItem?.driver?.name || "this driver"}</b>?
+          </Typography>
+          <TextField
+            label="CC Email (optional)"
+            type="email"
+            fullWidth
+            value={ccEmail}
+            onChange={(e) => setCcEmail(e.target.value)}
+            variant="outlined"
+            margin="dense"
+            placeholder="Enter CC email address"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEmailOpen(false)}>Cancel</Button>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={handleSendEmailConfirm}
+            style={{
+              backgroundColor: "#1976d2",
+              color: "#fff",
+              borderRadius: "6px",
+              padding: "8px 20px",
+              fontWeight: "bold"
+            }}
+          >
+            Send
           </Button>
         </DialogActions>
       </Dialog>

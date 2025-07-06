@@ -28,7 +28,7 @@ const CreateNewOrderState = (props) => {
         dob: "",
         phone1: "",
         phone2: "",
-        email: "",
+        email: "",    // <-- used only for "Send Scheduling Link"
         orderExpires: "",
         observed: "0",
         participantAddress: true,
@@ -37,9 +37,11 @@ const CreateNewOrderState = (props) => {
         city: "",
         state: "",
         zip: "",
-        sendLink: false,
-        ccEmail: ""
+        sendLink: false,    // <-- default No
+        donorPass: true,    // <-- default Yes
+        ccEmail: ""         // <-- used only for donor pass
     });
+
 
     const [siteInformation, setSiteInformation] = useState([]);
     const [siteInformationLoading, setSiteInformationLoading] = useState(false);
@@ -73,6 +75,7 @@ const CreateNewOrderState = (props) => {
                             state: "",
                             zip: "",
                             sendLink: false,
+                            donorPass: true,
                             ccEmail: ""
                         })
                         setAllCompanyData([])

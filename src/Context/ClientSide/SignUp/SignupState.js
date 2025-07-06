@@ -9,7 +9,7 @@ const SignupState = (props) => {
     let navigate = useNavigate();
     const [currentPosition, setCurrentPosition] = useState(1);
     const [maxPosition, setMaxPosition] = useState(1);
-
+    const [isLoading, setIsLoading] = useState(false)
     const [selectedPlan, setSelectedPlan] = useState(1);
 
     const [contactInfoData, setContactInfoData] = useState({
@@ -57,6 +57,7 @@ const SignupState = (props) => {
 
     const submitFormFunction = async () => {
         try {
+            setIsLoading(true)
             const API_URL = process.env.REACT_APP_API_URL;
             const Membership = {
                 selectedPlan : selectedPlan,
@@ -75,13 +76,15 @@ const SignupState = (props) => {
             });
             toast.success("Account created successfully");
             navigate("/login")
+            setIsLoading(false)
         } catch (error) {
+            setIsLoading(false)
             handleApiError(error, "Failed to signup.");
         }
     }
 
     return (
-        <SignupContext.Provider value={{ currentPosition, maxPosition, selectedPlan, contactInfoData, companyInfoData, paymentData, submitFormData, submitFormFunction, setSubmitFormData, setPaymentData, setCompanyInfoData, setContactInfoData, setSelectedPlan, setCurrentPosition, setMaxPosition }}>
+        <SignupContext.Provider value={{ isLoading, currentPosition, maxPosition, selectedPlan, contactInfoData, companyInfoData, paymentData, submitFormData, submitFormFunction, setSubmitFormData, setPaymentData, setCompanyInfoData, setContactInfoData, setSelectedPlan, setCurrentPosition, setMaxPosition }}>
             {props.children}
         </SignupContext.Provider>
     )
