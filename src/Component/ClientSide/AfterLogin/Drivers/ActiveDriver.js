@@ -62,7 +62,7 @@ function ActiveDriver() {
                     {drivers.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={isTablet ? 3 : isMobile ? 2 : 6} align="center">
-                                <b>No active driver</b>
+                                <b>No active Employees</b>
                             </TableCell>
                         </TableRow>
                     ) : (
@@ -91,7 +91,7 @@ function ActiveDriver() {
 
             {/* View More Details Modal */}
             <Dialog open={viewOpen} onClose={() => setViewOpen(false)}>
-                <DialogTitle>Driver Details</DialogTitle>
+                <DialogTitle>Employee Details</DialogTitle>
                 <DialogContent>
                     <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9" }}>
                         <Typography variant="h6" gutterBottom>{selectedDriver?.first_name} {selectedDriver?.last_name}</Typography>

@@ -32,7 +32,7 @@ import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
 // ✅ Updated tabData with Notes tab
 const tabData = [
   { label: "Company Info", icon: <BusinessIcon />, component: <CompanyDetails /> },
-  { label: "Driver", icon: <DirectionsCarIcon />, component: <DriverState><Driver /></DriverState> },
+  { label: "Employees", icon: <DirectionsCarIcon />, component: <DriverState><Driver /></DriverState> },
   { label: "Membership", icon: <CardMembershipIcon />, component: <Membership /> },
   { label: "Certificate", icon: <WorkspacePremiumIcon />, component: <CertificateState><Certificate /></CertificateState> },
   { label: "Invoice", icon: <ReceiptIcon />, component: <InvoiceState><Invoice /></InvoiceState> },

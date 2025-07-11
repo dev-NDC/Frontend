@@ -108,7 +108,7 @@ function ViewCustomer() {
             </TableCell>
             <TableCell sx={{ color: "white", fontWeight: "bold" }}>Contact No</TableCell>
             <TableCell sx={{ color: "white", fontWeight: "bold" }}>Email</TableCell>
-            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Active Drivers</TableCell>
+            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Active Employees</TableCell>
             <TableCell sx={{ color: "white", fontWeight: "bold" }}>Status</TableCell>
             <TableCell sx={{ color: "white", fontWeight: "bold" }}>Details</TableCell>
           </TableRow>

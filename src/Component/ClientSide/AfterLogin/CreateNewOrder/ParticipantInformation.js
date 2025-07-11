@@ -6,7 +6,6 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
-    Checkbox,
     Select,
     MenuItem,
     InputLabel,
@@ -19,6 +18,7 @@ import DonarPass from "./DonarPass";
 
 
 import CreateNewOrderContext from "../../../../Context/ClientSide/AfterLogin/CreateNewOrder/CreateNewOrderContext";;
+
 
 function ParticipantInformation() {
     const {
@@ -51,7 +51,7 @@ function ParticipantInformation() {
         getSiteInformation();
     };
 
-    const handSubmitLink = ()=>{
+    const handSubmitLink = () => {
         getSiteInformation();
     }
 
@@ -63,7 +63,6 @@ function ParticipantInformation() {
             formData.ssn,
             formData.dob,
             formData.phone1,
-            formData.email,
             formData.address,
             formData.city,
             formData.state,
@@ -149,7 +148,7 @@ function ParticipantInformation() {
             </Row>
 
             <Row className="mb-3">
-                <Col md={4}>
+                <Col md={6}>
                     <TextField
                         fullWidth
                         label="Phone 2"
@@ -158,17 +157,8 @@ function ParticipantInformation() {
                         onChange={handleChange}
                     />
                 </Col>
-                <Col md={4}>
-                    <TextField
-                        fullWidth
-                        required
-                        label="Email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                    />
-                </Col>
-                <Col md={4}>
+
+                <Col md={6}>
                     <TextField
                         fullWidth
                         label="Order Expires"
@@ -200,16 +190,9 @@ function ParticipantInformation() {
 
             <Row className="mb-3">
                 <Col>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                name="participantAddress"
-                                checked={formData.participantAddress}
-                                onChange={handleChange}
-                            />
-                        }
-                        label="Participant Address"
-                    />
+                    <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
+                        Participant Address
+                    </Typography>
                 </Col>
             </Row>
 
@@ -248,17 +231,35 @@ function ParticipantInformation() {
                 </Col>
                 <Col md={4}>
                     <FormControl fullWidth required>
-                        <InputLabel>State</InputLabel>
+                        <InputLabel id="state-label">State</InputLabel>
                         <Select
+                            labelId="state-label"
                             name="state"
                             value={formData.state}
                             onChange={handleChange}
                             label="State"
+                            MenuProps={menuProps}
+                            sx={{
+                                backgroundColor: "#fff",
+                                borderRadius: 2,
+                            }}
                         >
-                            <MenuItem value="">Select state</MenuItem>
-                            <MenuItem value="CA">California</MenuItem>
-                            <MenuItem value="NY">New York</MenuItem>
-                            <MenuItem value="TX">Texas</MenuItem>
+                            <MenuItem value="">
+                                <em>Select state</em>
+                            </MenuItem>
+                            {US_STATES.map((state) => (
+                                <MenuItem
+                                    key={state.value}
+                                    value={state.value}
+                                    sx={{
+                                        fontWeight: formData.state === state.value ? 600 : 400,
+                                        color: formData.state === state.value ? "#003366" : "#222",
+                                        fontSize: 15,
+                                    }}
+                                >
+                                    {state.label}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                 </Col>
@@ -304,3 +305,42 @@ function ParticipantInformation() {
 }
 
 export default ParticipantInformation;
+
+
+const US_STATES = [
+    { label: "Alabama", value: "AL" }, { label: "Alaska", value: "AK" }, { label: "Arizona", value: "AZ" },
+    { label: "Arkansas", value: "AR" }, { label: "California", value: "CA" }, { label: "Colorado", value: "CO" },
+    { label: "Connecticut", value: "CT" }, { label: "Delaware", value: "DE" }, { label: "Florida", value: "FL" },
+    { label: "Georgia", value: "GA" }, { label: "Hawaii", value: "HI" }, { label: "Idaho", value: "ID" },
+    { label: "Illinois", value: "IL" }, { label: "Indiana", value: "IN" }, { label: "Iowa", value: "IA" },
+    { label: "Kansas", value: "KS" }, { label: "Kentucky", value: "KY" }, { label: "Louisiana", value: "LA" },
+    { label: "Maine", value: "ME" }, { label: "Maryland", value: "MD" }, { label: "Massachusetts", value: "MA" },
+    { label: "Michigan", value: "MI" }, { label: "Minnesota", value: "MN" }, { label: "Mississippi", value: "MS" },
+    { label: "Missouri", value: "MO" }, { label: "Montana", value: "MT" }, { label: "Nebraska", value: "NE" },
+    { label: "Nevada", value: "NV" }, { label: "New Hampshire", value: "NH" }, { label: "New Jersey", value: "NJ" },
+    { label: "New Mexico", value: "NM" }, { label: "New York", value: "NY" }, { label: "North Carolina", value: "NC" },
+    { label: "North Dakota", value: "ND" }, { label: "Ohio", value: "OH" }, { label: "Oklahoma", value: "OK" },
+    { label: "Oregon", value: "OR" }, { label: "Pennsylvania", value: "PA" }, { label: "Rhode Island", value: "RI" },
+    { label: "South Carolina", value: "SC" }, { label: "South Dakota", value: "SD" }, { label: "Tennessee", value: "TN" },
+    { label: "Texas", value: "TX" }, { label: "Utah", value: "UT" }, { label: "Vermont", value: "VT" },
+    { label: "Virginia", value: "VA" }, { label: "Washington", value: "WA" }, { label: "West Virginia", value: "WV" },
+    { label: "Wisconsin", value: "WI" }, { label: "Wyoming", value: "WY" },
+];
+
+const menuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: 250, // Limit height for scrolling
+            width: 250,
+            marginTop: 6,   // Adds gap between input and dropdown
+            borderRadius: 8,
+            boxShadow: "0 4px 20px rgba(0,0,0,0.09)",
+            padding: 0,
+        },
+    },
+    MenuListProps: {
+        style: {
+            padding: 0,
+        }
+    }
+};

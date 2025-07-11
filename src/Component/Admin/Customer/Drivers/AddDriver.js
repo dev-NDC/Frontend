@@ -63,11 +63,11 @@ function AddDriver() {
                     boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
                 }}
             >
-                + Add Driver
+                + Add Employee
             </Button>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add New Driver</DialogTitle>
+                <DialogTitle>Add New Employee</DialogTitle>
                 <DialogContent>
                     <TextField
                         fullWidth

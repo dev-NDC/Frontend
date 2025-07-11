@@ -128,14 +128,23 @@ function ChooseCollectionSite() {
                                         textTransform="uppercase"
                                         gutterBottom
                                     >
-                                        {site.collection_site_city}
+                                        {site.collection_site_name}
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary">
+                                    <Typography variant="body2" color="">
                                         {site.collection_site_address}
                                     </Typography>
-                                    <Typography variant="caption" color="text.secondary">
+                                    <Typography variant="" color="">
                                         Distance: {site.distance_miles_numeric}
                                     </Typography>
+                                    <Box>
+                                        <Typography color="">
+                                        Site Type: {site.collection_site_type}
+                                        </Typography>
+                                        <Typography color="">
+                                        Lab Type: {site.resulting_vendor_name}
+                                        </Typography>
+
+                                    </Box>
 
                                     <Box display="flex" justifyContent="space-between" mt={2}>
                                         <Button
@@ -210,19 +219,19 @@ function ChooseCollectionSite() {
             </Dialog>
 
 
-            {/* Pagination */}
-            <Box display="flex" justifyContent="center" mt={4}>
-                <Pagination
-                    count={totalPages}
-                    page={currentPage}
-                    onChange={(_, value) => setCurrentPage(value)}
-                    color="primary"
-                    variant="outlined"
-                    shape="rounded"
-                />
-            </Box>
+            {/* Pagination */ }
+    <Box display="flex" justifyContent="center" mt={4}>
+        <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={(_, value) => setCurrentPage(value)}
+            color="primary"
+            variant="outlined"
+            shape="rounded"
+        />
+    </Box>
 
-            {/* Navigation Buttons */}
+    {/* Navigation Buttons */ }
             <Box display="flex" justifyContent="space-between" mt={4}>
                 <Button
                     startIcon={<ArrowBackIcon />}
@@ -257,7 +266,7 @@ function ChooseCollectionSite() {
                 </DialogTitle>
 
                 <DialogContent dividers>
-                    <Typography gutterBottom><strong>Name:</strong> {selectedSiteDetails?.collection_site_city}</Typography>
+                    <Typography gutterBottom><strong>Name:</strong> {selectedSiteDetails?.collection_site_name}</Typography>
                     <Typography gutterBottom><strong>Address:</strong> {selectedSiteDetails?.collection_site_address}</Typography>
                     <Typography gutterBottom><strong>Distance:</strong> {selectedSiteDetails?.distance_miles_numeric} miles</Typography>
                     <Typography gutterBottom><strong>Site Fax:</strong> {selectedSiteDetails?.collection_site_fax}</Typography>
@@ -310,7 +319,7 @@ function ChooseCollectionSite() {
                 </DialogActions>
             </Dialog>
 
-        </Box>
+        </Box >
     );
 }
 

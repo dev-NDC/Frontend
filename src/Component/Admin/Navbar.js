@@ -42,7 +42,7 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
     { text: "Customer", icon: <PersonIcon />, index: 2,index2 : 5 },
     { text: "Agency", icon: <BusinessIcon />, index: 3,index2:6 },
     { text: "Admin", icon: <AdminPanelSettingsIcon />, index: 4,index2:4 },
-    { text: "Create New Order", icon: <NoteAddIcon />, index: 9,index2:9},
+    { text: "Order Drug Test", icon: <NoteAddIcon />, index: 9,index2:9},
     { text: "Random", icon: <ShuffleIcon />, index: 7,index2:7 },
     { text: "Result", icon: <AssignmentTurnedInIcon />, index: 10,index2:10 },
     { text: "Setting", icon: <Settings />, index: 11,index2:11 },

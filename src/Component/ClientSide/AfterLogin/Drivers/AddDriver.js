@@ -34,11 +34,11 @@ function AddDriver() {
     return (
         <div style={{ display: "flex", justifyContent: "flex-end", margin: "20px" }}>
             <Button variant="contained" color="primary" onClick={handleClickOpen}>
-                + Add Driver
+                + Add Employee
             </Button>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add New Driver</DialogTitle>
+                <DialogTitle>Add New Employee</DialogTitle>
                 <DialogContent>
                     <TextField fullWidth margin="dense" label="Name" name="name" onChange={handleChange} />
                     <TextField fullWidth margin="dense" label="License #" name="license" onChange={handleChange} />
@@ -49,7 +49,7 @@ function AddDriver() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="secondary">Cancel</Button>
-                    <Button onClick={handleSave} color="primary" variant="contained">Save Driver</Button>
+                    <Button onClick={handleSave} color="primary" variant="contained">Save Employee</Button>
                 </DialogActions>
             </Dialog>
         </div>

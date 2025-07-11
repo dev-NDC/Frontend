@@ -56,7 +56,7 @@ function DeletedDriver() {
                     {drivers.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={isTablet ? 4 : isMobile ? 3 : 7} align="center">
-                                <b>No deleted drivers</b>
+                                <b>No deleted Employee</b>
                             </TableCell>
                         </TableRow>
                     ) : (
@@ -87,7 +87,7 @@ function DeletedDriver() {
 
             {/* View More Details Modal */}
             <Dialog open={viewOpen} onClose={() => setViewOpen(false)}>
-                <DialogTitle>Driver Details</DialogTitle>
+                <DialogTitle>Employee Details</DialogTitle>
                 <DialogContent>
                     <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9" }}>
                         <Typography variant="h6" gutterBottom>{selectedDriver?.first_name} {selectedDriver?.last_name}</Typography>
