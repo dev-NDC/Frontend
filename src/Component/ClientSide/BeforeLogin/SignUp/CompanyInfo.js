@@ -200,7 +200,7 @@ function CompanyInfo() {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <TextField
-                        label="Safety Agency Name"
+                        label="Safety Agency Code"
                         name="safetyAgencyName"
                         value={companyInfoData.safetyAgencyName}
                         onChange={handleChange}
