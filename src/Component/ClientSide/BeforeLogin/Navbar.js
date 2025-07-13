@@ -29,6 +29,7 @@ const navItems = [
     { label: 'Home', path: '/' },
     { label: 'Pricing', path: '/pricing' },
     { label: 'About Us', path: '/about' },
+    { label: 'Service', path: '/' },
 ];
 
 function Navbar(props) {

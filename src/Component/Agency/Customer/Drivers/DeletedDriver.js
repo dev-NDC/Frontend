@@ -86,7 +86,7 @@ function DeletedDriver() {
                     ) : (
                         <TableRow>
                             <TableCell colSpan={7} align="center">
-                                <b>No Deleted Drivers to display</b>
+                                <b>No Deleted Employees to display</b>
                             </TableCell>
                         </TableRow>
                     )}
@@ -95,7 +95,7 @@ function DeletedDriver() {
 
             {/* View More Details Modal */}
             <Dialog open={viewOpen} onClose={() => setViewOpen(false)}>
-                <DialogTitle>Driver Details</DialogTitle>
+                <DialogTitle>Employees Details</DialogTitle>
                 <DialogContent>
                     <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9" }}>
                         <Typography variant="h6" gutterBottom>{selectedDriver?.first_name} {selectedDriver?.last_name}</Typography>

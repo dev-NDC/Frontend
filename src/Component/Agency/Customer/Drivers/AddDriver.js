@@ -64,11 +64,11 @@ function AddDriver() {
                     boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
                 }}
             >
-                + Add Driver
+                + Add Employees
             </Button>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add New Driver</DialogTitle>
+                <DialogTitle>Add New Employees</DialogTitle>
                 <DialogContent>
                     <TextField
                         fullWidth
@@ -123,7 +123,7 @@ function AddDriver() {
                         Cancel
                     </Button>
                     <Button onClick={handleSave} color="primary" variant="contained">
-                        Save Driver
+                        Save Employees
                     </Button>
                 </DialogActions>
             </Dialog>

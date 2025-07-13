@@ -135,7 +135,7 @@ function ActiveDriver() {
                     {drivers.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={8} align="center">
-                                <strong>No Active driver to show</strong>
+                                <strong>No Active Employee to show</strong>
                             </TableCell>
                         </TableRow>
                     ) : (
@@ -167,7 +167,7 @@ function ActiveDriver() {
 
             {/* Edit Modal */}
             <Dialog open={editOpen} onClose={() => setEditOpen(false)}>
-                <DialogTitle>Edit Driver</DialogTitle>
+                <DialogTitle>Edit Employee</DialogTitle>
                 <DialogContent>
                     <TextField fullWidth margin="dense" label="First Name" name="first_name" value={editedDriver?.first_name || ""} onChange={handleEditChange} />
                     <TextField fullWidth margin="dense" label="Last Name" name="last_name" value={editedDriver?.last_name || ""} onChange={handleEditChange} />
@@ -184,7 +184,7 @@ function ActiveDriver() {
 
             {/* Delete Modal */}
             <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
-                <DialogTitle>Delete Driver</DialogTitle>
+                <DialogTitle>Delete Employee</DialogTitle>
                 <DialogContent>
                     <Typography>Are you sure you want to delete {selectedDriver?.first_name} {selectedDriver?.last_name}?</Typography>
                 </DialogContent>
@@ -215,7 +215,7 @@ function ActiveDriver() {
 
             {/* Change Company Modal */}
             <Dialog open={changeCompanyOpen} onClose={() => setChangeCompanyOpen(false)}>
-                <DialogTitle>Change Driver's Company</DialogTitle>
+                <DialogTitle>Change Employee's Company</DialogTitle>
                 <DialogContent>
                     <FormControl fullWidth sx={{ mt: 2 }}>
                         <InputLabel>Select New Company</InputLabel>

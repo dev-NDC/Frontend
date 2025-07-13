@@ -102,7 +102,7 @@ const MembershipInformation = () => {
               <LabelValue label="Join Date:" value={formatDate(membershipInfo.planStartDate)} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <LabelValue label="Expiry Date:" value={formatDate(membershipInfo.planEndDate)} />
+              <LabelValue label="Renewal Date:" value={formatDate(membershipInfo.planEndDate)} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'grey' }}>Status:</Typography>

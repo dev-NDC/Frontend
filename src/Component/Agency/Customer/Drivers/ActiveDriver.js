@@ -120,7 +120,7 @@ function ActiveDriver() {
                     ) : (
                         <TableRow>
                             <TableCell colSpan={6} align="center">
-                                <b>No active driver to display</b>
+                                <b>No active employees to display</b>
                             </TableCell>
                         </TableRow>
                     )}
@@ -129,7 +129,7 @@ function ActiveDriver() {
 
             {/* Edit Modal */}
             <Dialog open={editOpen} onClose={() => setEditOpen(false)}>
-                <DialogTitle>Edit Driver</DialogTitle>
+                <DialogTitle>Edit Employee</DialogTitle>
                 <DialogContent>
                     <TextField fullWidth margin="dense" label="Name" name="name" value={editedDriver?.name || ""} onChange={handleEditChange} />
                     <TextField fullWidth margin="dense" label="Email" name="email" value={editedDriver?.email || ""} onChange={handleEditChange} />
@@ -145,7 +145,7 @@ function ActiveDriver() {
 
             {/* Delete Modal */}
             <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
-                <DialogTitle>Delete Driver</DialogTitle>
+                <DialogTitle>Delete Employees</DialogTitle>
                 <DialogContent>
                     <Typography>Are you sure you want to delete {selectedDriver?.name}?</Typography>
                 </DialogContent>
@@ -157,7 +157,7 @@ function ActiveDriver() {
 
             {/* View More Details Modal */}
             <Dialog open={viewOpen} onClose={() => setViewOpen(false)}>
-                <DialogTitle>Driver Details</DialogTitle>
+                <DialogTitle>Employee Details</DialogTitle>
                 <DialogContent>
                     <Box sx={{ p: 2, borderRadius: 2, boxShadow: 1, bgcolor: "#f9f9f9" }}>
                         <Typography variant="h6" gutterBottom>{selectedDriver?.first_name} {selectedDriver?.last_name}</Typography>
