@@ -47,7 +47,7 @@ export default function Pricing() {
                             title: 'NON-DOT Account',
                             price: '$99',
                             subtitle: 'Occupation Health Service Plan',
-                            bg: 'rgb(202, 197, 197)',
+                            bg: 'rgba(164, 152, 152, 1)',
                             features: [
                                 'Drug Account Only',
                                 '$75 Per Drug Test',
@@ -60,7 +60,7 @@ export default function Pricing() {
                             title: '1 Year Random Enrollment',
                             price: '$150',
                             subtitle: 'DOT Random Drug & Alcohol Testing Program',
-                            bg: 'rgb(212, 225, 226)',
+                            bg: '#00FFFF',
                             features: [
                                 'DOT Random Enrollment',
                                 'Random Enrollment Certificate',
@@ -76,7 +76,7 @@ export default function Pricing() {
                             title: '3 Year Random Enrollment',
                             price: '$275',
                             subtitle: 'Perfect for Trucking Companies',
-                            bg: 'rgb(238, 221, 188)',
+                            bg: '#00FF00',
                             features: [
                                 'DOT Random Enrollment',
                                 'Instant Random Enrollment Certificate',
