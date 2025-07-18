@@ -52,6 +52,7 @@ function OrderInformation() {
             address: selectedCompany.companyDetails.address || "",
             city: selectedCompany.companyDetails.city || "",
             zip: selectedCompany.companyDetails.zip || "",
+            state: selectedCompany.companyDetails.state || "",
             phone1: selectedCompany.companyDetails.contactNumber || "",
         }));
         setAvailablePackages(selectedCompany?.packages || []);

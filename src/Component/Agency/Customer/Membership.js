@@ -48,7 +48,7 @@ const MembershipInformation = () => {
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "grey.700" }}>Current Plan:</Typography>
               <Typography variant="body1" sx={{ fontWeight: 700, color: "#003366" }}>
-                {membershipInfo.selectedPlan || "N/A"}
+                {membershipInfo.planName || "N/A"}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>

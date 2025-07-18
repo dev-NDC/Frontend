@@ -34,7 +34,7 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
     { text: "Home", icon: <Home />, index: 1 },
     { text: "Company", icon: <Business />, index: 2 },
     { text: "Drivers", icon: <DirectionsCar />, index: 3 },
-    { text: "Schedule a test", icon: <CalendarToday />, index: 4 },
+    { text: "Order Drug Test", icon: <CalendarToday />, index: 4 },
     { text: "Results", icon: <CheckCircle />, index: 5 },
     { text: "Membership", icon: <CreditCard />, index: 6 },
     { text: "Random Test", icon: <Shuffle />, index: 7 },

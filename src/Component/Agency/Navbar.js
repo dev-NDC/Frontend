@@ -56,7 +56,7 @@ function Navbar({ isMobileOpen, setIsMobileOpen }) {
   const menuItems = [
     { text: "Home", icon: <Home />, index: 1,index2:1 },
     { text: "Customer", icon: <Business />, index: 2,index2 : 5 },
-    { text: "Create New Order", icon: <NoteAddIcon />, index: 8,index2 : 9 },
+    { text: "Order Drug Test", icon: <NoteAddIcon />, index: 8,index2 : 9 },
     { text: "Result", icon: <AssignmentTurnedInRounded />, index: 10,index2 : 10 },
     { text: "Random", icon: <Shuffle />, index: 11,index2 : 11 },
     { text: "Logout", icon: <ExitToApp />, index: 4, index2 : 4 }

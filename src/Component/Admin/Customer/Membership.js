@@ -244,7 +244,17 @@ const MembershipInformation = () => {
                   onChange={(e) => setTempMembershipInfo({ ...tempMembershipInfo, package: e.target.value })}
                   renderValue={(selected) => selected.join(", ")}
                 >
-                  {["DOT11", "DOTBATUR", "NONDOT", "DOTPACK", "NONPACK", "NDCDEMO", "DOTDEMO"].map(pkg => (
+                  {[
+                    "NDCDEMO",
+                    "10 PANEL URINE",
+                    "5 PANEL URINE DOT LIKE",
+                    "7 PANEL URINE",
+                    "9 PANEL URINE",
+                    "DOT BAT",
+                    "DOT PANEL",
+                    "DOT PANEL + DOT BAT",
+                    "DOT PHYSICAL"
+                  ].map(pkg => (
                     <MenuItem key={pkg} value={pkg}>{pkg}</MenuItem>
                   ))}
                 </Select>

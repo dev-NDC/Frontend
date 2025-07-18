@@ -88,7 +88,7 @@ function ChooseCollectionSite() {
         <Box p={3}>
             <Box display="flex" justifyContent="flex-end" mb={2}>
                 <Button variant="outlined" onClick={() => setPincodeModalOpen(true)}>
-                    Change Pincode
+                    Change Zipcode
                 </Button>
             </Box>
             <Typography variant="h5" fontWeight={600} align="center" gutterBottom>

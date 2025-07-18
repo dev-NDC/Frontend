@@ -86,7 +86,7 @@ function ViewCustomer() {
                     />
                     <TextField
                         size="small"
-                        placeholder="Filter by USDOT Code "
+                        placeholder="Filter by USDOT Code"
                         value={searchTermByUSDOT}
                         onChange={(e) => setSearchTermByUSDOT(e.target.value)}
                     />
