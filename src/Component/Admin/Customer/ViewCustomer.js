@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo,useEffect } from "react";
+import React, { useContext, useState, useMemo, useEffect } from "react";
 import {
     Box,
     Table,
@@ -26,6 +26,7 @@ function ViewCustomer() {
     const { getSingleUserData, setLoading, setUserDetails } = useContext(CustomerContext);
 
     const [searchTerm, setSearchTerm] = useState("");
+    const [searchTermByUSDOT, setSearchTermByUSDOT] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
 
     useEffect(() => {
@@ -46,7 +47,8 @@ function ViewCustomer() {
 
     const filteredAndSortedUsers = useMemo(() => {
         let filtered = AllUserData.filter((user) =>
-            user.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+            user.companyName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+            user.companyUSDOTNumber.toLowerCase().includes(searchTermByUSDOT.toLowerCase())
         );
 
         filtered.sort((a, b) => {
@@ -58,7 +60,8 @@ function ViewCustomer() {
         });
 
         return filtered;
-    }, [AllUserData, searchTerm, sortOrder]);
+    }, [AllUserData, searchTerm, searchTermByUSDOT, sortOrder]);
+
 
     return (
         <TableContainer component={Paper} sx={{ mt: 3, p: 2, borderRadius: 2, boxShadow: 3 }}>
@@ -84,13 +87,13 @@ function ViewCustomer() {
                     <TextField
                         size="small"
                         placeholder="Filter by USDOT Code "
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        value={searchTermByUSDOT}
+                        onChange={(e) => setSearchTermByUSDOT(e.target.value)}
                     />
                     <ExportDriver />
                     <ExportCompany />
                 </Box>
-                
+
             </Box>
 
             <Table>
@@ -99,7 +102,7 @@ function ViewCustomer() {
                         <TableCell sx={{ color: "white", fontWeight: "bold" }}>
                             <TableSortLabel
                                 active={true}
-                                direction={sortOrder} 
+                                direction={sortOrder}
                                 onClick={handleSort}
                                 sx={{
                                     color: "white",
