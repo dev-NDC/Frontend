@@ -1,8 +1,11 @@
 import React, { useContext, useState } from "react";
-import { TextField, Button, Box, Typography, Grid, IconButton, InputAdornment } from "@mui/material";
+import { TextField, Button, Box, Typography, Grid, IconButton, InputAdornment, CircularProgress } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import SignupContext from "../../../../Context/ClientSide/SignUp/SignupContext";
 import { getPasswordStrengthHints } from "./PasswordStrengthHelper";
+import axios from "axios";
+import { toast } from "react-toastify";
+const API_URL = process.env.REACT_APP_API_URL;
 
 function ContactInfo() {
     const {
@@ -11,7 +14,8 @@ function ContactInfo() {
         contactInfoData,
         setContactInfoData,
         setCurrentPosition,
-        setMaxPosition
+        setMaxPosition,
+        setCompanyInfoData,
     } = useContext(SignupContext);
 
     const [passwordError, setPasswordError] = useState(false);
@@ -20,11 +24,62 @@ function ContactInfo() {
     const [phoneError, setPhoneError] = useState(false);
     const [passwordHints, setPasswordHints] = useState([]);
     const [showPassword, setShowPassword] = useState(false);
+    const [usdotLookup, setUsdotLookup] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const isStrongPassword = (password) => {
         const hints = getPasswordStrengthHints(password);
         setPasswordHints(hints);
         return hints.length === 0;
+    };
+    const fetchUSDOTData = async () => {
+        if (!usdotLookup.trim()) return;
+        setLoading(true);
+        try {
+            // Call your backend endpoint (POST, send dot_number in body)
+            const response = await axios.post(`${API_URL}/random/getValueFromUSDOT`, { dot_number: usdotLookup });
+            const data = response.data.data;
+            if (data) {
+                setCompanyInfoData(prev => ({
+                    ...prev,
+                    companyName: data.legal_name || "",
+                    usdot: data.dot_number || usdotLookup,
+                    contactNumber: data.phone || "",
+                    companyEmail: data.email_address || "",
+                    safetyAgencyName: data.company_officer_1 || "",
+                    address: data.phy_street || "",
+                    city: data.phy_city || "",
+                    state: data.phy_state || "",
+                    zip: data.phy_zip || "",
+                    suite: "",
+                    employees: data.total_drivers || 0,
+                }));
+
+                const fullName = data.company_officer_1 || " ";
+                const nameParts = fullName.trim().split(/\s+/);
+
+                const firstName = nameParts[0] || "";
+                const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+
+                setContactInfoData(prev => ({
+                    ...prev,
+                    firstName: firstName || "",
+                    lastName: lastName || "",
+                    phone: data.phone || "",
+                    email: data.email_address || "",
+                    password: `${firstName}@${usdotLookup}`,
+                    confirmPassword: `${firstName}@${usdotLookup}`,
+
+                }));
+            } else {
+                toast.error("No company found for this USDOT number.");
+            }
+        } catch (error) {
+            console.error("USDOT API error:", error);
+            toast.error("Error fetching company data.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleChange = (e) => {
@@ -70,8 +125,26 @@ function ContactInfo() {
 
     return (
         <Box sx={{ width: "100%", mx: "auto" }}>
-            <Typography variant="h6" fontWeight="bold">Contact Information</Typography>
-
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                <Typography variant="h6" fontWeight="bold">Contact Information</Typography>
+                <Box display="flex" alignItems="center" gap={1}>
+                    <TextField
+                        label="Fill info with USDOT#"
+                        size="small"
+                        value={usdotLookup}
+                        onChange={(e) => setUsdotLookup(e.target.value)}
+                        disabled={loading}
+                    />
+                    <Button
+                        variant="contained"
+                        onClick={fetchUSDOTData}
+                        disabled={loading || !usdotLookup.trim()}
+                        sx={{ minWidth: 80 }}
+                    >
+                        {loading ? <CircularProgress size={24} color="inherit" /> : "Done"}
+                    </Button>
+                </Box>
+            </Box>
             <Grid container spacing={2} mt={1}>
                 <Grid item xs={12} md={6}>
                     <TextField
