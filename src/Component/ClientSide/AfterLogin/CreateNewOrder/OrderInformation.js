@@ -10,14 +10,36 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-import CreateNewOrderContext from "../../../../Context/ClientSide/AfterLogin/CreateNewOrder/CreateNewOrderContext";;
+import CreateNewOrderContext from "../../../../Context/ClientSide/AfterLogin/CreateNewOrder/CreateNewOrderContext";
 const API_URL = process.env.REACT_APP_API_URL;
 
+const DOT_AGENCY_LIST = [
+    "FAA",
+    "FMCSA",
+    "FRA",
+    "FTA",
+    "HHS",
+    "NRC",
+    "PHMSA",
+    "USCG"
+];
+
 function OrderInformation() {
-    const { orderReasonId, packageId, companyId, allCompanyData, currentPosition, maxPosition, setAllCompanyData, setCurrentPosition, setCompanyId, setPackageId, setOrderReasonId, setMaxPosition, setFormData } = useContext(CreateNewOrderContext);
+    const { orderReasonId, packageId, companyId, allCompanyData, currentPosition, maxPosition, setAllCompanyData, setCurrentPosition, setCompanyId, setPackageId, setOrderReasonId, setMaxPosition, setFormData, dotAgency, setDotAgency } = useContext(CreateNewOrderContext);
 
     const [availablePackages, setAvailablePackages] = useState([]);
     const [availableReasons, setAvailableReasons] = useState([]);
+
+    // Helper: Packages that require DOT Agency selection
+    const DOT_PACKAGES = [
+        "DOT BAT",
+        "DOT PANEL",
+        "DOT PANEL + DOT BAT",
+        "DOT PHYSICAL"
+    ];
+
+    // Check if selected package requires DOT Agency
+    const showDotAgency = DOT_PACKAGES.includes(packageId);
 
     // Fetch all companies and their details
     useEffect(() => {
@@ -45,6 +67,7 @@ function OrderInformation() {
         setCompanyId(selectedId);
         setPackageId("");
         setOrderReasonId("");
+        setDotAgency(""); // Reset DOT Agency when company changes
 
         const selectedCompany = allCompanyData.find(c => c._id === selectedId);
         setFormData((prev) => ({
@@ -57,16 +80,20 @@ function OrderInformation() {
         }));
         setAvailablePackages(selectedCompany?.packages || []);
         setAvailableReasons(selectedCompany?.orderReasons || []);
-
     };
 
     const handlePackageChange = (e) => {
         setPackageId(e.target.value);
         setOrderReasonId("");
+        setDotAgency(""); // Reset DOT Agency when package changes
     };
 
     const handleReasonChange = (e) => {
         setOrderReasonId(e.target.value);
+    };
+
+    const handleDotAgencyChange = (e) => {
+        setDotAgency(e.target.value);
     };
 
     const handleSubmit = () => {
@@ -142,12 +169,34 @@ function OrderInformation() {
                 </div>
             </div>
 
+            {showDotAgency && (
+                <div className="row mb-3">
+                    <div className="col-12">
+                        <FormControl fullWidth>
+                            <InputLabel id="dot-agency-label">DOT Agency</InputLabel>
+                            <Select
+                                labelId="dot-agency-label"
+                                value={dotAgency}
+                                onChange={handleDotAgencyChange}
+                                label="DOT Agency"
+                            >
+                                {DOT_AGENCY_LIST.map((agency) => (
+                                    <MenuItem key={agency} value={agency}>
+                                        {agency}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                </div>
+            )}
+
             <Box display="flex" justifyContent="flex-end">
                 <Button
                     variant="contained"
                     color="primary"
                     onClick={handleSubmit}
-                    disabled={!orderReasonId}
+                    disabled={!orderReasonId || (showDotAgency && !dotAgency)}
                 >
                     Continue
                 </Button>

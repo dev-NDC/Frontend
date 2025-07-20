@@ -13,6 +13,7 @@ const CreateNewOrderState = (props) => {
     const [companyId, setCompanyId] = useState("");
     const [packageId, setPackageId] = useState("");
     const [orderReasonId, setOrderReasonId] = useState("");
+    const [dotAgency, setDotAgency] = useState("");
     const [caseNumber, setCaseNumber] = useState("");
 
     const [selectedSiteId, setSelectedSiteId] = useState(null);
@@ -50,7 +51,7 @@ const CreateNewOrderState = (props) => {
         if (token) {
             setSiteInformationLoading(true);
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            await axios.post(`${API_URL}/user/getSiteInformation`, { companyId, packageId, orderReasonId, formData })
+            await axios.post(`${API_URL}/user/getSiteInformation`, { companyId, packageId, orderReasonId, dotAgency,formData })
                 .then(response => {
                     if (formData.sendLink === true) {
                         setCurrentPosition(1);
@@ -79,6 +80,7 @@ const CreateNewOrderState = (props) => {
                         setCompanyId("");
                         setPackageId("");
                         setOrderReasonId("");
+                        setDotAgency("");
                         toast.success("Scheduling URL sent successfully")
                     } else {
                         setSiteInformation(response.data.data);
@@ -128,6 +130,7 @@ const CreateNewOrderState = (props) => {
                     setCompanyId("");
                     setPackageId("");
                     setOrderReasonId("");
+                    setDotAgency("");
                     setFormData({
                         firstName: "",
                         middleName: "",
@@ -158,7 +161,7 @@ const CreateNewOrderState = (props) => {
     }
 
     return (
-        <CreateNewOrderContext.Provider value={{ orderReasonId, packageId, companyId, allCompanyData, currentPosition, maxPosition, formData, siteInformation, siteInformationLoading, selectedSiteId, selectedSiteDetails, finlSelectedSite, submitLoading, handleNewPincode, setSavedPincode, setSubmitLoading, newDriverSubmitOrder, setFinalSelectedSite, setSelectedSiteDetails, setSelectedSiteId, setSiteInformation, getSiteInformation, setFormData, setAllCompanyData, setCurrentPosition, setCompanyId, setPackageId, setOrderReasonId, setMaxPosition }}>
+        <CreateNewOrderContext.Provider value={{ orderReasonId, packageId, companyId, allCompanyData, currentPosition, maxPosition, formData, siteInformation, siteInformationLoading, selectedSiteId, selectedSiteDetails, finlSelectedSite, submitLoading,dotAgency,setDotAgency, handleNewPincode, setSavedPincode, setSubmitLoading, newDriverSubmitOrder, setFinalSelectedSite, setSelectedSiteDetails, setSelectedSiteId, setSiteInformation, getSiteInformation, setFormData, setAllCompanyData, setCurrentPosition, setCompanyId, setPackageId, setOrderReasonId, setMaxPosition }}>
             {props.children}
         </CreateNewOrderContext.Provider>
     )
