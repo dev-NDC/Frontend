@@ -19,12 +19,14 @@ import { ArrowUpward, ArrowDownward } from "@mui/icons-material";
 
 import AdminContext from "../../../Context/Agency/AgencyContext";
 import CustomerContext from "../../../Context/Agency/Customer/CustomerContext";
+const normalizePhoneNumber = require('../../Utils/normalizePhone');
 
 function ViewCustomer() {
   const adminContext = useContext(AdminContext);
   const customerContext = useContext(CustomerContext);
 
   const [filterText, setFilterText] = useState("");
+  const [filterUsdot, setFilterUsdot] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
 
   const { AllUserData, setCurrentActiveButton } = adminContext || {};
@@ -32,7 +34,8 @@ function ViewCustomer() {
 
   const filteredData = useMemo(() => {
     const filtered = AllUserData?.filter(user =>
-      user.companyName?.toLowerCase().includes(filterText.toLowerCase())
+      user.companyName?.toLowerCase().includes(filterText.toLowerCase()) &&
+      user.companyUSDOTNumber?.toLowerCase().includes(filterUsdot.toLowerCase())
     ) || [];
 
     return filtered.sort((a, b) => {
@@ -40,7 +43,7 @@ function ViewCustomer() {
       const nameB = b.companyName.toLowerCase();
       return sortOrder === "asc" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
     });
-  }, [AllUserData, filterText, sortOrder]);
+  }, [AllUserData, filterText, sortOrder, filterUsdot]);
 
   const handleSortToggle = () => {
     setSortOrder(prev => (prev === "asc" ? "desc" : "asc"));
@@ -79,13 +82,22 @@ function ViewCustomer() {
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
           Customer List
         </Typography>
-        <TextField
-          size="small"
-          label="Filter by Company Name"
-          variant="outlined"
-          value={filterText}
-          onChange={(e) => setFilterText(e.target.value)}
-        />
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <TextField
+            size="small"
+            label="Filter by Company Name"
+            variant="outlined"
+            value={filterText}
+            onChange={(e) => setFilterText(e.target.value)}
+          />
+          <TextField
+            size="small"
+            label="Filter by USDOT Number"
+            variant="outlined"
+            value={filterUsdot}
+            onChange={(e) => setFilterUsdot(e.target.value)}
+          />
+        </Box>
       </Box>
 
 
@@ -117,10 +129,17 @@ function ViewCustomer() {
           {filteredData.map((user, index) => (
             <TableRow key={index} hover>
               <TableCell>{user.companyName}</TableCell>
-              <TableCell>{user.companyContactNumber}</TableCell>
+              <TableCell>{normalizePhoneNumber(user.companyContactNumber)}</TableCell>
               <TableCell>{user.companyEmail}</TableCell>
               <TableCell>{user.activeDriversCount}</TableCell>
-              <TableCell sx={{ color: "green", fontWeight: "bold" }}>Active</TableCell>
+              <TableCell
+                sx={{
+                  color: user.status === "Active" ? "green" : "red",
+                  fontWeight: "bold"
+                }}
+              >
+                {user.status}
+              </TableCell>
               <TableCell>
                 <IconButton onClick={() => handleViewDetails(user)}>
                   <ArrowForwardIosIcon />

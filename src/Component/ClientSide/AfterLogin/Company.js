@@ -6,7 +6,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
 import HomeContext from "../../../Context/ClientSide/AfterLogin/Home/HomeContext";
-
+const normalizePhoneNumber = require("../../Utils/normalizePhone");
 const usStates = [
   { label: "Alabama" }, { label: "Alaska" }, { label: "Arizona" },
   { label: "Arkansas" }, { label: "California" }, { label: "Colorado" },
@@ -118,17 +118,36 @@ const CompanyDetails = () => {
             Company Information
           </Typography>
           <Grid container spacing={2}>
-            {Object.entries(companyInfoData)?.map(([key, value]) => (
-              <Grid item xs={12} sm={6} key={key}>
-                <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>
-                  {formatLabel(key)}:
-                </Typography>
-                <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
-                  {value}
-                </Typography>
-              </Grid>
-            ))}
+            {Object.entries(companyInfoData)?.map(([key, value]) => {
+              let displayValue = value;
+
+              if (key === "contactNumber") {
+                displayValue = normalizePhoneNumber(value);
+              } else if (key.toLowerCase() === "usdot") {
+                displayValue = String(value).toUpperCase();
+              } else {
+                displayValue = toTitleCase(value);
+              }
+
+              return (
+                <Grid item xs={12} sm={6} key={key}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontWeight: "bold", color: "text.secondary" }}
+                  >
+                    {formatLabel(key)}:
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ color: "#003366", fontWeight: 700 }}
+                  >
+                    {displayValue}
+                  </Typography>
+                </Grid>
+              );
+            })}
           </Grid>
+
         </CardContent>
       </Card>
 
@@ -179,7 +198,7 @@ const CompanyDetails = () => {
                     variant="outlined"
                     type={
                       key === "email" ? "email" :
-                      digitOnlyFields.includes(key) ? "tel" : "text"
+                        digitOnlyFields.includes(key) ? "tel" : "text"
                     }
                     inputProps={
                       digitOnlyFields.includes(key)
@@ -204,5 +223,14 @@ const CompanyDetails = () => {
     </Box>
   );
 };
+
+function toTitleCase(str) {
+  if (!str || typeof str !== "string") return str;
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
 
 export default CompanyDetails;

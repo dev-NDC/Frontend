@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import HomeContext from "../../../../Context/ClientSide/AfterLogin/Home/HomeContext";
-
+const normalizePhoneNumber = require("../../../Utils/normalizePhone");
 function DeletedDriver() {
     const { userData } = useContext(HomeContext);
     const [drivers, setDrivers] = useState([]);
@@ -67,7 +67,7 @@ function DeletedDriver() {
                                 {!isMobile && <TableCell>{driver.email}</TableCell>}
                                 {!isTablet && <TableCell>{driver.government_id}</TableCell>}
                                 {!isTablet && <TableCell>{new Date(driver.dob).toLocaleDateString("en-US")}</TableCell>}
-                                {!isTablet && <TableCell>{driver.phone}</TableCell>}
+                                {!isTablet && <TableCell>{normalizePhoneNumber(driver.phone)}</TableCell>}
                                 {!isMobile && (
                                     <TableCell>{new Date(driver.deletionDate).toLocaleDateString("en-US")}</TableCell>
                                 )}
@@ -94,7 +94,7 @@ function DeletedDriver() {
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
                         <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.government_id}</Typography>
                         <Typography variant="body1"><strong>DOB:</strong> {new Date(selectedDriver?.dob).toLocaleDateString("en-US")}</Typography>
-                        <Typography variant="body1"><strong>Phone No:</strong> {selectedDriver?.phone}</Typography>
+                        <Typography variant="body1"><strong>Phone No:</strong> {normalizePhoneNumber(selectedDriver?.phone)}</Typography>
                         <Typography variant="body1"><strong>Creation Date:</strong> {new Date(selectedDriver?.creationDate).toLocaleDateString("en-US")}</Typography>
                         <Typography variant="body1"><strong>Created By:</strong> {selectedDriver?.createdBy}</Typography>
                         <Typography variant="body1"><strong>Deletion Date:</strong> {new Date(selectedDriver?.deletionDate).toLocaleDateString("en-US")}</Typography>

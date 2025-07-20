@@ -18,6 +18,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
 import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
 
+const normalizePhoneNumber = require("../../Utils/normalizePhone");
+
 // 🔤 Converts string to Title Case
 const toTitleCase = (str) => {
   if (typeof str !== "string") return str;
@@ -169,24 +171,35 @@ const CompanyDetails = () => {
           </Typography>
 
           <Grid container spacing={2}>
-            {Object.entries(companyInfoData).map(([key, value]) => (
-              <Grid item xs={12} sm={6} key={key}>
-                <Typography
-                  variant="subtitle2"
-                  sx={{ fontWeight: "bold", color: "text.secondary" }}
-                >
-                  {formatKeyLabel(key)}:
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{ color: "#003366", fontWeight: 700 }}
-                >
-                  {key.toLowerCase() === "usdot"
-                    ? String(value).toUpperCase()
-                    : toTitleCase(value)}
-                </Typography>
-              </Grid>
-            ))}
+            {Object.entries(companyInfoData).map(([key, value]) => {
+              let displayValue = value;
+
+              if (key === "contactNumber") {
+                displayValue = normalizePhoneNumber(value);
+              } else if (key.toLowerCase() === "usdot") {
+                displayValue = String(value).toUpperCase();
+              } else {
+                displayValue = toTitleCase(value);
+              }
+
+              return (
+                <Grid item xs={12} sm={6} key={key}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontWeight: "bold", color: "text.secondary" }}
+                  >
+                    {formatKeyLabel(key)}:
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ color: "#003366", fontWeight: 700 }}
+                  >
+                    {displayValue}
+                  </Typography>
+                </Grid>
+              );
+            })}
+
           </Grid>
         </CardContent>
       </Card>
@@ -247,10 +260,10 @@ const CompanyDetails = () => {
                       )
                         ? "number"
                         : key.toLowerCase() === "email"
-                        ? "email"
-                        : key.toLowerCase().includes("contact")
-                        ? "tel"
-                        : "text"
+                          ? "email"
+                          : key.toLowerCase().includes("contact")
+                            ? "tel"
+                            : "text"
                     }
                     inputProps={{
                       ...(key.toLowerCase() === "email" && {
@@ -298,14 +311,14 @@ const CompanyDetails = () => {
                     }
                     helperText={
                       key.toLowerCase() === "email" &&
-                      value &&
-                      !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)
+                        value &&
+                        !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)
                         ? "Invalid email format"
                         : key.toLowerCase().includes("contact") &&
                           value &&
                           !/^\d{10}$/.test(value)
-                        ? "Must be a 10-digit number"
-                        : ""
+                          ? "Must be a 10-digit number"
+                          : ""
                     }
                   />
                 )}

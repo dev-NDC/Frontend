@@ -10,6 +10,8 @@ import CreateNewAgency from "./CreateNewAgency";
 import AdminContext from "../../../Context/Admin/AdminContext";
 import CustomerContext from "../../../Context/Admin/Agency/AgencyContext";
 
+const normalizePhoneNumber = require('../../Utils/normalizePhone');
+
 function ViewAgency() {
     const { setCurrentActiveButton } = useContext(AdminContext);
     const { getSingleAgencyData, setLoading, setAgencyDetails, AllAgencyData } = useContext(CustomerContext);
@@ -88,7 +90,7 @@ function ViewAgency() {
                             <TableRow key={index} hover>
                                 <TableCell>{agency.agencyName}</TableCell>
                                 <TableCell>{agency.agencyEmail}</TableCell>
-                                <TableCell>{agency.agencyContactNumber}</TableCell>
+                                <TableCell>{normalizePhoneNumber(agency.agencyContactNumber)}</TableCell>
                                 <TableCell>{agency.agencyCode}</TableCell>
                                 <TableCell>{agency.numberOfCompanies}</TableCell>
                                 <TableCell>

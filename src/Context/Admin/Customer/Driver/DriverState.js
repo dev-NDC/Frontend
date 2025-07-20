@@ -41,8 +41,19 @@ const DriverState = (props) => {
             });
     }
 
+    const permanentlyDeleteDriver = async (driver, currentId) => {
+        await axios.post(`${API_URL}/admin/permanentlyDeleteDriver`, { driver, currentId })
+            .then(response => {
+                const data = response.data;
+                toast.success(data.message);
+            })
+            .catch(error => {
+                toast.error("server error, Please try again later")
+            });
+    }
+
     return (
-        <DriverContext.Provider value={{ AddDriver, deleteDriver, updateDriver }}>
+        <DriverContext.Provider value={{ AddDriver, deleteDriver, updateDriver, permanentlyDeleteDriver }}>
             {props.children}
         </DriverContext.Provider>
     )

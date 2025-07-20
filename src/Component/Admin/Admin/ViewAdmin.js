@@ -9,6 +9,8 @@ import EditAdminModal from "./EditAdminModal";
 import DeleteAdminModal from "./DeleteAdminModal";
 import CreateNewAdmin from "./CreateNewAdmin";
 
+const normalizePhoneNumber = require("../../Utils/normalizePhone");
+
 function ViewAdmin() {
   const { AllAdminData } = useContext(AdminContext);
 
@@ -60,7 +62,7 @@ function ViewAdmin() {
               <TableRow key={index} hover>
                 <TableCell>{admin.firstName} {admin.lastName}</TableCell>
                 <TableCell>{admin.email}</TableCell>
-                <TableCell>{admin.contactNumber}</TableCell>
+                <TableCell>{normalizePhoneNumber(admin.contactNumber)}</TableCell>
                 <TableCell>
                   <IconButton onClick={(e) => handleMenuClick(e, admin)}>
                     <MoreVertIcon />

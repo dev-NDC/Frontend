@@ -9,6 +9,8 @@ import CustomerContext from "../../../../Context/Admin/Customer/CustomerContext"
 import DriverContext from "../../../../Context/Admin/Customer/Driver/DriverContext";
 import axios from "axios";
 
+const normalizePhoneNumber = require("../../../Utils/normalizePhone");
+
 const API_URL = process.env.REACT_APP_API_URL;
 
 function ActiveDriver() {
@@ -143,10 +145,10 @@ function ActiveDriver() {
                             <TableRow key={index} hover>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{driver.first_name} {driver.last_name}</TableCell>
-                                {!isMobile && <TableCell>{driver.email}</TableCell>}
+                                {!isMobile && <TableCell>{driver.email || "N/A"}</TableCell>}
                                 {!isTablet && <TableCell>{driver.government_id}</TableCell>}
                                 {!isTablet && <TableCell>{new Date(driver.dob).toLocaleDateString('en-US')}</TableCell>}
-                                {!isTablet && <TableCell>{driver.phone}</TableCell>}
+                                {!isTablet && <TableCell>{normalizePhoneNumber(driver.phone) || "N/A"}</TableCell>}
                                 {!isTablet && <TableCell>{driver.createdBy}</TableCell>}
                                 <TableCell>
                                     <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
@@ -203,7 +205,7 @@ function ActiveDriver() {
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
                         <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.government_id}</Typography>
                         <Typography variant="body1"><strong>DOB:</strong> {new Date(selectedDriver?.dob).toLocaleDateString('en-US')}</Typography>
-                        <Typography variant="body1"><strong>Phone No:</strong> {selectedDriver?.phone}</Typography>
+                        <Typography variant="body1"><strong>Phone No:</strong> {normalizePhoneNumber(selectedDriver?.phone)}</Typography>
                         <Typography variant="body1"><strong>Creation Date:</strong> {selectedDriver?.creationDate ? new Date(selectedDriver?.creationDate).toLocaleDateString('en-US') : ""}</Typography>
                         <Typography variant="body1"><strong>Created By:</strong> {selectedDriver?.createdBy}</Typography>
                     </Box>

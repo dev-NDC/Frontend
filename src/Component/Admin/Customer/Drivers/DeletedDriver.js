@@ -1,16 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Menu, MenuItem, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, useMediaQuery } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import CustomerContext from "../../../../Context/Admin/Customer/CustomerContext";
-
+import DriverContext from "../../../../Context/Admin/Customer/Driver/DriverContext";
+const normalizePhoneNumber = require("../../../Utils/normalizePhone");
 
 function DeletedDriver() {
-    const { userDetails } = useContext(CustomerContext);
+    const { userDetails, currentId, getSingleUserData } = useContext(CustomerContext);
+    const { permanentlyDeleteDriver } = useContext(DriverContext);  
     const [drivers, setDrivers] = useState([]);
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedDriver, setSelectedDriver] = useState(null);
     const [viewOpen, setViewOpen] = useState(false);
+    const [deleteOpen, setDeleteOpen] = useState(false);
     const isTablet = useMediaQuery("(max-width:1200px)");
     const isMobile = useMediaQuery("(max-width:500px)");
 
@@ -33,6 +37,18 @@ function DeletedDriver() {
     const handleViewOpen = () => {
         setViewOpen(true);
         handleMenuClose();
+    };
+
+    const handleDeleteOpen = () => {
+        setDeleteOpen(true);
+        handleMenuClose();
+    };
+
+    const handleDeleteDriver = async () => {
+        await permanentlyDeleteDriver(selectedDriver);
+        await getSingleUserData(currentId);
+        // Optionally refresh drivers list here if needed
+        setDeleteOpen(false);
     };
 
     return (
@@ -65,7 +81,7 @@ function DeletedDriver() {
                                 {!isMobile && <TableCell>{driver.email}</TableCell>}
                                 {!isTablet && <TableCell>{driver.government_id}</TableCell>}
                                 {!isTablet && <TableCell>{new Date(driver.dob).toLocaleDateString()}</TableCell>}
-                                {!isTablet && <TableCell>{driver.phone}</TableCell>}
+                                {!isTablet && <TableCell>{normalizePhoneNumber(driver.phone)}</TableCell>}
                                 {!isMobile && <TableCell>{new Date(driver.deletionDate).toLocaleDateString()}</TableCell>}
                                 <TableCell>
                                     <IconButton onClick={(event) => handleMenuOpen(event, driver)}>
@@ -73,6 +89,10 @@ function DeletedDriver() {
                                     </IconButton>
                                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
                                         <MenuItem onClick={handleViewOpen}>View More Details</MenuItem>
+                                        <MenuItem onClick={handleDeleteOpen}>
+                                            <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+                                            Permanently Delete
+                                        </MenuItem>
                                     </Menu>
                                 </TableCell>
                             </TableRow>
@@ -91,7 +111,7 @@ function DeletedDriver() {
                         <Typography variant="body1"><strong>Email:</strong> {selectedDriver?.email}</Typography>
                         <Typography variant="body1"><strong>License #:</strong> {selectedDriver?.government_id}</Typography>
                         <Typography variant="body1"><strong>DOB:</strong> {selectedDriver?.dob}</Typography>
-                        <Typography variant="body1"><strong>Phone No:</strong> {selectedDriver?.phone}</Typography>
+                        <Typography variant="body1"><strong>Phone No:</strong> {normalizePhoneNumber(selectedDriver?.phone)}</Typography>
                         <Typography variant="body1"><strong>Creation Date:</strong> {new Date(selectedDriver?.creationDate).toLocaleDateString()}</Typography>
                         <Typography variant="body1"><strong>Created By:</strong> {selectedDriver?.createdBy}</Typography>
                         <Typography variant="body1"><strong>Deletion Date:</strong> {new Date(selectedDriver?.deletionDate).toLocaleDateString()}</Typography>
@@ -100,6 +120,24 @@ function DeletedDriver() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setViewOpen(false)} color="secondary">Close</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Permanently Delete Driver Confirmation Modal */}
+            <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
+                <DialogTitle>Permanently Delete Employee</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Are you sure you want to permanently delete{" "}
+                        <strong>{selectedDriver?.first_name} {selectedDriver?.last_name}</strong>?
+                        This action cannot be undone.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDeleteOpen(false)} color="secondary">Cancel</Button>
+                    <Button onClick={handleDeleteDriver} color="error" variant="contained">
+                        Delete
+                    </Button>
                 </DialogActions>
             </Dialog>
         </TableContainer>

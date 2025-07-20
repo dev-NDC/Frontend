@@ -34,6 +34,7 @@ import AgencyContext from "../../../Context/Admin/Agency/AgencyContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 const API_URL = process.env.REACT_APP_API_URL;
+const normalizePhoneNumber = require("../../Utils/normalizePhone");
 
 const CompanyDetails = () => {
   const { agencyDetails, updateAgencyInformation } = useContext(AgencyContext);
@@ -248,7 +249,7 @@ const CompanyDetails = () => {
               </Typography>
               <Typography sx={{ display: "flex", alignItems: "center" }}>
                 <PhoneIcon sx={{ mr: 1 }} />
-                <strong>Contact:</strong>&nbsp;{formData.agencyContactNumber}
+                <strong>Contact:</strong>&nbsp;{normalizePhoneNumber(formData.agencyContactNumber)}
               </Typography>
               <Typography sx={{ display: "flex", alignItems: "center" }}>
                 <Code sx={{ mr: 1 }} />

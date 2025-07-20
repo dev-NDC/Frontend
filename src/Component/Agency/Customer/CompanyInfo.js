@@ -6,6 +6,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
 import CustomerContext from "../../../Context/Agency/Customer/CustomerContext";
+const normalizePhoneNumber = require("../../Utils/normalizePhone")
 
 // All US States
 const stateOptions = [
@@ -109,19 +110,28 @@ const CompanyDetails = () => {
             Company Information
           </Typography>
           <Grid container spacing={2}>
-            {Object.entries(companyInfoData).map(([key, value]) => (
-              <Grid item xs={12} sm={6} key={key}>
-                <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>
-                  {formatLabel(key)}:
-                </Typography>
-                <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
-                  {key === "state"
-                    ? stateOptions.find((s) => s.value === value)?.label || value
-                    : value}
-                </Typography>
-              </Grid>
-            ))}
+            {Object.entries(companyInfoData).map(([key, value]) => {
+              let displayValue = value;
+
+              if (key === "contactNumber") {
+                displayValue = normalizePhoneNumber(value);
+              } else if (key === "state") {
+                displayValue = stateOptions.find((s) => s.value === value)?.label || value;
+              }
+
+              return (
+                <Grid item xs={12} sm={6} key={key}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "text.secondary" }}>
+                    {formatLabel(key)}:
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: "#003366", fontWeight: 700 }}>
+                    {displayValue}
+                  </Typography>
+                </Grid>
+              );
+            })}
           </Grid>
+
         </CardContent>
       </Card>
 
@@ -182,23 +192,23 @@ const CompanyDetails = () => {
                   ) : (
                     <TextField
                       fullWidth
-  size="small"
-  type={isNumericField || isContactField ? "tel" : "text"}
-  label={formatLabel(key)}
-  name={key}
-  value={value}
-  onChange={handleFieldChange}
-  variant="outlined"
-  error={
-    (isEmailField && value && !isEmailValid(value)) ||
-    (isContactField && value && value.length > 0 && value.length !== 10)
-  }
-  helperText={
-    isEmailField && value && !isEmailValid(value)
-      ? "Enter a valid email address"
-      : isContactField && value && value.length > 0 && value.length !== 10
-      ? "Contact number must be exactly 10 digits"
-      : ""
+                      size="small"
+                      type={isNumericField || isContactField ? "tel" : "text"}
+                      label={formatLabel(key)}
+                      name={key}
+                      value={value}
+                      onChange={handleFieldChange}
+                      variant="outlined"
+                      error={
+                        (isEmailField && value && !isEmailValid(value)) ||
+                        (isContactField && value && value.length > 0 && value.length !== 10)
+                      }
+                      helperText={
+                        isEmailField && value && !isEmailValid(value)
+                          ? "Enter a valid email address"
+                          : isContactField && value && value.length > 0 && value.length !== 10
+                            ? "Contact number must be exactly 10 digits"
+                            : ""
                       }
                     />
                   )}

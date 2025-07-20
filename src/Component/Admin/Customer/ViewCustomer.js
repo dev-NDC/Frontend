@@ -21,6 +21,8 @@ import CustomerContext from "../../../Context/Admin/Customer/CustomerContext";
 import ExportDriver from "./ExportDriver";
 import ExportCompany from "./ExportCompany";
 
+const normalizePhoneNumber = require('../../Utils/normalizePhone');
+
 function ViewCustomer() {
     const { AllUserData, setCurrentActiveButton, getAllAdminData } = useContext(AdminContext);
     const { getSingleUserData, setLoading, setUserDetails } = useContext(CustomerContext);
@@ -129,7 +131,7 @@ function ViewCustomer() {
                     {filteredAndSortedUsers.map((user, index) => (
                         <TableRow key={index} hover>
                             <TableCell>{user.companyName}</TableCell>
-                            <TableCell>{user.companyContactNumber}</TableCell>
+                            <TableCell>{normalizePhoneNumber(user.companyContactNumber)}</TableCell>
                             <TableCell>{user.companyEmail}</TableCell>
                             <TableCell>{user.activeDriversCount}</TableCell>
                             <TableCell
