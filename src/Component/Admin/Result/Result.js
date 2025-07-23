@@ -51,29 +51,17 @@ function DisplayResult() {
     setSelectedResult(null);
   };
 
-const handleDownload = (result) => {
-  try {
-    const base64Data = result.resultImage?.split(',')[1];
-    if (!base64Data) {
-      alert("No PDF found to download.");
-      return;
-    }
+  const handleDownload = (result) => {
+    try {
+      const base64Data = result.resultImage?.split(',')[1];
+      if (!base64Data) {
+        alert("No PDF found to download.");
+        return;
+      }
 
-    const byteArray = Uint8Array.from(atob(base64Data), (char) =>
-      char.charCodeAt(0)
-    );
-
-    const blob = new Blob([byteArray], { type: "application/pdf" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `${result.driverName || "result"}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  } catch (error) {
-    console.error("Error downloading PDF:", error);
-  }
-};
+      const byteArray = Uint8Array.from(atob(base64Data), (char) =>
+        char.charCodeAt(0)
+      );
 
       const blob = new Blob([byteArray], { type: "application/pdf" });
       const link = document.createElement("a");
@@ -92,7 +80,6 @@ const handleDownload = (result) => {
   return (
     <Box>
       <TableContainer component={Paper} sx={{ mt: 3, p: 2, borderRadius: 2, boxShadow: 3 }}>
-        {/* Result List Heading and Search Bar */}
         <Box
           sx={{
             mb: 2,
