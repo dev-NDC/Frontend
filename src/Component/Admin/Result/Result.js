@@ -51,18 +51,24 @@ function DisplayResult() {
     setSelectedResult(null);
   };
 
-  const handleDownload = (result) => {
+const handleDownload = async (result) => {
     try {
-      const base64Data = result.resultImage?.split(',')[1];
-      if (!base64Data) {
-        alert("No PDF found to download.");
-        return;
-      }
+      const res = await axios.get(`${API_URL}/results/${result._id}/pdf`, {
+        responseType: "blob",
+      });
 
-      const byteArray = Uint8Array.from(atob(base64Data), (char) =>
-        char.charCodeAt(0)
-      );
-
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${result.driverName || "result"}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Error downloading PDF:", err);
+      alert("Could not download PDF.");
+    }
+  };
       const blob = new Blob([byteArray], { type: "application/pdf" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
