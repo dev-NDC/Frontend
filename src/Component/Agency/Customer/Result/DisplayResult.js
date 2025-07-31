@@ -31,7 +31,6 @@ function DisplayResult() {
     if (userDetails?.results) {
       setResults(userDetails.results);
       setLoading(false);
-      console.log("Results loaded:", userDetails.results);
     }
   }, [userDetails]);
 

@@ -86,7 +86,6 @@ const CreateNewOrderState = (props) => {
                         setDotAgency("");
                         toast.success("Scheduling URL sent successfully")
                     } else {
-                        console.log("response.data", response.data.data);
                         setSiteInformation(response.data.data);
                         setSiteInformationLoading(false);
                         setCaseNumber(response.data.caseNumber);
